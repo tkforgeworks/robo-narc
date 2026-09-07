@@ -8,6 +8,8 @@ extends Node
 signal swerve_started
 signal swerve_ended
 signal speed_changed(road_speed: float)
+## A moving bus-lane car was told to merge out of the bus's way.
+signal vehicle_merging(vehicle: Vehicle)
 
 enum LaneTarget { BUS_LANE, PASSING_LANE }
 
@@ -57,6 +59,7 @@ func update(delta: float, cruise_speed: float, vehicles: Array[Vehicle]) -> void
 		if nearest_moving.z < config.merge_trigger_z and not nearest_moving.merging:
 			nearest_moving.merge_to(config.lane_passing_center()
 					+ rng.randf_range(-MERGE_JITTER, MERGE_JITTER))
+			vehicle_merging.emit(nearest_moving)
 	_approach_speed(desired, delta)
 
 

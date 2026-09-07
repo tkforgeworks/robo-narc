@@ -4,6 +4,9 @@ extends Node
 ## feedback text. Point values come from the live TuningConfig.
 
 signal score_changed(score: int, delta: int, feedback: String)
+## Emitted after the outcome has its points and feedback filled in.
+signal capture_applied(outcome: CaptureOutcome)
+signal miss_applied(verdict: Verdict)
 
 const TAG := "Score"
 
@@ -50,12 +53,14 @@ func apply_capture(outcome: CaptureOutcome) -> void:
 		CaptureOutcome.Kind.ALREADY_CAPTURED:
 			outcome.feedback = "ALREADY CAPTURED"
 	_add(outcome.points, outcome.feedback)
+	capture_applied.emit(outcome)
 
 
 func apply_miss(verdict: Verdict) -> void:
 	_result.missed += 1
 	var points := config.points_missed
 	_add(points, "%+d MISSED %s" % [points, verdict.label])
+	miss_applied.emit(verdict)
 
 
 func finish() -> ShiftResult:

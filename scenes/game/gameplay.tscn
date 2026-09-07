@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://src/screens/gameplay_screen.gd" id="1_gameplay"]
 [ext_resource type="PackedScene" path="res://scenes/game/road_view.tscn" id="2_road"]
@@ -12,6 +12,9 @@
 [ext_resource type="PackedScene" path="res://scenes/game/count_in.tscn" id="10_countin"]
 [ext_resource type="PackedScene" path="res://scenes/game/hud.tscn" id="11_hud"]
 [ext_resource type="PackedScene" path="res://scenes/game/bus_overlay.tscn" id="12_bus"]
+[ext_resource type="Script" path="res://src/game/audio/audio_cues.gd" id="13_cues"]
+[ext_resource type="Script" path="res://src/game/audio/honk_scheduler.gd" id="14_honks"]
+[ext_resource type="Script" path="res://src/game/audio/shift_sounds.gd" id="15_sounds"]
 
 [node name="GameplayScreen" type="Node2D"]
 script = ExtResource("1_gameplay")
@@ -51,3 +54,12 @@ mouse_filter = 2
 [node name="CountIn" parent="Overlay/Frame" instance=ExtResource("10_countin")]
 
 [node name="Hud" parent="." instance=ExtResource("11_hud")]
+
+[node name="AudioCues" type="Node" parent="."]
+script = ExtResource("13_cues")
+
+[node name="HonkScheduler" type="Node" parent="."]
+script = ExtResource("14_honks")
+
+[node name="ShiftSounds" type="Node" parent="."]
+script = ExtResource("15_sounds")

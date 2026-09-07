@@ -188,9 +188,9 @@ Android build.)
 
 **Independent Test**: Quickstart US6 scenarios 1–2.
 
-- [ ] T065 [P] [US6] Implement `AudioCues` in `src/game/audio/audio_cues.gd` + node in `gameplay.tscn` (`class_name AudioCues` Node: resolves `assets/audio/sfx/<event>.ogg` for the seven event names at ready, pool of `AudioStreamPlayer`s on bus `SFX`, `play(event)` no-op when unresolved, logs once per missing file); test `tests/game/test_audio_cues.gd` (missing files produce no errors)
-- [ ] T066 [P] [US6] Implement `HonkScheduler` in `src/game/audio/honk_scheduler.gd` (`class_name HonkScheduler` Node: on `BusDriver.swerve_started` and on each moving vehicle merge/pass, rolls `honk_probability` and calls `AudioCues.play("honk")`)
-- [ ] T067 [US6] Wire hooks: `CountIn` ticks → `count_in_tick`; `CaptureBox.capture_attempted` → `shutter`; `ScoreKeeper.score_changed` → `capture_correct`/`capture_wrong`/`miss` by outcome; `ShiftClock.ended` → `shift_end`; add `MusicPlayer` (`AudioStreamPlayer`, bus `Music`, loop) under `AudioMixer` playing `assets/audio/music/background.ogg` when present
+- [X] T065 [P] [US6] Implement `AudioCues` in `src/game/audio/audio_cues.gd` + node in `gameplay.tscn` (`class_name AudioCues` Node: resolves `assets/audio/sfx/<event>.ogg` for the seven event names at ready, pool of `AudioStreamPlayer`s on bus `SFX`, `play(event)` no-op when unresolved, logs once per missing file); test `tests/game/test_audio_cues.gd` (missing files produce no errors)
+- [X] T066 [P] [US6] Implement `HonkScheduler` in `src/game/audio/honk_scheduler.gd` (`class_name HonkScheduler` Node: on `BusDriver.swerve_started` and on each moving vehicle merge/pass, rolls `honk_probability` and calls `AudioCues.play("honk")`)
+- [X] T067 [US6] Wire hooks: `CountIn` ticks → `count_in_tick`; `CaptureBox.capture_attempted` → `shutter`; `ScoreKeeper.score_changed` → `capture_correct`/`capture_wrong`/`miss` by outcome; `ShiftClock.ended` → `shift_end`; add `MusicPlayer` (`AudioStreamPlayer`, bus `Music`, loop) under `AudioMixer` playing `assets/audio/music/background.ogg` when present
 
 **Checkpoint**: With placeholder `.ogg` files every event sounds once; without them, silence and zero errors.
 

@@ -35,8 +35,8 @@ assets/
 │   ├── joystick-base.png, joystick-thumb.png, capture-button.png  # MISSING → placeholder
 │   └── about/                  # MISSING → text only
 └── audio/
-    ├── music/background.ogg    # MISSING → silent
-    └── sfx/<event>.ogg         # MISSING → silent; event names below
+    ├── music/background.ogg    # placeholder .wav shipped → replace
+    └── sfx/<event>.ogg         # placeholder .wav shipped → replace; event names below
 ```
 
 Migration from the current `Assets/` tree:
@@ -62,8 +62,10 @@ Migration from the current `Assets/` tree:
   at the lower outer corners) plus a logged warning.
 - `BuildingStrip` lists `assets/roadside/buildings/<side>/*.png` and cycles them in
   a shuffled order; count is not hard-coded.
-- Audio hooks resolve `assets/audio/sfx/<event>.ogg` at startup; a missing file
-  leaves the hook `null` and `AudioCues.play(event)` is a no-op.
+- Audio hooks resolve `assets/audio/sfx/<event>.ogg`, then `<event>.wav`, at
+  startup; a missing file leaves the hook `null` and `AudioCues.play(event)` is a
+  no-op. Generated placeholder `.wav` files ship until real `.ogg` art exists; an
+  `.ogg` beside a `.wav` wins.
 
 ## SFX event names
 

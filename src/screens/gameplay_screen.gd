@@ -30,6 +30,9 @@ var _registry: VehicleRegistry
 @onready var _capture_box: CaptureBox = $Overlay/Frame/CaptureBox
 @onready var _count_in: CountIn = $Overlay/Frame/CountIn
 @onready var _hud: Hud = $Hud
+@onready var _cues: AudioCues = $AudioCues
+@onready var _honks: HonkScheduler = $HonkScheduler
+@onready var _sounds: ShiftSounds = $ShiftSounds
 
 
 ## Children read `config` in their own _ready, which runs before ours, so the
@@ -38,7 +41,7 @@ func _enter_tree() -> void:
 	if config == null:
 		config = Tuning.config
 	for path: String in ["RoadView", "BusStopZones", "VehicleLayer", "VehicleSpawner",
-			"BusDriver", "ShiftClock", "ScoreKeeper", "Overlay/Frame/BusOverlay",
+			"BusDriver", "ShiftClock", "ScoreKeeper", "HonkScheduler", "Overlay/Frame/BusOverlay",
 			"Overlay/Frame/CaptureBox", "Hud/Frame/FeedbackBanner"]:
 		get_node(path).config = config
 
@@ -53,6 +56,8 @@ func _ready() -> void:
 	_count_in.finished.connect(_on_count_in_finished)
 	_capture_box.capture_attempted.connect(_on_capture_attempted)
 	_score_keeper.score_changed.connect(_on_score_changed)
+	_sounds.bind(_count_in, _capture_box, _score_keeper, _clock, _cues)
+	_honks.bind(_bus_driver, _vehicle_layer, _cues)
 	get_viewport().size_changed.connect(_apply_playfield)
 	_apply_playfield()
 
@@ -91,6 +96,10 @@ func bind_tuning(tuning: TuningService) -> void:
 	tuning.reset.connect(func() -> void:
 		_clock.set_duration(config.shift_length_sec)
 		_hud.set_time(_clock.time_left))
+
+
+func bind_debug_menu(menu: DebugMenu) -> void:
+	menu.register_action("Play every SFX", _cues.preview_all)
 
 
 func bind_input_source(input_source: InputSource) -> void:

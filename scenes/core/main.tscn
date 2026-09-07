@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://src/core/app/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://src/core/app/screen_host.gd" id="2_host"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/screens/title_screen.tscn" id="6_title"]
 [ext_resource type="Script" path="res://src/core/app/letterbox.gd" id="7_letterbox"]
 [ext_resource type="PackedScene" path="res://scenes/core/touch_controls.tscn" id="8_touch"]
+[ext_resource type="Script" path="res://src/core/app/music_player.gd" id="9_music"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -24,6 +25,9 @@ script = ExtResource("4_focus")
 
 [node name="AudioMixer" type="Node" parent="."]
 script = ExtResource("5_mixer")
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="AudioMixer"]
+script = ExtResource("9_music")
 
 [node name="Letterbox" type="CanvasLayer" parent="."]
 layer = 50

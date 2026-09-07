@@ -4,6 +4,9 @@ extends Node2D
 ## under the bus. Freeing is a separate step so judgment can run first. In
 ## debug builds it can outline every plate rect (show_plate_rects tunable).
 
+## Vehicles that went behind the camera this frame, before they are freed.
+signal vehicles_passed(passed: Array[Vehicle])
+
 var config: TuningConfig
 var vehicles: Array[Vehicle] = []
 
@@ -24,6 +27,8 @@ func advance_all(delta: float, road_speed: float, camera_x: float) -> Array[Vehi
 	for vehicle in vehicles:
 		if vehicle.advance(delta, road_speed, camera_x):
 			passed.append(vehicle)
+	if not passed.is_empty():
+		vehicles_passed.emit(passed)
 	if config.show_plate_rects:
 		queue_redraw()
 	return passed
