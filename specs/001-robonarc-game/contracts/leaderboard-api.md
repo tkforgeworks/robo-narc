@@ -48,10 +48,15 @@ Returns `setof (rank integer, name text, score integer)` ordered by
 All requests send headers:
 
 ```text
-apikey: <anon_key>
-Authorization: Bearer <anon_key>
+apikey: <key>
 Content-Type: application/json
+Authorization: Bearer <key>     # legacy anon JWT keys only
 ```
+
+`<key>` is the project's public client key. Current projects issue a
+"publishable key" (`sb_publishable_...`); it is not a JWT and Supabase rejects it
+as a Bearer token, so the client sends it in `apikey` only. Legacy anon keys are
+JWTs and go in both headers. The secret key and the JWKS URL are never used.
 
 Timeout: 5 seconds (`HTTPRequest.timeout`). No retries inside the client.
 

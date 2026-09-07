@@ -15,8 +15,8 @@ Validation guide for the feature. Implementation details are in
      (idempotent; creates `scores`, the RLS policies, and the two RPCs).
   2. Copy `data/game/leaderboard_config.tres` to
      `data/game/leaderboard_config.local.tres` (gitignored), fill in `base_url`
-     (Project Settings → API → Project URL) and `anon_key` (the `anon` `public`
-     key), and set `enabled = true`. The local file wins over the committed one.
+     (Project URL) and `anon_key` (the **publishable** key, `sb_publishable_...`;
+     not the secret key), and set `enabled = true`. The local file wins over the committed one.
   3. For CI-built web releases, add repository secrets `SUPABASE_URL` and
      `SUPABASE_ANON_KEY`; the export job writes the same local file from them.
 

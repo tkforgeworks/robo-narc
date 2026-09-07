@@ -11,7 +11,8 @@ const LOCAL_PATH := "res://data/game/leaderboard_config.local.tres"
 
 ## Supabase project URL, e.g. https://abcdefgh.supabase.co (no trailing slash needed).
 @export var base_url: String = ""
-## The project's anon (public) API key.
+## The project's public client key: the "publishable key" (sb_publishable_...)
+## on current projects, or the legacy anon JWT. Never the secret key.
 @export var anon_key: String = ""
 @export var enabled: bool = false
 

@@ -1,9 +1,6 @@
-[gd_resource type="Resource" script_class="LeaderboardConfig" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="LeaderboardConfig" format=3 uid="uid://bby28mn6pfdaf"]
 
-[ext_resource type="Script" path="res://src/game/services/leaderboard_config.gd" id="1_config"]
+[ext_resource type="Script" uid="uid://flg7vgp8fl2e" path="res://src/game/services/leaderboard_config.gd" id="1_config"]
 
 [resource]
 script = ExtResource("1_config")
-base_url = ""
-anon_key = ""
-enabled = false

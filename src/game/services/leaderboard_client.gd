@@ -95,6 +95,19 @@ static func platform_tag() -> String:
 	return "unknown"
 
 
+## Legacy anon keys are JWTs and go in both headers. The newer publishable
+## keys (`sb_publishable_...`) are not JWTs and are rejected as a Bearer token,
+## so they travel in `apikey` only.
+static func headers_for(raw_key: String, return_minimal: bool) -> PackedStringArray:
+	var key := raw_key.strip_edges()
+	var headers := PackedStringArray(["apikey: %s" % key, "Content-Type: application/json"])
+	if not key.begins_with("sb_"):
+		headers.append("Authorization: Bearer %s" % key)
+	if return_minimal:
+		headers.append("Prefer: return=minimal")
+	return headers
+
+
 static func payload_for(result: ShiftResult, tag: String) -> Dictionary:
 	return {
 		"name": result.player_name,
@@ -119,14 +132,7 @@ func _next_submit() -> void:
 
 func _post(transport: LeaderboardTransport, path: String, payload: Dictionary,
 		return_minimal: bool) -> bool:
-	var key := config.anon_key.strip_edges()
-	var headers := PackedStringArray([
-		"apikey: %s" % key,
-		"Authorization: Bearer %s" % key,
-		"Content-Type: application/json",
-	])
-	if return_minimal:
-		headers.append("Prefer: return=minimal")
+	var headers := headers_for(config.anon_key, return_minimal)
 	var url := config.base_url.strip_edges().trim_suffix("/") + path
 	var err := transport.post(url, headers, JSON.stringify(payload), timeout_sec)
 	if err != OK:
