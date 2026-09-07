@@ -161,9 +161,11 @@ web export; each has a fallback so none blocks planning.
   `PROCESS_MODE_ALWAYS` so it keeps counting while paused, per the spec edge case.
 - **Rationale**: Uses only engine notifications available on web (window blur),
   desktop, and Android (app lifecycle).
-- **Verify**: on web, tab switch triggers FOCUS_OUT (window blur). If a browser only
-  fires visibility change, fallback is `JavaScriptBridge` listening for
-  `visibilitychange`, which is web-only and non-blocking, so still constitutional.
+- **Verified 2026-09-07**: the engine notifications did NOT pause the shift on web
+  (timer kept running while the tab was hidden). The fallback is now in place:
+  `FocusPauser` registers `visibilitychange`, `blur`, and `focus` listeners through
+  `JavaScriptBridge` on web builds only. Confirmed in Chrome: blur freezes the timer,
+  focus shows the resume count-in, then play continues.
 
 ## R-11: Asset folder move and naming
 
