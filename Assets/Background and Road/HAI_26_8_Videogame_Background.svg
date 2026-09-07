@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Background" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1366 617.284">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-3 {
+        clip-path: url(#clippath-1);
+      }
+
+      .cls-4 {
+        clip-path: url(#clippath-2);
+      }
+
+      .cls-5 {
+        fill: url(#linear-gradient-2);
+        opacity: .8;
+      }
+
+      .cls-6 {
+        clip-path: url(#clippath);
+      }
+
+      .cls-7 {
+        fill: #0e1626;
+      }
+    </style>
+    <clipPath id="clippath">
+      <rect class="cls-1" x="-1426" y="-.741" width="1366" height="617.676"/>
+    </clipPath>
+    <clipPath id="clippath-1">
+      <rect class="cls-1" x="1426" y="-.741" width="1366" height="617.676"/>
+    </clipPath>
+    <linearGradient id="linear-gradient" x1="-8189.063" y1="462.929" x2="-8189.063" y2="-84.601" gradientTransform="translate(-7506.063) rotate(-180) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset=".538" stop-color="#6743bb"/>
+      <stop offset=".942" stop-color="#3c4d76"/>
+    </linearGradient>
+    <clipPath id="clippath-2">
+      <rect class="cls-1" x="0" width="1366" height="616.935"/>
+    </clipPath>
+    <linearGradient id="linear-gradient-2" x1="-8182.252" y1="44.271" x2="-8181.503" y2="-49.426" gradientTransform="translate(-7506.063) rotate(-180) scale(1 -1)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ae73d9"/>
+      <stop offset=".402" stop-color="#d97ebd"/>
+      <stop offset="1" stop-color="#ed9fca"/>
+    </linearGradient>
+  </defs>
+  <g class="cls-6">
+    <polygon class="cls-7" points="13.258 616.935 -474.411 616.935 -767.684 84.364 -699.366 84.364 13.258 616.935"/>
+  </g>
+  <g class="cls-3">
+    <polygon class="cls-7" points="1378.823 616.935 1149.93 616.935 1912.333 84.364 1944.399 84.364 1378.823 616.935"/>
+  </g>
+  <rect class="cls-2" x="0" y="-.741" width="1366" height="617.676"/>
+  <g class="cls-4">
+    <ellipse class="cls-5" cx="675.764" cy="-8.943" rx="62.772" ry="62.749"/>
+  </g>
+</svg>
