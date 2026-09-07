@@ -624,11 +624,11 @@ the game proceeds normally with a local-only note.
 - **SC-005**: Parked-versus-moving and each of the four violation situations can be
   distinguished by an observer watching the screen from two metres away without any
   on-vehicle marking.
-- **SC-006**: The web build download is at most 40 MB, reaches the title screen in at
-  most 10 seconds on a 25 Mbps connection, and averages at least 55 frames per second
-  with 25 vehicles live on a laptop with 2020-or-newer integrated graphics. The size
-  limit is a working ceiling for the itch.io target and may be revised when the game
-  is uploaded there.
+- **SC-006**: The web build reaches the title screen in at most 10 seconds on a
+  25 Mbps connection and averages at least 55 frames per second with 25 vehicles live
+  on a laptop with 2020-or-newer integrated graphics. The compressed (gzip) transfer
+  size of the web build is reported on every build and MUST stay under the itch.io
+  upload limit of 1 GB; the load-time target is what actually constrains size.
 - **SC-007**: The game plays a complete shift on web, Windows desktop, and Android with
   identical rules and scoring.
 - **SC-008**: With connectivity removed, shift end to results screen takes no longer

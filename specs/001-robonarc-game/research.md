@@ -214,8 +214,12 @@ web export; each has a fallback so none blocks planning.
   `github.com/tkforgeworks/robo-narc`) with two jobs on `ubuntu-latest` using a Godot
   4.6.2 headless container image (for example `barichello/godot-ci:4.6.2`, which
   ships the editor and export templates): `test` (GUT headless, fails on any failing
-  test) and `export-web` (runs `--export-release Web`, uploads `build/web` with
-  `actions/upload-artifact`). Triggers: push to `main` and pull requests. Windows and
+  test) and `export-web` (runs `--export-release Web`, zips `build/web` and reports
+  raw and gzip-compressed sizes, fails only if the compressed archive exceeds the
+  1 GB itch.io upload limit, uploads the zip with `actions/upload-artifact`). The
+  compressed size is what itch.io serves, so it is the number tracked; the raw wasm
+  alone is about 38 MB while its gzip is about 10 MB. Triggers: push to `main` and
+  pull requests. Windows and
   Android exports are documented in quickstart but not run in CI for this feature
   (Android needs a keystore secret; deferred). The workflow, `tests/core`,
   `src/core`, `scenes/core`, `addons/gut`, `project.godot` conventions and

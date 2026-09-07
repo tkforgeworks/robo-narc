@@ -41,7 +41,8 @@ constraint; Windows desktop; Android (landscape, gamepad).
 **Project Type**: Single Godot game project with a template-extractable core.
 
 **Performance Goals**: 60 fps on a mid-range laptop in the web build with up to ~25
-vehicles live; web bundle under 40 MB compressed; title screen in under 10 s on
+vehicles live; compressed web bundle reported per build and under the 1 GB itch.io
+upload cap (about 10 MB today, engine wasm dominates); title screen in under 10 s on
 convention Wi-Fi.
 
 **Constraints**: No threads, no cross-origin isolation, no GDExtensions, no APIs
