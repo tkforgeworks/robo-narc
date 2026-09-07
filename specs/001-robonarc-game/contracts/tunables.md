@@ -19,7 +19,7 @@ clarified scoring changes.
 | Road | perspective_c | float | 15 | 5..40 / 0.5 | Perspective |
 | Road | z_max | float | 100 | 50..200 / 5 | Perspective, Spawner |
 | Road | pass_z | float | 1 | 0..5 / 0.5 | MissJudge |
-| Road | backdrop_slide_factor | float | 0.35 | 0..1 / 0.05 | RoadView |
+| Road | backdrop_shear_factor | float | 1.0 | 0..1.5 / 0.05 | RoadView (1.0 = exact perspective shear on swerve) |
 | Road | road_edge_left_x | float | -538 | -1500..0 / 5 | RoadView, BuildingStrip |
 | Road | lane_road_left | float | -245 | -800..0 / 1 | RoadGeometry |
 | Road | lane_bus_left | float | 148 | 0..600 / 1 | RoadGeometry |

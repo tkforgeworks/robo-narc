@@ -59,11 +59,26 @@ func reset_to_defaults() -> void:
 	reset.emit()
 
 
-## Debug builds only: writes current values (and styles) to the override file.
+## Debug builds only: writes the values that differ from the shipped defaults
+## (config and per-style) to the override file.
 func save_overrides() -> Error:
 	if not OS.is_debug_build():
 		return ERR_UNAVAILABLE
-	return _store.save(config, get_styles())
+	var style_defaults := {}
+	for style in get_styles():
+		var key := str(style.get("key"))
+		var shipped := _shipped_style(style)
+		if shipped != null:
+			style_defaults[key] = shipped
+	return _store.save(config, get_styles(), load_defaults(), style_defaults)
+
+
+## A fresh, uncached copy of a style's resource file, if it has one.
+static func _shipped_style(style: Resource) -> Resource:
+	var path := style.resource_path
+	if path.is_empty() or not ResourceLoader.exists(path):
+		return null
+	return ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE)
 
 
 ## Styles usually register after startup, so their saved overrides apply here.

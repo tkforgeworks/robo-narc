@@ -97,8 +97,13 @@ web export; each has a fallback so none blocks planning.
   point does not move.
 - **Alternatives considered**: Rebuilt drawn road (rejected by the clarification);
   no slide (rejected as too static).
-- **Verify**: lane edge calibration by overlaying projected lane lines in a debug
-  build; the constants are tunables so it can be done live.
+- **Verified 2026-09-07**: lane edges calibrated from the image (vanishing point at
+  image x 1217, y 0). A plain horizontal slide left painted lanes drifting under the
+  cars during a swerve, so the backdrop is now sheared about the horizon row
+  (Sprite2D skew, sin(skew) = dx / (bus_screen_y - horizon_y)), which is the exact
+  screen-space effect of a lateral camera move. Mirrored texture repeat pads the
+  edges so the shear never exposes empty space. `backdrop_shear_factor` (default
+  1.0) replaces the slide factor.
 
 ## R-07: Asset discovery on exported builds (web)
 

@@ -21,18 +21,28 @@ func exists() -> bool:
 	return FileAccess.file_exists(path)
 
 
-## Writes every exported property of `config` and of each style (a Resource with
-## a `key` property) to disk.
-func save(config: TuningConfig, styles: Array[Resource] = []) -> Error:
+## Writes only the values that differ from `defaults` (and, per style, from
+## `style_defaults[key]` when given), so a later change to the shipped
+## defaults is not masked by an old save. Returns the number of entries saved.
+func save(config: TuningConfig, styles: Array[Resource] = [],
+		defaults: TuningConfig = null, style_defaults: Dictionary = {}) -> Error:
 	var file := ConfigFile.new()
 	for property_name in TunableProperties.names(config):
-		file.set_value(SECTION_TUNING, property_name, config.get(property_name))
+		var value: Variant = config.get(property_name)
+		if defaults != null and _same(value, defaults.get(property_name)):
+			continue
+		file.set_value(SECTION_TUNING, property_name, value)
 	for style in styles:
-		var section := STYLE_PREFIX + str(style.get("key"))
+		var key := str(style.get("key"))
+		var section := STYLE_PREFIX + key
+		var baseline: Object = style_defaults.get(key)
 		for property_name in TunableProperties.names(style):
 			if property_name == "key":
 				continue
-			file.set_value(section, property_name, style.get(property_name))
+			var value: Variant = style.get(property_name)
+			if baseline != null and _same(value, baseline.get(property_name)):
+				continue
+			file.set_value(section, property_name, value)
 	var err := file.save(path)
 	if err != OK:
 		DebugLog.error(TAG, "failed to save %s (error %d)" % [path, err])
@@ -73,6 +83,14 @@ func apply_styles(styles: Array[Resource]) -> int:
 func clear() -> void:
 	if exists():
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+
+static func _same(a: Variant, b: Variant) -> bool:
+	if typeof(a) != typeof(b):
+		return false
+	if a is float:
+		return is_equal_approx(a, b)
+	return a == b
 
 
 func _apply(target: Object, property_name: String, value: Variant) -> bool:

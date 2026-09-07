@@ -18,9 +18,9 @@ assets/
 │       ├── left/building<N>-left.png
 │       └── right/building<N>-right.png
 ├── road/
-│   ├── backdrop.png            # sky + road (2732 × 1235)
-│   ├── sky.png                 # optional split
-│   ├── road.png                # optional split
+│   ├── backdrop.png            # sky + road (2732 × 1235), reference only
+│   ├── sky.png                 # static sky layer (used by RoadView)
+│   ├── road.png                # transparent road layer, sheared on swerves (used by RoadView)
 │   ├── stencil-bus-lane.png
 │   ├── stencil-bike-lane.png
 │   ├── bus-stop-stripe.png     # MISSING → placeholder
