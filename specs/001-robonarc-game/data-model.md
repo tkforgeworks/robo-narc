@@ -28,15 +28,14 @@ Bus, Traffic, Capture, Scoring, Vehicles, Leaderboard, Audio, Debug. Invariants:
 | rear_width_px | float | width at full scale, default 90 |
 | textures | Array[Texture2D] | filled at runtime by VehicleRegistry, one per color |
 
-### SituationTable (`src/game/traffic/situation_table.gd`, extends Resource)
+### SituationTable (`src/game/traffic/situation_table.gd`, extends RefCounted)
 
-| Field | Type | Rule |
-|-------|------|------|
-| entries | Array[SituationEntry] | at least one, weights sum > 0 |
-
-`SituationEntry`: `kind: Situation.Kind`, `weight: float [0..10]`, `min_z_gap: float`.
-Kinds: MOVING_TRAFFIC, LEGAL_CURB, SLOPPY_PARKER, BIKE_LANE_VIOLATOR,
-BUS_LANE_BLOCKER, DOUBLE_PARK_PAIR, BUS_STOP_ZONE.
+Not a resource: weights are the seven `situation_weight_*` tunables on
+`TuningConfig` (single source of truth), read on every `pick(rng)`. The class holds
+only the `Situation.Kind` enum and per-kind `min_z_gap` constants. Kinds:
+MOVING_TRAFFIC, LEGAL_CURB, SLOPPY_PARKER, BIKE_LANE_VIOLATOR, BUS_LANE_BLOCKER,
+DOUBLE_PARK_PAIR, BUS_STOP_ZONE. Rule: weights sum > 0, else `pick` returns
+MOVING_TRAFFIC and logs a warning.
 
 ## Value objects (RefCounted, immutable after construction)
 
@@ -156,9 +155,12 @@ and `apply_miss(verdict)`; emits `score_changed(score, delta, feedback)`;
 
 ### Tuning (autoload, `src/core/tuning/tuning.gd`)
 
-`config: TuningConfig`, signals `changed(property_name)` and `reset`. Methods:
-`load_config(cfg)`, `set_value(name, value)`, `reset_to_defaults()`,
-`save_overrides()` (debug builds only).
+`config: TuningConfig`, signals `changed(property_name)`, `reset`, and
+`style_changed(style_key, property_name)`. Methods: `load_config(cfg)`,
+`set_value(name, value)`, `reset_to_defaults()`, `save_overrides()` (debug builds
+only), `register_style_provider(provider)` where the provider exposes
+`get_styles() -> Array[Resource]`, and `set_style_value(style_key, property_name,
+value)` which writes to the matching `VehicleStyle` and emits `style_changed`.
 
 ## Persistence formats
 

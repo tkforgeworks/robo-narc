@@ -84,3 +84,8 @@ component 0..1 / 0.005.
 - Opening sets `get_tree().paused = true`; the menu runs in `PROCESS_MODE_ALWAYS`.
 - Triggers: `debug_menu` action (F1) on desktop; three-finger tap on touch; a
   `DEBUG` button on the title screen. All exist only when `OS.is_debug_build()`.
+- The Audio group holds **defaults** only; live volume is owned by `SettingsStore`
+  and the Settings screen. The debug menu shows a separate "Live volume" section with
+  three sliders bound to `AudioMixer` and `SettingsStore` so an operator can adjust
+  volume mid-play (spec FR-047).
+- Debug builds show a frame-time readout on the HUD so SC-006 can be checked live.

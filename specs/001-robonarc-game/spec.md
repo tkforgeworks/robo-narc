@@ -497,10 +497,11 @@ the game proceeds normally with a local-only note.
   backdrop, and the bus-lane and bike-lane road stencils) as the source art for those
   elements.
 - **FR-030b**: Every visual element the game needs that has no premade asset MUST be
-  rendered in development with one shared pink/black checkerboard "no texture"
-  placeholder sprite, sized to the element, and MUST be listed in the spec's art asset
-  inventory so the missing set is always visible. No placeholder may remain in a
-  release build.
+  rendered with one shared pink/black checkerboard "no texture" placeholder sprite,
+  sized to the element, and MUST be listed in the spec's art asset inventory so the
+  missing set is always visible. Placeholders MAY ship in release builds: testers use
+  them to see where missing art sits in context and to produce it. Every build MUST
+  log the list of elements still using the placeholder at startup.
 
 **Input**
 
@@ -561,9 +562,11 @@ the game proceeds normally with a local-only note.
 **Debug and tuning**
 
 - **FR-047**: Every value that shapes gameplay feel (speeds, ramps, durations, intervals,
-  weights, distances, thresholds, box size and speed, cooldown, score values, volumes)
-  MUST be adjustable at runtime from a debug menu with immediate effect, and the menu
-  MUST enumerate tunables automatically so adding one requires no menu change.
+  weights, distances, thresholds, box size and speed, cooldown, score values, default
+  volumes) MUST be adjustable at runtime from a debug menu with immediate effect, and
+  the menu MUST enumerate tunables automatically so adding one requires no menu
+  change. Live volume is owned by the Settings screen; the debug menu also exposes
+  the three live volume sliders so an operator can adjust them without leaving play.
 - **FR-048**: The debug menu MUST pause gameplay while open, MUST offer reset to
   documented defaults and local score reset, MUST be available in debug builds on every
   platform, and MUST be absent from release builds.
@@ -621,9 +624,11 @@ the game proceeds normally with a local-only note.
 - **SC-005**: Parked-versus-moving and each of the four violation situations can be
   distinguished by an observer watching the screen from two metres away without any
   on-vehicle marking.
-- **SC-006**: The web build loads and reaches the title screen in under 10 seconds on a
-  typical convention Wi-Fi connection and plays without visible stutter on a mid-range
-  laptop.
+- **SC-006**: The web build download is at most 40 MB, reaches the title screen in at
+  most 10 seconds on a 25 Mbps connection, and averages at least 55 frames per second
+  with 25 vehicles live on a laptop with 2020-or-newer integrated graphics. The size
+  limit is a working ceiling for the itch.io target and may be revised when the game
+  is uploaded there.
 - **SC-007**: The game plays a complete shift on web, Windows desktop, and Android with
   identical rules and scoring.
 - **SC-008**: With connectivity removed, shift end to results screen takes no longer
@@ -658,14 +663,16 @@ the game proceeds normally with a local-only note.
     sky-only and road-only images.
   - Road stencils: "BUS ONLY" and bike-lane markings pre-sheared for perspective.
 
-  Needed but **not provided** (checkerboard placeholder in development, must be called
-  out in every plan and status until supplied):
+  Needed but **not provided** (checkerboard placeholder in every build including
+  release, logged at startup, must be called out in every plan and status until
+  supplied; testers produce missing art from what they see in context):
   - One shared license plate overlay image (positioned per body style by tunable
     data). Taillight states need no art: they are a lighting effect on the sprite.
   - Bus cab/hood overlay framing the bottom of the screen.
   - Bus stop stripe / bus stop zone landmark on the curb.
   - Any roadside props other than buildings (signs, trees, hydrants) if wanted.
-  - Median decoration.
+  - Median decoration strip (a placeholder strip is drawn left of the road so
+    testers can see where it goes).
   - Touch controls art (virtual joystick, capture button).
   - Fonts, UI theme elements, title branding, and About screen imagery.
   - Placeholder checkerboard sprite itself (a trivial generated texture).

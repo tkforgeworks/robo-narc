@@ -48,7 +48,7 @@ convention Wi-Fi.
 absent on web. All feel-values tunable at runtime. Debug menu absent in release
 builds. Network never blocks (5 s request timeout, fire-and-forget submit).
 
-**Scale/Scope**: 5 screens, ~35 scripts each under 150 lines target, 24 vehicle
+**Scale/Scope**: 5 screens, ~60 scripts each under 150 lines target, 24 vehicle
 sprites, 30 building sprites, one leaderboard table, one CI workflow.
 
 ## Constitution Check
@@ -57,7 +57,7 @@ sprites, 30 building sprites, one leaderboard table, one CI workflow.
 
 | Principle | Status | Evidence |
 |-----------|--------|----------|
-| I. Composition First | PASS | Persistent `Main` root hosts screens as child scenes; gameplay is composed from `RoadView`, `BusDriver`, `VehicleSpawner`, `VehicleLayer`, `CaptureBox`, `Hud`, `AudioCues`, `TouchControls`, `FocusPauser` nodes wired by signals and exported references. One autoload (`Tuning`) with written rationale below. No static mutable state (prototype's `Road.camera_x` becomes `BusDriver` state passed into projection). |
+| I. Composition First | PASS | Persistent `Main` root hosts screens as child scenes; gameplay is composed from `RoadView`, `BusDriver`, `VehicleSpawner`, `VehicleLayer`, `CaptureBox`, `Hud`, `AudioCues`, `TouchControls`, `FocusPauser` nodes wired by signals and exported references; screens emit `navigation_requested` and never look up `Main`. One autoload (`Tuning`) with written rationale below. No static mutable state (prototype's `Road.camera_x` becomes `BusDriver` state passed into projection). |
 | II. Small Class-Based Scripts | PASS | Every script has `class_name`; the prototype's 312-line `gameplay.gd` splits into `ShiftClock`, `BusDriver`, `CaptureJudge`, `MissJudge`, `ScoreKeeper`, `Hud`, `FeedbackBanner`. Pure logic (`RoadGeometry`, `Perspective`, `ViolationRules`, `NameValidator`, `RankCalculator`) is stateless and scene-free. |
 | III. Web Compatibility | PASS | Web export preset is the first thing built; `thread_support=false`; leaderboard uses `HTTPRequest` with CORS-friendly Supabase; persistence via `user://`; shader is a plain `canvas_item` shader supported by GL Compatibility on WebGL 2. CI exports web on every push. |
 | IV. Everything Tunable | PASS | `TuningConfig` resource holds every feel-value with `@export` and ranges; `DebugMenu` enumerates it via `get_property_list()` so new tunables need no menu edits; per-body-style plate and taillight regions are tunables too; reset-to-defaults reloads the shipped `.tres`. |
@@ -100,7 +100,7 @@ specs/001-robonarc-game/
 project.godot                 # 4.6, GL Compatibility, canvas_items + expand stretch, no Jolt/D3D12
 export_presets.cfg            # Web (no threads), Windows, Android (landscape)
 .gitignore
-.github/workflows/ci.yml      # [core] headless GUT tests + web export artifact
+.github/workflows/ci.yml      # [core] headless GUT tests + web export + bundle-size check
 
 addons/gut/                   # [core] test addon, excluded from exports
 
@@ -114,7 +114,7 @@ assets/                       # premade art, moved from Assets/ (see research R-
 data/
 ├── core/tuning_defaults.tres # [core] TuningConfig baseline
 ├── game/vehicle_styles/<style>.tres        # VehicleStyle per body style
-├── game/situations.tres      # SituationTable weights
+├── game/                     # (situation weights live on TuningConfig)
 └── game/profanity.txt        # blocklist, one word per line
 
 src/
@@ -179,7 +179,7 @@ without extra autoloads.
 
 ```text
 Main (main.gd)
-├── ScreenHost            # swaps screen scenes, passes ShiftResult forward
+├── ScreenHost            # swaps screen scenes via navigation_requested, passes ShiftResult forward; Main.initial_screen is an export so core has no game path
 ├── AudioMixer            # Master/Music/SFX bus wiring + MusicPlayer child
 ├── TouchControls         # visible only when InputSource.active == TOUCH
 ├── FocusPauser           # pauses tree on focus-out, requests resume count-in
