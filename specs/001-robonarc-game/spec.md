@@ -34,6 +34,31 @@ Three design pillars carry over from the prototype and are non-negotiable:
 3. **Escalation.** The bus drives faster as the shift progresses, gently shrinking every
    judgment window.
 
+## Clarifications
+
+### Session 2026-09-07
+
+- Q: Which art assets should the game use, and what happens when a needed asset does
+  not exist? → A: The premade assets under `Assets/` are the art and MUST be used.
+  Every asset the game needs that is not provided MUST be listed explicitly (see
+  Assumptions, "Art asset inventory"), and MUST be represented in development by a
+  standard pink/black checkerboard "no texture" placeholder sprite.
+- Q: How should the road be rendered, given the premade road is a static pre-rendered
+  perspective image? → A: Use it as a static backdrop that slides sideways when the
+  bus swerves. Lane dashes do not scroll; the motion cue comes from the road stencils,
+  buildings, parked vehicles, and the bus stop landmark sweeping past.
+- Q: How should each vehicle get its taillight states and license plate, given the
+  premade sprites have unlit taillights and no plate? → A: Taillight states are
+  produced by a shader-driven lighting effect applied to the existing sprite (no new
+  art). The plate is a shared composite overlay placed on each vehicle, with its
+  position and size per body style tuned by the developer at runtime.
+- Q: What happens to a running shift when the game loses focus (tab switched away,
+  app backgrounded)? → A: The shift pauses. On return, a 3-2-1 resume count-in plays
+  before control and spawning continue.
+- Q: How many leaderboard entries are shown, and is the board global or per event? →
+  A: One global board. Title and results show the top 20; results also shows the
+  player's own rank even when outside the top 20.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Play a Complete Shift (Priority: P1)
@@ -82,6 +107,9 @@ expire, and confirm the results screen shows the correct score and per-category 
 9. **Given** the shift has been running, **When** time advances, **Then** the bus cruise
    speed rises and the spawn interval shortens according to the tunable ramp, so the
    final third of a shift is visibly busier than the first third.
+9a. **Given** a shift is running, **When** the game loses focus, **Then** the timer and
+    all motion stop; **When** focus returns, **Then** a 3-2-1 resume count-in plays and
+    the shift continues from where it paused with the same score and timer.
 10. **Given** the shift timer reaches zero, **When** the shift ends, **Then** spawning
     and input stop, an end-of-shift cue plays, and the results screen shows the final
     score with counts of correct, wrong, missed, and empty captures plus Play Again and
@@ -158,8 +186,12 @@ and confirm it appears in play with no other changes.
 3. **Given** a vehicle has been captured, **When** it is still on screen, **Then** its
    plate area shows a clear capture mark that reads correctly over the sprite art.
 4. **Given** the bus is cruising, **When** the scene is viewed, **Then** buildings,
-   roadside props, lane paint, and the bus stop stripe all sweep past at the same road
-   speed, while driving vehicles approach noticeably more slowly.
+   roadside props, road stencils, and the bus stop stripe all sweep past at the same
+   road speed over the static road backdrop, while driving vehicles approach noticeably
+   more slowly.
+4a. **Given** the bus swerves around a blocker, **When** the view shifts, **Then** the
+    road backdrop, stencils, props, and vehicles all move sideways together and no
+    backdrop edge becomes visible.
 5. **Given** a new vehicle variant is dropped into the asset folder following the
    naming convention, **When** the game runs, **Then** the variant appears in the
    rotation without any other change.
@@ -191,7 +223,7 @@ kept.
 **Acceptance Scenarios**:
 
 1. **Given** the game launches, **When** the title screen appears, **Then** it shows
-   the game name, the cue cheat-sheet, the current top scores, and Start, About,
+   the game name, the cue cheat-sheet, the current top 20 scores, and Start, About,
    Settings, and Quit.
 2. **Given** the title screen, **When** the player chooses About, **Then** an
    informational screen describes the real-world program in plain language and offers a
@@ -291,7 +323,9 @@ the game proceeds normally with a local-only note.
 
 1. **Given** the shift ends and the network is available, **When** the player enters
    an accepted name (or skips), **Then** the score, breakdown, and name are submitted
-   and the player's standing is shown.
+   and the player's rank is shown alongside the top 20, highlighted if inside it.
+1c. **Given** the player's score ranks 57th, **When** the results screen shows,
+    **Then** the top 20 is listed and "Your rank: 57" (or equivalent) is shown below.
 1a. **Given** the name entry, **When** the player types a name longer than 12
     characters, containing anything other than letters, or matching the profanity
     filter, **Then** it is refused with a short message and they can try again or skip.
@@ -332,13 +366,16 @@ the game proceeds normally with a local-only note.
   unless the player has stopped interacting entirely.
 - Debug menu opened during the count-in or on the results screen: it pauses whatever is
   running and resumes without skipping or duplicating the count-in.
-- The browser tab loses focus mid-shift: the game must not silently drain the timer
-  while hidden; pausing or catching up must be a deliberate, consistent behavior.
+- The game loses focus mid-shift: everything pauses, nothing is scored while hidden,
+  and a 3-2-1 resume count-in plays on return. Repeated rapid focus loss and gain must
+  not stack multiple count-ins.
+- Focus is lost while the results idle timeout is counting down: the timeout keeps
+  running, since the booth should still reset itself.
 - Keyboard, touch, and gamepad inputs arrive simultaneously: the most recent input
   source wins and virtual controls appear or disappear accordingly.
-- A vehicle variant asset is present but missing one of its light states: the game
-  must either fall back gracefully or refuse to load that variant with a clear log
-  message, never render a wrong cue.
+- A new body style is added with no tuned plate or taillight data yet: the game must
+  fall back to a sensible default anchor (centred, lower third of the sprite), log a
+  clear message, and still render all three light states so the cue is never wrong.
 - Two Start presses in quick succession (booth visitors mashing): only one shift
   starts.
 - The leaderboard returns an entry with an empty or over-long name (submitted by an
@@ -357,9 +394,14 @@ the game proceeds normally with a local-only note.
 - **FR-002**: The road MUST contain, left to right: median, passing lane, bus/travel
   lane (tinted), bike lane (tinted, dashed separator), parking lane/curb, and sidewalk
   with landmarks including a distinct bus stop stripe.
-- **FR-003**: Everything fixed to the road (parked vehicles, paint, bus stop stripe,
-  roadside props, buildings) MUST sweep past at road speed, while driving vehicles
-  approach at a slower relative speed, so motion alone distinguishes parked from moving.
+- **FR-003**: Everything fixed to the road (parked vehicles, road stencils, bus stop
+  stripe, roadside props, buildings) MUST sweep past at road speed, while driving
+  vehicles approach at a slower relative speed, so motion alone distinguishes parked
+  from moving. The road surface itself is the premade static perspective image and its
+  lane dashes do not scroll; the sweeping objects carry the motion cue.
+- **FR-003a**: When the bus swerves, the road backdrop MUST slide sideways together
+  with all road-fixed objects and vehicles so the whole view shifts, without exposing
+  the backdrop's edges at the native aspect ratio.
 - **FR-004**: A shift MUST begin with a 3-2-1 count-in during which input is ignored and
   no vehicles spawn, then run for a tunable duration (baseline 90 seconds).
 - **FR-005**: During a shift the bus cruise speed MUST rise and the spawn interval MUST
@@ -393,6 +435,11 @@ the game proceeds normally with a local-only note.
   on screen, legibly over sprite art.
 - **FR-015**: Missed violations MUST be evaluated the moment a vehicle passes under the
   bus, and double-park pairs MUST be judged before either vehicle is removed.
+- **FR-015a**: When the game loses focus during a shift (browser tab hidden, app
+  backgrounded, window minimised), the shift MUST pause immediately: the timer, bus,
+  vehicles, and spawner all stop and no misses are evaluated. On regaining focus a
+  3-2-1 resume count-in MUST play before control and spawning continue. Focus loss
+  during the count-in or on non-gameplay screens MUST NOT require a resume count-in.
 
 **Scoring**
 
@@ -428,7 +475,15 @@ the game proceeds normally with a local-only note.
   correlated with violation status.
 - **FR-025**: Every vehicle variant MUST present three taillight states: bright brake
   lights when stopped in the roadway, lights off when curb-parked, dim taillights when
-  moving. No vehicle may carry any violation marking.
+  moving. The states MUST be produced by a lighting effect applied to the existing
+  sprite at its taillight regions, so no per-variant light art is required. No vehicle
+  may carry any violation marking.
+- **FR-025a**: Every vehicle MUST show a license plate rendered as a shared plate
+  overlay composited onto the sprite. The plate's position and size per body style
+  MUST be tunable at runtime (debug menu) so each style can be aligned by eye, and
+  the tuned values MUST be saved as that style's defaults.
+- **FR-025b**: The taillight regions per body style MUST likewise be tunable at
+  runtime so the lighting effect lands on the drawn lights of each sprite.
 - **FR-026**: New vehicle variants and roadside props MUST be addable by placing assets
   in the designated folders under a documented naming convention, with no other change.
 - **FR-027**: The capture box MUST remain a drawn reticle rather than an art asset.
@@ -437,6 +492,15 @@ the game proceeds normally with a local-only note.
 - **FR-029**: All screens MUST use a shared font set and visual theme.
 - **FR-030**: The game MUST keep its native aspect ratio (baseline 1280 × 720) with no
   stretching; extra width becomes letterbox gutters.
+- **FR-030a**: The game MUST use the premade art under `Assets/` (four vehicle body
+  styles in six colors, fifteen building sprites per roadside, the sky and road
+  backdrop, and the bus-lane and bike-lane road stencils) as the source art for those
+  elements.
+- **FR-030b**: Every visual element the game needs that has no premade asset MUST be
+  rendered in development with one shared pink/black checkerboard "no texture"
+  placeholder sprite, sized to the element, and MUST be listed in the spec's art asset
+  inventory so the missing set is always visible. No placeholder may remain in a
+  release build.
 
 **Input**
 
@@ -464,8 +528,12 @@ the game proceeds normally with a local-only note.
 **Leaderboard and persistence**
 
 - **FR-040**: On shift end the game MUST submit score, stat breakdown, and player
-  identity to a shared online leaderboard and MUST fetch the current top scores for the
-  title and results screens.
+  identity to a single shared global leaderboard and MUST fetch the current top scores
+  for the title and results screens.
+- **FR-040a**: The title and results screens MUST show the top 20 entries (rank, name,
+  score). The results screen MUST also show the player's own rank for the shift just
+  played, even when that rank is outside the top 20, and MUST highlight the player's
+  entry when it is inside the top 20.
 - **FR-041**: The game MUST never block or delay gameplay or screen transitions on
   network activity. Failed fetches or submissions MUST degrade to local-only display
   with a brief "leaderboard unavailable" note and no error dialog.
@@ -516,6 +584,8 @@ the game proceeds normally with a local-only note.
 - **Vehicle**: A single car on the road. Has a lateral position, a distance from the
   bus, a motion state (moving, stopped in roadway, curb-parked), a body style and color
   variant, a plate, a captured flag, and a light state derived from its motion state.
+- **Body Style**: One of the vehicle sprite families. Carries per-style tunable data:
+  plate overlay position and size, and taillight regions for the lighting effect.
 - **Situation**: A spawn template that places one or more vehicles and any needed
   landmarks (for example a bus stop zone) to create a judgment scenario. Carries a
   spawn weight. Never carries a violation label.
@@ -529,7 +599,8 @@ the game proceeds normally with a local-only note.
 - **Score Record**: The outcome of a completed shift: final score, category counts,
   timestamp, and player name (1 to 12 letters, or the neutral default when skipped). Kept locally and, when possible, submitted to the
   shared leaderboard.
-- **Leaderboard Entry**: A score record as seen on the shared board, with its rank.
+- **Leaderboard Entry**: A score record as seen on the single global board, with its
+  rank. The board is displayed as its top 20 plus the current player's own rank.
 - **Settings**: Persisted player preferences: Master, Music, and SFX volume.
 - **Tunable**: A named, typed behavior value with a documented default, current value,
   and allowed range, exposed in the debug menu.
@@ -578,11 +649,26 @@ the game proceeds normally with a local-only note.
   booth screen. The list is data, not code, so it can be extended without a rebuild.
 - **Neutral default name.** Skipping name entry submits under a fixed placeholder
   (for example "Rookie"); the exact word is a tunable string.
-- **Existing assets.** The repository already holds four car body styles in six colors
-  each, fifteen building sprites per side, and road and background art. These car
-  assets currently ship a single image per color with no separate light states; the
-  three required light states are assumed to be produced as an overlay layer or
-  additional frames per variant as part of this feature's asset work.
+- **Art asset inventory.** The premade art under `Assets/` is the art. What exists:
+  - Vehicles: four rear-view body styles, six colors each (24 sprites). Taillights are
+    drawn unlit and there is no license plate on the sprite.
+  - Roadside: fifteen building sprites per side (left-facing and right-facing sets).
+  - Backdrop: one pre-rendered perspective scene (sky with sun plus a six-lane road
+    whose tinted bus and bike lanes match the GDD layout), also split into separate
+    sky-only and road-only images.
+  - Road stencils: "BUS ONLY" and bike-lane markings pre-sheared for perspective.
+
+  Needed but **not provided** (checkerboard placeholder in development, must be called
+  out in every plan and status until supplied):
+  - One shared license plate overlay image (positioned per body style by tunable
+    data). Taillight states need no art: they are a lighting effect on the sprite.
+  - Bus cab/hood overlay framing the bottom of the screen.
+  - Bus stop stripe / bus stop zone landmark on the curb.
+  - Any roadside props other than buildings (signs, trees, hydrants) if wanted.
+  - Median decoration.
+  - Touch controls art (virtual joystick, capture button).
+  - Fonts, UI theme elements, title branding, and About screen imagery.
+  - Placeholder checkerboard sprite itself (a trivial generated texture).
 - **Touch in mobile browsers.** The touch scheme is assumed to work in mobile browsers
   as well as the Android app, since web playability is a hard constraint and touch
   detection is platform-neutral.
