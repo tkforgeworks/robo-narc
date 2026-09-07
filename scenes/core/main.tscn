@@ -4,11 +4,11 @@
 [ext_resource type="Script" path="res://src/core/app/screen_host.gd" id="2_host"]
 [ext_resource type="Script" path="res://src/core/input/input_source.gd" id="3_input"]
 [ext_resource type="Script" path="res://src/core/app/focus_pauser.gd" id="4_focus"]
-[ext_resource type="PackedScene" path="res://scenes/core/boot_placeholder.tscn" id="5_boot"]
+[ext_resource type="PackedScene" path="res://scenes/screens/title_screen.tscn" id="5_title"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
-initial_screen = ExtResource("5_boot")
+initial_screen = ExtResource("5_title")
 
 [node name="ScreenHost" type="Node" parent="."]
 script = ExtResource("2_host")

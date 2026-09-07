@@ -25,13 +25,18 @@ func _ready() -> void:
 	PlaceholderTexture.report.call_deferred()
 
 
-## Connects focus-pause hooks on screens that opt in by defining the methods.
+## Connects core services to screens that opt in by defining the methods:
+## `on_focus_paused()`, `on_focus_resume_requested(release: Callable)`,
+## `bind_settings(SettingsStore)`, `bind_input_source(InputSource)`.
 func _on_screen_changed(screen: Node) -> void:
 	var handles_resume := screen.has_method("on_focus_resume_requested")
 	focus_pauser.hold_resume = handles_resume
 	if screen.has_method("on_focus_paused"):
 		focus_pauser.paused.connect(screen.on_focus_paused)
 	if handles_resume:
-		focus_pauser.resume_requested.connect(screen.on_focus_resume_requested)
+		focus_pauser.resume_requested.connect(
+				screen.on_focus_resume_requested.bind(focus_pauser.release))
 	if screen.has_method("bind_settings"):
 		screen.bind_settings(settings)
+	if screen.has_method("bind_input_source"):
+		screen.bind_input_source(input_source)

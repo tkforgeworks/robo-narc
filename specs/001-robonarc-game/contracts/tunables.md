@@ -41,7 +41,10 @@ clarified scoring changes.
 | Traffic | moving_speed_max_ratio | float | 0.65 | 0.1..1 / 0.05 | Spawner |
 | Traffic | merge_lateral_speed | float | 140 | 20..600 / 10 | Vehicle |
 | Traffic | double_park_adjacent_z | float | 9 | 1..30 / 0.5 | ViolationRules |
+| Traffic | double_park_min_x_gap | float | 100 | 20..400 / 5 | ViolationRules |
 | Traffic | bike_intrusion_min_px | float | 60 | 0..200 / 5 | ViolationRules |
+| Traffic | spawn_column_gap_curb_z | float | 14 | 2..60 / 1 | Spawner |
+| Traffic | spawn_column_gap_bus_z | float | 30 | 2..80 / 1 | Spawner |
 | Traffic | honk_probability | float | 0.3 | 0..1 / 0.05 | HonkScheduler |
 | Traffic | situation_weight_* (7) | float | GDD §14 values | 0..10 / 0.01 | SituationTable |
 | Capture | plate_readable_z | float | 30 | 5..100 / 1 | CaptureJudge |

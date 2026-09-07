@@ -44,7 +44,10 @@ extends Resource
 @export_range(0.1, 1.0, 0.05) var moving_speed_max_ratio: float = 0.65
 @export_range(20.0, 600.0, 10.0) var merge_lateral_speed: float = 140.0
 @export_range(1.0, 30.0, 0.5) var double_park_adjacent_z: float = 9.0
+@export_range(20.0, 400.0, 5.0) var double_park_min_x_gap: float = 100.0
 @export_range(0.0, 200.0, 5.0) var bike_intrusion_min_px: float = 60.0
+@export_range(2.0, 60.0, 1.0) var spawn_column_gap_curb_z: float = 14.0
+@export_range(2.0, 80.0, 1.0) var spawn_column_gap_bus_z: float = 30.0
 @export_range(0.0, 1.0, 0.05) var honk_probability: float = 0.3
 @export_range(0.0, 10.0, 0.01) var situation_weight_moving_traffic: float = 0.18
 @export_range(0.0, 10.0, 0.01) var situation_weight_legal_curb: float = 0.20

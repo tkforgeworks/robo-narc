@@ -1,0 +1,45 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://src/screens/gameplay_screen.gd" id="1_gameplay"]
+[ext_resource type="PackedScene" path="res://scenes/game/road_view.tscn" id="2_road"]
+[ext_resource type="Script" path="res://src/game/road/bus_stop_zone.gd" id="3_zones"]
+[ext_resource type="Script" path="res://src/game/vehicles/vehicle_layer.gd" id="4_layer"]
+[ext_resource type="Script" path="res://src/game/traffic/vehicle_spawner.gd" id="5_spawner"]
+[ext_resource type="Script" path="res://src/game/traffic/bus_driver.gd" id="6_driver"]
+[ext_resource type="Script" path="res://src/game/shift/shift_clock.gd" id="7_clock"]
+[ext_resource type="Script" path="res://src/game/shift/score_keeper.gd" id="8_score"]
+[ext_resource type="PackedScene" path="res://scenes/game/capture_box.tscn" id="9_box"]
+[ext_resource type="PackedScene" path="res://scenes/game/count_in.tscn" id="10_countin"]
+[ext_resource type="PackedScene" path="res://scenes/game/hud.tscn" id="11_hud"]
+
+[node name="GameplayScreen" type="Node2D"]
+script = ExtResource("1_gameplay")
+
+[node name="RoadView" parent="." instance=ExtResource("2_road")]
+
+[node name="BusStopZones" type="Node2D" parent="."]
+script = ExtResource("3_zones")
+
+[node name="VehicleLayer" type="Node2D" parent="."]
+script = ExtResource("4_layer")
+
+[node name="VehicleSpawner" type="Node" parent="."]
+script = ExtResource("5_spawner")
+
+[node name="BusDriver" type="Node" parent="."]
+script = ExtResource("6_driver")
+
+[node name="ShiftClock" type="Node" parent="."]
+script = ExtResource("7_clock")
+
+[node name="ScoreKeeper" type="Node" parent="."]
+script = ExtResource("8_score")
+
+[node name="Overlay" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="CaptureBox" parent="Overlay" instance=ExtResource("9_box")]
+
+[node name="CountIn" parent="Overlay" instance=ExtResource("10_countin")]
+
+[node name="Hud" parent="." instance=ExtResource("11_hud")]
