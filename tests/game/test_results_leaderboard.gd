@@ -30,6 +30,7 @@ func before_each() -> void:
 	config.base_url = "https://x.supabase.co"
 	config.anon_key = "k"
 	config.enabled = true
+	config.submit_from_editor = true
 	_results = RESULTS_SCENE.instantiate()
 	_results.config = TuningConfig.new()
 	_results.score_store = ScoreStore.new(TEST_SCORES)

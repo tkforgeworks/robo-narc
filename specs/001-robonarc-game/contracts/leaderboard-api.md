@@ -9,6 +9,8 @@ takes precedence. A missing or disabled config makes every call emit `failed`
 immediately with reason `DISABLED`, so the game runs with no service configured.
 The anon key is Supabase's public client key; keeping it out of git is hygiene,
 not a security boundary (RLS and the CHECK constraints are).
+`LeaderboardConfig.submit_from_editor` (default false) keeps editor runs read-only:
+they fetch the board but skip submits with reason `DISABLED`. Exports always submit.
 
 ## Table `public.scores`
 
@@ -23,7 +25,7 @@ not a security boundary (RLS and the CHECK constraints are).
 | missed | integer | `>= 0` |
 | empty | integer | `>= 0` |
 | duration_sec | integer | `between 10 and 600` |
-| client | text | e.g. `web`, `windows`, `android`; default `unknown` |
+| client | text | e.g. `web`, `windows`, `android`, `editor`; default `unknown` |
 
 Index: `scores_score_desc_idx on (score desc, created_at asc)`.
 

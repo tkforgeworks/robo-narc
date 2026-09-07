@@ -16,10 +16,8 @@ const REASON_DISABLED := "DISABLED"
 
 enum SubmitStage { INSERT, RANK }
 
-## Injectable; defaults to LeaderboardConfig.load_active().
-var config: LeaderboardConfig
+var config: LeaderboardConfig  # null -> LeaderboardConfig.load_active()
 var timeout_sec: float = 5.0
-## Builds the two transports; tests swap in a stub.
 var transport_factory: Callable = func() -> LeaderboardTransport: return HttpTransport.new()
 var client_tag: String = LeaderboardRequests.platform_tag()
 
@@ -43,6 +41,10 @@ func is_enabled() -> bool:
 	return config != null and config.is_usable()
 
 
+func submit_enabled() -> bool:
+	return config != null and config.allows_submit()
+
+
 func fetch_pending() -> bool:
 	return _fetch.busy
 
@@ -62,15 +64,14 @@ func fetch_top(limit: int = 20) -> void:
 
 
 func submit(result: ShiftResult) -> void:
-	if not is_enabled():
+	if not submit_enabled():
 		failed.emit(OP_SUBMIT, REASON_DISABLED)
 		return
 	_submit_queue.append(result)
 	_next_submit()
 
 
-## Lets a screen hand the node to the tree root on exit so an in-flight submit
-## finishes; the node frees itself once idle.
+## A screen leaving mid-submit reparents this node to the root and calls this.
 func release_when_idle() -> void:
 	_release_when_idle = true
 	_maybe_release()

@@ -15,10 +15,17 @@ const LOCAL_PATH := "res://data/game/leaderboard_config.local.tres"
 ## on current projects, or the legacy anon JWT. Never the secret key.
 @export var anon_key: String = ""
 @export var enabled: bool = false
+## Editor runs fetch the board but do not submit unless this is on, so tuning
+## sessions leave no rows behind. Exports always submit.
+@export var submit_from_editor: bool = false
 
 
 func is_usable() -> bool:
 	return enabled and not base_url.strip_edges().is_empty() and not anon_key.strip_edges().is_empty()
+
+
+func allows_submit() -> bool:
+	return is_usable() and (submit_from_editor or not OS.has_feature("editor"))
 
 
 ## Local override first, then the committed default, then an empty config.

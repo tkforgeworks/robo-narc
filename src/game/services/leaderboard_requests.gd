@@ -13,9 +13,10 @@ const REASON_BAD_JSON := "BAD_JSON"
 const NO_RANK := -1
 
 
-## The `client` column value: which platform submitted.
+## The `client` column value: which platform submitted. Editor runs are tagged
+## `editor` so test rows are easy to delete.
 static func platform_tag() -> String:
-	for feature in ["web", "windows", "android", "linux", "macos", "ios"]:
+	for feature in ["editor", "web", "windows", "android", "linux", "macos", "ios"]:
 		if OS.has_feature(feature):
 			return feature
 	return "unknown"

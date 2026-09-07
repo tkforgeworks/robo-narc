@@ -90,7 +90,7 @@ func _on_name_chosen(name: String) -> void:
 	_idle_timeout.start(config.results_idle_timeout_sec)
 	_board.highlight(name, _result.score)
 	_board.show_local(score_store.top(config.top_count))
-	_note_label.text = "submitting to the board..." if _client.is_enabled() else ""
+	_note_label.text = "submitting to the board..." if _client.submit_enabled() else ""
 	_client.submit(_result)
 
 

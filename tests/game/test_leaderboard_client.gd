@@ -32,6 +32,7 @@ func _config(enabled: bool = true) -> LeaderboardConfig:
 	config.base_url = URL
 	config.anon_key = KEY
 	config.enabled = enabled
+	config.submit_from_editor = true  # tests run under the editor binary
 	return config
 
 
@@ -109,6 +110,21 @@ func test_disabled_config_fails_immediately_without_requests() -> void:
 	assert_signal_emitted_with_parameters(_client, "failed", ["submit", "DISABLED"], 1)
 	assert_eq(_fetch_stub().calls.size(), 0)
 	assert_eq(_submit_stub().calls.size(), 0)
+
+
+func test_editor_runs_fetch_but_do_not_submit_unless_opted_in() -> void:
+	if not OS.has_feature("editor"):
+		pass_test("only meaningful under the editor binary")
+		return
+	_client.config.submit_from_editor = false
+	assert_true(_client.is_enabled())
+	assert_false(_client.submit_enabled())
+	_client.submit(_result(10))
+	assert_signal_emitted_with_parameters(_client, "failed", ["submit", "DISABLED"])
+	assert_eq(_submit_stub().calls.size(), 0, "nothing sent")
+	_client.fetch_top()
+	assert_eq(_fetch_stub().calls.size(), 1, "reads still work")
+	assert_eq(LeaderboardRequests.platform_tag(), "editor")
 
 
 func test_second_fetch_while_pending_is_ignored() -> void:

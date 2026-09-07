@@ -17,6 +17,8 @@ Validation guide for the feature. Implementation details are in
      `data/game/leaderboard_config.local.tres` (gitignored), fill in `base_url`
      (Project URL) and `anon_key` (the **publishable** key, `sb_publishable_...`;
      not the secret key), and set `enabled = true`. The local file wins over the committed one.
+     Editor runs fetch the board but never submit unless `submit_from_editor = true`,
+     and any rows they do write carry `client = 'editor'` for easy cleanup.
   3. For CI-built web releases, add repository secrets `SUPABASE_URL` and
      `SUPABASE_ANON_KEY`; the export job writes the same local file from them.
 
