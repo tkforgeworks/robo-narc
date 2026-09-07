@@ -29,7 +29,7 @@ func save(config: TuningConfig, styles: Array[Resource] = [],
 	var file := ConfigFile.new()
 	for property_name in TunableProperties.names(config):
 		var value: Variant = config.get(property_name)
-		if defaults != null and _same(value, defaults.get(property_name)):
+		if defaults != null and same_value(value, defaults.get(property_name)):
 			continue
 		file.set_value(SECTION_TUNING, property_name, value)
 	for style in styles:
@@ -40,7 +40,7 @@ func save(config: TuningConfig, styles: Array[Resource] = [],
 			if property_name == "key":
 				continue
 			var value: Variant = style.get(property_name)
-			if baseline != null and _same(value, baseline.get(property_name)):
+			if baseline != null and same_value(value, baseline.get(property_name)):
 				continue
 			file.set_value(section, property_name, value)
 	var err := file.save(path)
@@ -85,7 +85,7 @@ func clear() -> void:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 
-static func _same(a: Variant, b: Variant) -> bool:
+static func same_value(a: Variant, b: Variant) -> bool:
 	if typeof(a) != typeof(b):
 		return false
 	if a is float:

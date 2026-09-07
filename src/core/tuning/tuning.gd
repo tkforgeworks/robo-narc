@@ -73,6 +73,49 @@ func save_overrides() -> Error:
 	return _store.save(config, get_styles(), load_defaults(), style_defaults)
 
 
+## Every live value that differs from the shipped defaults:
+## `{"tuning": {name: value}, "styles": {key: {name: value}}}`.
+func tuned_values() -> Dictionary:
+	var defaults := load_defaults()
+	var tuning := {}
+	for property_name in TunableProperties.names(config):
+		var value: Variant = config.get(property_name)
+		if not TuningStore.same_value(value, defaults.get(property_name)):
+			tuning[property_name] = value
+	var styles := {}
+	for style in get_styles():
+		var shipped := _shipped_style(style)
+		var diff := {}
+		for property_name in TunableProperties.names(style):
+			if property_name == "key":
+				continue
+			var value: Variant = style.get(property_name)
+			if shipped == null or not TuningStore.same_value(value, shipped.get(property_name)):
+				diff[property_name] = value
+		if not diff.is_empty():
+			styles[str(style.get("key"))] = diff
+	return {"tuning": tuning, "styles": styles}
+
+
+## The tuned values as `.tres` resource lines, ready to paste under
+## `[resource]` in the defaults file (or a style file).
+func export_text() -> String:
+	var values := tuned_values()
+	var lines := PackedStringArray()
+	lines.append("# tuned values vs %s" % DEFAULTS_PATH.get_file())
+	if values["tuning"].is_empty() and values["styles"].is_empty():
+		lines.append("# (none: everything is at the shipped default)")
+	for property_name: String in values["tuning"]:
+		lines.append("%s = %s" % [property_name, var_to_str(values["tuning"][property_name])])
+	for key: String in values["styles"]:
+		lines.append("")
+		lines.append("# style %s" % key)
+		for property_name: String in values["styles"][key]:
+			lines.append("%s = %s" % [property_name, var_to_str(values["styles"][key][property_name])])
+	return "
+".join(lines)
+
+
 ## A fresh, uncached copy of a style's resource file, if it has one.
 static func _shipped_style(style: Resource) -> Resource:
 	var path := style.resource_path

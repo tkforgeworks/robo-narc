@@ -71,3 +71,19 @@ class FakeProvider:
 	func get_styles() -> Array[Resource]:
 		var styles: Array[Resource] = [style]
 		return styles
+
+
+func test_tuned_values_and_export_list_only_changes() -> void:
+	var tuning := TuningService.new()
+	tuning.apply_overrides_on_ready = false
+	add_child_autofree(tuning)
+	assert_true(tuning.tuned_values()["tuning"].is_empty())
+	assert_string_contains(tuning.export_text(), "(none")
+	tuning.set_value("cruise_speed_end", 24.0)
+	tuning.set_value("box_size", Vector2(150, 90))
+	var values := tuning.tuned_values()
+	assert_eq(values["tuning"].keys(), ["cruise_speed_end", "box_size"])
+	var text := tuning.export_text()
+	assert_string_contains(text, "cruise_speed_end = 24.0")
+	assert_string_contains(text, "box_size = Vector2(150, 90)")
+	assert_false(text.contains("shift_length_sec"))

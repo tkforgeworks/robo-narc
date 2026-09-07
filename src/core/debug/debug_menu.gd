@@ -18,6 +18,7 @@ var tuning: TuningService
 var settings: SettingsStore
 
 var _paused_by_me: bool = false
+var _export_text: String = ""
 var _actions: Dictionary = {}
 var _builder: DebugSectionBuilder
 
@@ -41,6 +42,7 @@ func _ready() -> void:
 	tuning.reset.connect(func() -> void:
 		if is_open():
 			_build())
+	register_action("Copy tuned values", copy_tuned_values)
 
 
 func is_open() -> bool:
@@ -84,6 +86,16 @@ func register_action(label: String, action: Callable) -> void:
 	_actions[label] = button
 
 
+## Diffs the live values against the shipped defaults as .tres lines, puts them
+## on the clipboard, logs them, and shows them in the menu for manual copying.
+func copy_tuned_values() -> void:
+	_export_text = tuning.export_text()
+	DisplayServer.clipboard_set(_export_text)
+	DebugLog.info(TAG, "tuned values:
+%s" % _export_text)
+	_build()
+
+
 ## Number of tunable controls currently built (for tests).
 func control_count() -> int:
 	return _builder.control_count()
@@ -105,6 +117,8 @@ func _build() -> void:
 	if settings != null:
 		_builder.add_volume("Live volume", VOLUME_BUSES, settings,
 				func(bus: String, value: float) -> void: volume_changed.emit(bus, value))
+	if not _export_text.is_empty():
+		_builder.add_text("Tuned values (also on the clipboard)", _export_text)
 
 
 func _on_save_pressed() -> void:

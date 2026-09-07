@@ -6,6 +6,7 @@ extends RefCounted
 
 const HEADING_FONT_SIZE := 20
 const SLIDER_WIDTH := 200.0
+const TEXT_BOX_HEIGHT := 120.0
 
 var _container: Container
 
@@ -52,6 +53,17 @@ func add_volume(title: String, buses: PackedStringArray, settings: SettingsStore
 			on_change.call(bus, v))
 		grid.add_child(slider)
 	_container.add_child(grid)
+
+
+## A read-only, selectable text block (for exports the operator copies by hand).
+func add_text(title: String, text: String) -> void:
+	_add_heading(title)
+	var box := TextEdit.new()
+	box.text = text
+	box.editable = false
+	box.custom_minimum_size = Vector2(0.0, TEXT_BOX_HEIGHT)
+	box.scroll_fit_content_height = true
+	_container.add_child(box)
 
 
 ## Number of label/control pairs across every grid built.

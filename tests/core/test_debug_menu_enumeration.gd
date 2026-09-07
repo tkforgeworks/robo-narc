@@ -71,9 +71,21 @@ func test_registered_action_button_is_replaced_by_label() -> void:
 	await get_tree().process_frame
 	var buttons: Array = []
 	_collect(_menu.get_node("%Actions"), Button, buttons)
-	assert_eq(buttons.size(), 1)
-	(buttons[0] as Button).pressed.emit()
+	var mine: Array = buttons.filter(func(b: Button) -> bool: return b.text == "Do thing")
+	assert_eq(mine.size(), 1, "second registration replaced the first")
+	(mine[0] as Button).pressed.emit()
 	assert_eq(hits[0], 10)
+
+
+func test_copy_tuned_values_shows_the_export_in_the_menu() -> void:
+	_tuning.set_value("cruise_speed_end", 24.0)
+	_menu.open()
+	_menu.copy_tuned_values()
+	var boxes: Array = []
+	_collect(_menu.get_node("%Sections"), TextEdit, boxes)
+	assert_eq(boxes.size(), 1)
+	assert_string_contains((boxes[0] as TextEdit).text, "cruise_speed_end = 24.0")
+	_menu.close()
 
 
 func test_reset_rebuilds_with_default_values() -> void:
