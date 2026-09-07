@@ -14,9 +14,38 @@ signal resume_requested
 
 var is_paused_by_focus: bool = false
 
+# Web only: the engine's focus notifications do not fire on a tab switch, so we
+# listen to the page's visibility and window focus events directly. The
+# callbacks must be kept referenced or the browser side is garbage collected.
+var _js_callbacks: Array[JavaScriptObject] = []
+
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	if OS.has_feature("web"):
+		_install_web_hooks()
+
+
+func _install_web_hooks() -> void:
+	var document: JavaScriptObject = JavaScriptBridge.get_interface("document")
+	var window: JavaScriptObject = JavaScriptBridge.get_interface("window")
+	if document == null or window == null:
+		return
+	var on_visibility := JavaScriptBridge.create_callback(_on_web_visibility_change)
+	var on_blur := JavaScriptBridge.create_callback(func(_args: Array) -> void: _on_focus_lost())
+	var on_focus := JavaScriptBridge.create_callback(func(_args: Array) -> void: _on_focus_gained())
+	_js_callbacks = [on_visibility, on_blur, on_focus]
+	document.addEventListener("visibilitychange", on_visibility)
+	window.addEventListener("blur", on_blur)
+	window.addEventListener("focus", on_focus)
+
+
+func _on_web_visibility_change(_args: Array) -> void:
+	var document: JavaScriptObject = JavaScriptBridge.get_interface("document")
+	if document != null and document.hidden:
+		_on_focus_lost()
+	else:
+		_on_focus_gained()
 
 
 func _notification(what: int) -> void:
