@@ -1,0 +1,96 @@
+# Contract: Leaderboard API (Supabase / PostgREST)
+
+Client: `LeaderboardClient` (`src/game/services/leaderboard_client.gd`).
+Base URL and anon key are project-level constants in
+`data/game/leaderboard_config.tres` (`LeaderboardConfig` resource: `base_url`,
+`anon_key`, `enabled`). A missing or disabled config makes every call emit `failed`
+immediately with reason `DISABLED`, so the game runs with no service configured.
+
+## Table `public.scores`
+
+| Column | Type | Constraint |
+|--------|------|------------|
+| id | bigint identity | primary key |
+| created_at | timestamptz | default now() |
+| name | text | `char_length(name) between 1 and 12 and name ~ '^[A-Za-z]+$'` |
+| score | integer | `score between -5000 and 50000` |
+| correct | integer | `>= 0` |
+| wrong | integer | `>= 0` |
+| missed | integer | `>= 0` |
+| empty | integer | `>= 0` |
+| duration_sec | integer | `between 10 and 600` |
+| client | text | e.g. `web`, `windows`, `android`; default `unknown` |
+
+Index: `scores_score_desc_idx on (score desc, created_at asc)`.
+
+Row Level Security enabled. Policies for role `anon`:
+- `select_all`: `USING (true)`
+- `insert_valid`: `WITH CHECK (true)` (column CHECK constraints do the validation)
+- No update or delete policies.
+
+## Function `public.rank_for_score(p_score integer) returns integer`
+
+`SECURITY INVOKER`, `STABLE`. Returns `1 + count(*) where score > p_score`. Ties
+share the better rank. Granted to `anon`.
+
+## Function `public.top_scores(p_limit integer default 20)`
+
+Returns `setof (rank integer, name text, score integer)` ordered by
+`score desc, created_at asc`, limited to `least(p_limit, 100)`. Granted to `anon`.
+(A view would also work; a function keeps the limit server-enforced.)
+
+## Requests
+
+All requests send headers:
+
+```text
+apikey: <anon_key>
+Authorization: Bearer <anon_key>
+Content-Type: application/json
+```
+
+Timeout: 5 seconds (`HTTPRequest.timeout`). No retries inside the client.
+
+### Fetch top scores
+
+```text
+POST {base_url}/rest/v1/rpc/top_scores
+{"p_limit": 20}
+```
+
+Response `200`: `[{"rank":1,"name":"Ava","score":2450}, ...]`
+
+Client emits `top_scores_received(entries: Array[LeaderboardEntry])`. Entries with
+empty or invalid names are displayed as `"???"`; names longer than 12 are truncated.
+
+### Submit a shift
+
+```text
+POST {base_url}/rest/v1/scores
+Prefer: return=minimal
+{"name":"Ava","score":2450,"correct":26,"wrong":2,"missed":3,"empty":5,
+ "duration_sec":90,"client":"web"}
+```
+
+Response `201` (no body). Then:
+
+```text
+POST {base_url}/rest/v1/rpc/rank_for_score
+{"p_score": 2450}
+```
+
+Response `200`: `57`
+
+Client emits `submitted(rank: int)`; on any failure of either step emits
+`failed(reason)` with the submit still counted locally. Rank display uses the local
+`RankCalculator` fallback (rank among local scores) when the remote rank is unknown.
+
+## Failure reasons
+
+`DISABLED`, `TIMEOUT`, `NETWORK` (result != RESULT_SUCCESS), `HTTP_<code>`,
+`BAD_JSON`. All map to the on-screen note "leaderboard unavailable"; none block.
+
+## Concurrency
+
+At most one in-flight fetch and one in-flight submit; a new fetch while one is
+pending is ignored (the pending one's result is used). Submits are never coalesced.
