@@ -24,7 +24,7 @@ var _settings: SettingsStore
 @onready var _score_label: Label = %ScoreLabel
 @onready var _name_entry: NameEntry = %NameEntry
 @onready var _details: VBoxContainer = %Details
-@onready var _breakdown: GridContainer = %Breakdown
+@onready var _breakdown: ScoreBreakdown = %Breakdown
 @onready var _rank_label: Label = %RankLabel
 @onready var _note_label: Label = %NoteLabel
 @onready var _countdown_label: Label = %CountdownLabel
@@ -81,7 +81,7 @@ func _on_name_chosen(name: String) -> void:
 		_settings.last_name = name
 		_settings.save()
 	_record = score_store.append(_result)
-	_fill_breakdown(_result)
+	_breakdown.show_result(_result)
 	_show_local_rank()
 	_name_entry.visible = false
 	_details.visible = true
@@ -120,21 +120,6 @@ func _on_client_failed(operation: String, reason: String) -> void:
 func _show_local_rank() -> void:
 	var rank := RankCalculator.rank(_result.score, score_store.scores())
 	_rank_label.text = "Local rank: %d of %d" % [rank, score_store.records.size()]
-
-
-func _fill_breakdown(result: ShiftResult) -> void:
-	for child in _breakdown.get_children():
-		child.queue_free()
-	var rows := [["Correct", result.correct], ["Wrong", result.wrong],
-			["Missed", result.missed], ["Empty", result.empty]]
-	for row: Array in rows:
-		var name := Label.new()
-		name.text = str(row[0])
-		_breakdown.add_child(name)
-		var value := Label.new()
-		value.text = str(row[1])
-		value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		_breakdown.add_child(value)
 
 
 func _process(_delta: float) -> void:

@@ -664,18 +664,24 @@ the game proceeds normally with a local-only note.
   - Road stencils: "BUS ONLY" and bike-lane markings pre-sheared for perspective.
 
   Needed but **not provided** (checkerboard placeholder in every build including
-  release, logged at startup, must be called out in every plan and status until
-  supplied; testers produce missing art from what they see in context):
-  - One shared license plate overlay image (positioned per body style by tunable
-    data). Taillight states need no art: they are a lighting effect on the sprite.
-  - Bus cab/hood overlay framing the bottom of the screen.
-  - Bus stop stripe / bus stop zone landmark on the curb.
-  - Any roadside props other than buildings (signs, trees, hydrants) if wanted.
-  - Median decoration strip (a placeholder strip is drawn left of the road so
-    testers can see where it goes).
-  - Touch controls art (virtual joystick, capture button).
-  - Fonts, UI theme elements, title branding, and About screen imagery.
-  - Placeholder checkerboard sprite itself (a trivial generated texture).
+  release, logged at startup under the quoted element name, must be called out in
+  every plan and status until supplied; testers produce missing art from what they
+  see in context; per-element notes in `checklists/missing-art.md`):
+  - One shared license plate overlay image (`"license plate"`, positioned per body
+    style by tunable data). Taillight states need no art: they are a lighting
+    effect on the sprite.
+  - Bus cab/hood overlay framing the bottom of the screen (`"bus cab overlay"`).
+  - Bus stop stripe / bus stop zone landmark on the curb (`"bus stop stripe"`).
+  - Median decoration strip left of the road (`"median"`).
+  - Touch controls art (`"touch joystick base"`, `"touch joystick thumb"`,
+    `"touch capture button"`).
+  - Any roadside props other than buildings (signs, trees, hydrants) if wanted;
+    no placeholder is drawn for these.
+  - Fonts, UI theme elements, title branding, and About screen imagery (text-only
+    theme today; no placeholder is drawn).
+  - Sound: every SFX event and the music loop ship as generated placeholder
+    `.wav` files (see `assets/audio/README.md`).
+  - Placeholder checkerboard sprite itself (`assets/ui/placeholder.png`).
 - **Touch in mobile browsers.** The touch scheme is assumed to work in mobile browsers
   as well as the Android app, since web playability is a hard constraint and touch
   detection is platform-neutral.

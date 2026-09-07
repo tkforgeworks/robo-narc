@@ -1,16 +1,13 @@
 class_name GameplayScreen
 extends Node2D
 ## Composes the shift. Wires child nodes by signal and drives the per-frame
-## order (bus, zones, vehicles, misses). No judgment or scoring logic here.
+## order (bus, zones, vehicles, misses). No judgment or scoring logic here;
+## live tuning, sounds, honks, and playfield centring are sibling nodes.
 
 signal navigation_requested(scene: PackedScene, payload: Variant)
 
 const TAG := "Gameplay"
 const RESULTS_SCENE_PATH := "res://scenes/screens/results_screen.tscn"
-const COLOR_GOOD := Color(0.3, 1.0, 0.4)
-const COLOR_BAD := Color(1.0, 0.3, 0.3)
-const COLOR_MISS := Color(1.0, 0.55, 0.2)
-const COLOR_NEUTRAL := Color(0.75, 0.75, 0.75)
 
 var config: TuningConfig
 
@@ -26,13 +23,13 @@ var _registry: VehicleRegistry
 @onready var _bus_driver: BusDriver = $BusDriver
 @onready var _clock: ShiftClock = $ShiftClock
 @onready var _score_keeper: ScoreKeeper = $ScoreKeeper
-@onready var _overlay_frame: Control = $Overlay/Frame
 @onready var _capture_box: CaptureBox = $Overlay/Frame/CaptureBox
 @onready var _count_in: CountIn = $Overlay/Frame/CountIn
 @onready var _hud: Hud = $Hud
 @onready var _cues: AudioCues = $AudioCues
 @onready var _honks: HonkScheduler = $HonkScheduler
 @onready var _sounds: ShiftSounds = $ShiftSounds
+@onready var _tuning_hooks: ShiftTuningHooks = $ShiftTuningHooks
 
 
 ## Children read `config` in their own _ready, which runs before ours, so the
@@ -41,7 +38,8 @@ func _enter_tree() -> void:
 	if config == null:
 		config = Tuning.config
 	for path: String in ["RoadView", "BusStopZones", "VehicleLayer", "VehicleSpawner",
-			"BusDriver", "ShiftClock", "ScoreKeeper", "HonkScheduler", "Overlay/Frame/BusOverlay",
+			"BusDriver", "ShiftClock", "ScoreKeeper", "HonkScheduler", "ShiftTuningHooks",
+			"Overlay/Frame/BusOverlay",
 			"Overlay/Frame/CaptureBox", "Hud/Frame/FeedbackBanner"]:
 		get_node(path).config = config
 
@@ -58,17 +56,6 @@ func _ready() -> void:
 	_score_keeper.score_changed.connect(_on_score_changed)
 	_sounds.bind(_count_in, _capture_box, _score_keeper, _clock, _cues)
 	_honks.bind(_bus_driver, _vehicle_layer, _cues)
-	get_viewport().size_changed.connect(_apply_playfield)
-	_apply_playfield()
-
-
-## Centres the fixed playfield in the expand-stretched viewport. The overlay
-## and HUD frames follow so their anchors stay relative to the playfield.
-func _apply_playfield() -> void:
-	var offset := Playfield.offset(get_viewport())
-	position = offset
-	_overlay_frame.position = offset
-	_hud.frame.position = offset
 
 
 ## Called by ScreenHost after instantiation.
@@ -81,21 +68,8 @@ func enter(_payload: Variant) -> void:
 	_clock.start()
 
 
-## Live tuning: the few values that are latched at shift start re-apply here.
 func bind_tuning(tuning: TuningService) -> void:
-	if _registry != null:
-		tuning.register_style_provider(_registry)
-	tuning.style_changed.connect(func(_key: String, _prop: String) -> void:
-		_vehicle_layer.restyle_all())
-	tuning.changed.connect(func(property_name: String) -> void:
-		if property_name == "shift_length_sec":
-			_clock.set_duration(config.shift_length_sec)
-			_hud.set_time(_clock.time_left)
-		elif property_name == "box_size":
-			_capture_box.center_in_playfield())
-	tuning.reset.connect(func() -> void:
-		_clock.set_duration(config.shift_length_sec)
-		_hud.set_time(_clock.time_left))
+	_tuning_hooks.bind(tuning, _clock, _hud, _capture_box, _vehicle_layer, _registry)
 
 
 func bind_debug_menu(menu: DebugMenu) -> void:
@@ -161,16 +135,7 @@ func _on_capture_attempted(box: Rect2) -> void:
 
 func _on_score_changed(score: int, delta: int, feedback: String) -> void:
 	_hud.set_score(score)
-	if feedback.is_empty():
-		return
-	var color := COLOR_NEUTRAL
-	if delta > 0:
-		color = COLOR_GOOD
-	elif feedback.contains("MISSED"):
-		color = COLOR_MISS
-	elif delta < 0:
-		color = COLOR_BAD
-	_hud.banner.show_text(feedback, color)
+	_hud.banner.show_score_feedback(feedback, delta)
 
 
 func _on_shift_ended() -> void:

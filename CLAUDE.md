@@ -24,6 +24,8 @@ authoritative reference for the existing mechanics and tuning values. See
 - **Clean commit history**: greenfield repo — only commit when something genuinely
   needs to be stored; no work-in-progress or churn commits. Spec-kit docs under
   `.specify/` and `specs/` are the exception and get brief `docs:` commits
+- **Template layer docs**: `docs/template-extraction.md` lists every `[core]` file and
+  how to lift the skeleton into the org starter template (constitution Principle V)
 - **Spec-first workflow**: built with [github/spec-kit](https://github.com/spec-kit).
   Constitution at `.specify/memory/constitution.md`; feature artifacts under `specs/`
 

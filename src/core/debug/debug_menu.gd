@@ -3,6 +3,7 @@ extends CanvasLayer
 ## Live tuning menu (debug builds only). Enumerates every TuningConfig property
 ## and every registered style, pauses the tree while open, and offers reset,
 ## save-overrides, live volume, and any actions the game layer registers.
+## DebugSectionBuilder builds the rows.
 
 signal opened
 signal closed
@@ -18,6 +19,7 @@ var settings: SettingsStore
 
 var _paused_by_me: bool = false
 var _actions: Dictionary = {}
+var _builder: DebugSectionBuilder
 
 @onready var _root: Control = $Root
 @onready var _sections: VBoxContainer = %Sections
@@ -31,8 +33,9 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	if tuning == null:
 		tuning = Tuning
+	_builder = DebugSectionBuilder.new(_sections)
 	_root.visible = false
-	_reset_button.pressed.connect(_on_reset_pressed)
+	_reset_button.pressed.connect(func() -> void: tuning.reset_to_defaults())
 	_save_button.pressed.connect(_on_save_pressed)
 	_close_button.pressed.connect(close)
 	tuning.reset.connect(func() -> void:
@@ -83,18 +86,13 @@ func register_action(label: String, action: Callable) -> void:
 
 ## Number of tunable controls currently built (for tests).
 func control_count() -> int:
-	var count := 0
-	for section in _sections.get_children():
-		if section is GridContainer:
-			count += section.get_child_count() / 2
-	return count
+	return _builder.control_count()
 
 
 func _build() -> void:
-	for child in _sections.get_children():
-		child.free()
+	_builder.clear()
 	for group in TunableProperties.grouped(tuning.config):
-		_add_section(str(group["name"]), tuning.config, group["properties"],
+		_builder.add_tunables(str(group["name"]), tuning.config, group["properties"],
 				func(name: String, value: Variant) -> void: tuning.set_value(name, value))
 	for style in tuning.get_styles():
 		var key := str(style.get("key"))
@@ -102,59 +100,11 @@ func _build() -> void:
 		for property in TunableProperties.list(style):
 			if property["name"] != "key":
 				properties.append(property)
-		_add_section("Style: %s" % key, style, properties,
+		_builder.add_tunables("Style: %s" % key, style, properties,
 				func(name: String, value: Variant) -> void: tuning.set_style_value(key, name, value))
 	if settings != null:
-		_add_volume_section()
-
-
-func _add_section(title: String, object: Object, properties: Array,
-		on_commit: Callable) -> void:
-	_add_heading(title)
-	var grid := GridContainer.new()
-	grid.columns = 2
-	var factory := TunableControlFactory.new()
-	factory.value_committed.connect(on_commit)
-	for property: Dictionary in properties:
-		var label := Label.new()
-		label.text = property["name"]
-		grid.add_child(label)
-		grid.add_child(factory.build(object, property))
-	grid.set_meta("factory", factory)
-	_sections.add_child(grid)
-
-
-func _add_volume_section() -> void:
-	_add_heading("Live volume")
-	var grid := GridContainer.new()
-	grid.columns = 2
-	for bus in VOLUME_BUSES:
-		var label := Label.new()
-		label.text = bus
-		grid.add_child(label)
-		var slider := HSlider.new()
-		slider.min_value = 0.0
-		slider.max_value = 1.0
-		slider.step = 0.01
-		slider.custom_minimum_size.x = 200.0
-		slider.value = settings.get(bus)
-		slider.value_changed.connect(func(v: float) -> void:
-			settings.set(bus, v)
-			settings.save()
-			volume_changed.emit(bus, v))
-		grid.add_child(slider)
-	_sections.add_child(grid)
-
-
-func _add_heading(text: String) -> void:
-	var heading := Label.new()
-	heading.text = text
-	heading.add_theme_font_size_override("font_size", 20)
-	_sections.add_child(heading)
-
-
-func _on_reset_pressed() -> void:
-	tuning.reset_to_defaults()
+		_builder.add_volume("Live volume", VOLUME_BUSES, settings,
+				func(bus: String, value: float) -> void: volume_changed.emit(bus, value))
 
 
 func _on_save_pressed() -> void:

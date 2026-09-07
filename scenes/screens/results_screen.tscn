@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://src/screens/results_screen.gd" id="1_results"]
 [ext_resource type="Script" path="res://src/core/app/idle_timeout.gd" id="2_idle"]
 [ext_resource type="PackedScene" path="res://scenes/game/name_entry.tscn" id="3_name"]
 [ext_resource type="PackedScene" path="res://scenes/game/leaderboard_panel.tscn" id="4_board"]
 [ext_resource type="Script" path="res://src/game/services/leaderboard_client.gd" id="5_client"]
+[ext_resource type="Script" path="res://src/game/ui/score_breakdown.gd" id="6_breakdown"]
 
 [node name="ResultsScreen" type="Control"]
 layout_mode = 3
@@ -71,6 +72,7 @@ alignment = 1
 
 [node name="Breakdown" type="GridContainer" parent="Layout/Column/Details"]
 unique_name_in_owner = true
+script = ExtResource("6_breakdown")
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/h_separation = 40

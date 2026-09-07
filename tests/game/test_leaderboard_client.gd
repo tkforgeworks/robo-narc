@@ -169,9 +169,9 @@ func test_release_when_idle_frees_after_the_submit_finishes() -> void:
 
 
 func test_publishable_keys_skip_the_bearer_header() -> void:
-	var legacy := LeaderboardClient.headers_for("eyJhbGciOi.legacy.jwt", false)
+	var legacy := LeaderboardRequests.headers_for("eyJhbGciOi.legacy.jwt", false)
 	assert_true(legacy.has("Authorization: Bearer eyJhbGciOi.legacy.jwt"))
-	var publishable := LeaderboardClient.headers_for(" sb_publishable_abc ", true)
+	var publishable := LeaderboardRequests.headers_for(" sb_publishable_abc ", true)
 	assert_true(publishable.has("apikey: sb_publishable_abc"))
 	assert_true(publishable.has("Prefer: return=minimal"))
 	for header in publishable:

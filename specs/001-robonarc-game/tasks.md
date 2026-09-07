@@ -216,11 +216,11 @@ Android build.)
 
 ## Phase 10: Polish & Cross-Cutting Concerns
 
-- [ ] T075 [P] Split any script over 150 lines found by `Get-ChildItem -Recurse src -Filter *.gd | ForEach { (Get-Content $_).Count }`; document any over 300 in plan.md Complexity Tracking
-- [ ] T076 [P] Add `docs/template-extraction.md` listing the `[core]` files, their dependencies, and the steps to lift them into the org Godot starter template (constitution Principle V)
-- [ ] T077 [P] Update `specs/001-robonarc-game/spec.md` asset inventory to match the startup placeholder log, and add `specs/001-robonarc-game/checklists/missing-art.md` listing each placeholder element with where it appears in the release build, for testers producing the art
-- [ ] T078 Run every quickstart.md scenario on the web export, on Windows, and on Android or an emulator; record results in `specs/001-robonarc-game/checklists/validation.md`; confirm the release web build ships with placeholders visible and logged (allowed by FR-030b)
-- [ ] T079 Tune for convention feel with the debug menu (ramp, spawn, readable distance, penalties) targeting SC-003; save the result into `data/core/tuning_defaults.tres` and note the values in `contracts/tunables.md`
+- [X] T075 [P] Split any script over 150 lines found by `Get-ChildItem -Recurse src -Filter *.gd | ForEach { (Get-Content $_).Count }`; document any over 300 in plan.md Complexity Tracking
+- [X] T076 [P] Add `docs/template-extraction.md` listing the `[core]` files, their dependencies, and the steps to lift them into the org Godot starter template (constitution Principle V)
+- [X] T077 [P] Update `specs/001-robonarc-game/spec.md` asset inventory to match the startup placeholder log, and add `specs/001-robonarc-game/checklists/missing-art.md` listing each placeholder element with where it appears in the release build, for testers producing the art
+- [X] T078 Run every quickstart.md scenario on the web export, on Windows, and on Android or an emulator; record results in `specs/001-robonarc-game/checklists/validation.md`; confirm the release web build ships with placeholders visible and logged (allowed by FR-030b)
+- [ ] T079 (owner: Tim, during playtesting) Tune for convention feel with the debug menu (ramp, spawn, readable distance, penalties) targeting SC-003; save the result into `data/core/tuning_defaults.tres` and note the values in `contracts/tunables.md`
 
 ---
 

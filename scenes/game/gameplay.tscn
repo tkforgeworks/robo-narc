@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://src/screens/gameplay_screen.gd" id="1_gameplay"]
 [ext_resource type="PackedScene" path="res://scenes/game/road_view.tscn" id="2_road"]
@@ -15,6 +15,8 @@
 [ext_resource type="Script" path="res://src/game/audio/audio_cues.gd" id="13_cues"]
 [ext_resource type="Script" path="res://src/game/audio/honk_scheduler.gd" id="14_honks"]
 [ext_resource type="Script" path="res://src/game/audio/shift_sounds.gd" id="15_sounds"]
+[ext_resource type="Script" path="res://src/game/shift/shift_tuning_hooks.gd" id="16_hooks"]
+[ext_resource type="Script" path="res://src/core/app/playfield_anchor.gd" id="17_anchor"]
 
 [node name="GameplayScreen" type="Node2D"]
 script = ExtResource("1_gameplay")
@@ -63,3 +65,10 @@ script = ExtResource("14_honks")
 
 [node name="ShiftSounds" type="Node" parent="."]
 script = ExtResource("15_sounds")
+
+[node name="ShiftTuningHooks" type="Node" parent="."]
+script = ExtResource("16_hooks")
+
+[node name="PlayfieldAnchor" type="Node" parent="."]
+script = ExtResource("17_anchor")
+frames = [NodePath("../Overlay/Frame"), NodePath("../Hud/Frame")]

@@ -1,9 +1,9 @@
 class_name LeaderboardClient
 extends Node
-## Talks to the Supabase leaderboard exactly per contracts/leaderboard-api.md:
-## a top-N fetch and a submit (insert, then rank lookup). Every failure is a
-## signal, never a block; a disabled config fails immediately with DISABLED.
-## One fetch in flight at a time (extra requests ignored); submits queue.
+## Talks to the Supabase leaderboard per contracts/leaderboard-api.md: a top-N
+## fetch and a submit (insert, then rank lookup). Every failure is a signal,
+## never a block; a disabled config fails immediately with DISABLED. One fetch
+## in flight at a time (extra requests ignored); submits queue in order.
 
 signal top_scores_received(entries: Array[LeaderboardEntry])
 signal submitted(rank: int)
@@ -13,12 +13,6 @@ const TAG := "Leaderboard"
 const OP_FETCH := "fetch"
 const OP_SUBMIT := "submit"
 const REASON_DISABLED := "DISABLED"
-const REASON_TIMEOUT := "TIMEOUT"
-const REASON_NETWORK := "NETWORK"
-const REASON_BAD_JSON := "BAD_JSON"
-const PATH_TOP := "/rest/v1/rpc/top_scores"
-const PATH_SCORES := "/rest/v1/scores"
-const PATH_RANK := "/rest/v1/rpc/rank_for_score"
 
 enum SubmitStage { INSERT, RANK }
 
@@ -27,7 +21,7 @@ var config: LeaderboardConfig
 var timeout_sec: float = 5.0
 ## Builds the two transports; tests swap in a stub.
 var transport_factory: Callable = func() -> LeaderboardTransport: return HttpTransport.new()
-var client_tag: String = platform_tag()
+var client_tag: String = LeaderboardRequests.platform_tag()
 
 var _fetch: LeaderboardTransport
 var _submit: LeaderboardTransport
@@ -41,14 +35,8 @@ func _ready() -> void:
 	if config == null:
 		config = LeaderboardConfig.load_active()
 	timeout_sec = Tuning.config.request_timeout_sec
-	_fetch = transport_factory.call()
-	_fetch.name = "FetchTransport"
-	_fetch.completed.connect(_on_fetch_completed)
-	add_child(_fetch)
-	_submit = transport_factory.call()
-	_submit.name = "SubmitTransport"
-	_submit.completed.connect(_on_submit_completed)
-	add_child(_submit)
+	_fetch = _make_transport("FetchTransport", _on_fetch_completed)
+	_submit = _make_transport("SubmitTransport", _on_submit_completed)
 
 
 func is_enabled() -> bool:
@@ -69,8 +57,8 @@ func fetch_top(limit: int = 20) -> void:
 		return
 	if _fetch.busy:
 		return
-	if not _post(_fetch, PATH_TOP, {"p_limit": limit}, false):
-		failed.emit(OP_FETCH, REASON_NETWORK)
+	if not _post(_fetch, LeaderboardRequests.PATH_TOP, {"p_limit": limit}, false):
+		failed.emit(OP_FETCH, LeaderboardRequests.REASON_NETWORK)
 
 
 func submit(result: ShiftResult) -> void:
@@ -88,37 +76,12 @@ func release_when_idle() -> void:
 	_maybe_release()
 
 
-static func platform_tag() -> String:
-	for feature in ["web", "windows", "android", "linux", "macos", "ios"]:
-		if OS.has_feature(feature):
-			return feature
-	return "unknown"
-
-
-## Legacy anon keys are JWTs and go in both headers. The newer publishable
-## keys (`sb_publishable_...`) are not JWTs and are rejected as a Bearer token,
-## so they travel in `apikey` only.
-static func headers_for(raw_key: String, return_minimal: bool) -> PackedStringArray:
-	var key := raw_key.strip_edges()
-	var headers := PackedStringArray(["apikey: %s" % key, "Content-Type: application/json"])
-	if not key.begins_with("sb_"):
-		headers.append("Authorization: Bearer %s" % key)
-	if return_minimal:
-		headers.append("Prefer: return=minimal")
-	return headers
-
-
-static func payload_for(result: ShiftResult, tag: String) -> Dictionary:
-	return {
-		"name": result.player_name,
-		"score": result.score,
-		"correct": result.correct,
-		"wrong": result.wrong,
-		"missed": result.missed,
-		"empty": result.empty,
-		"duration_sec": roundi(result.duration_sec),
-		"client": tag,
-	}
+func _make_transport(node_name: String, on_completed: Callable) -> LeaderboardTransport:
+	var transport: LeaderboardTransport = transport_factory.call()
+	transport.name = node_name
+	transport.completed.connect(on_completed)
+	add_child(transport)
+	return transport
 
 
 func _next_submit() -> void:
@@ -126,14 +89,15 @@ func _next_submit() -> void:
 		return
 	_submitting = _submit_queue.pop_front()
 	_submit_stage = SubmitStage.INSERT
-	if not _post(_submit, PATH_SCORES, payload_for(_submitting, client_tag), true):
-		_finish_submit(REASON_NETWORK)
+	var payload := LeaderboardRequests.payload_for(_submitting, client_tag)
+	if not _post(_submit, LeaderboardRequests.PATH_SCORES, payload, true):
+		_finish_submit(LeaderboardRequests.REASON_NETWORK)
 
 
 func _post(transport: LeaderboardTransport, path: String, payload: Dictionary,
 		return_minimal: bool) -> bool:
-	var headers := headers_for(config.anon_key, return_minimal)
-	var url := config.base_url.strip_edges().trim_suffix("/") + path
+	var headers := LeaderboardRequests.headers_for(config.anon_key, return_minimal)
+	var url := LeaderboardRequests.url(config.base_url, path)
 	var err := transport.post(url, headers, JSON.stringify(payload), timeout_sec)
 	if err != OK:
 		DebugLog.warn(TAG, "request to %s not sent (error %d)" % [path, err])
@@ -141,36 +105,32 @@ func _post(transport: LeaderboardTransport, path: String, payload: Dictionary,
 
 
 func _on_fetch_completed(result: int, code: int, body: String) -> void:
-	var reason := failure_reason(result, code)
+	var reason := LeaderboardRequests.failure_reason(result, code)
 	if not reason.is_empty():
 		failed.emit(OP_FETCH, reason)
 		return
-	var json := JSON.new()
-	if json.parse(body) != OK or not json.data is Array:
-		failed.emit(OP_FETCH, REASON_BAD_JSON)
+	var entries: Variant = LeaderboardRequests.parse_top_scores(body)
+	if entries == null:
+		failed.emit(OP_FETCH, LeaderboardRequests.REASON_BAD_JSON)
 		return
-	var entries: Array[LeaderboardEntry] = []
-	for item: Variant in json.data:
-		if item is Dictionary:
-			entries.append(LeaderboardEntry.from_dict(item))
 	top_scores_received.emit(entries)
 
 
 func _on_submit_completed(result: int, code: int, body: String) -> void:
-	var reason := failure_reason(result, code)
+	var reason := LeaderboardRequests.failure_reason(result, code)
 	if not reason.is_empty():
 		_finish_submit(reason)
 		return
 	if _submit_stage == SubmitStage.INSERT:
 		_submit_stage = SubmitStage.RANK
-		if not _post(_submit, PATH_RANK, {"p_score": _submitting.score}, false):
-			_finish_submit(REASON_NETWORK)
+		var payload := {"p_score": _submitting.score}
+		if not _post(_submit, LeaderboardRequests.PATH_RANK, payload, false):
+			_finish_submit(LeaderboardRequests.REASON_NETWORK)
 		return
-	var json := JSON.new()
-	if json.parse(body) != OK or not (json.data is float or json.data is int):
-		_finish_submit(REASON_BAD_JSON)
+	var rank := LeaderboardRequests.parse_rank(body)
+	if rank == LeaderboardRequests.NO_RANK:
+		_finish_submit(LeaderboardRequests.REASON_BAD_JSON)
 		return
-	var rank := int(json.data)
 	_submitting = null
 	submitted.emit(rank)
 	_next_submit()
@@ -188,17 +148,3 @@ func _finish_submit(reason: String) -> void:
 func _maybe_release() -> void:
 	if _release_when_idle and not submit_pending():
 		queue_free()
-
-
-## A status code, when the server sent one, beats the transport result: the
-## web build reports some 4xx answers with a non-success result.
-static func failure_reason(result: int, code: int) -> String:
-	if code >= 400:
-		return "HTTP_%d" % code
-	if result == HTTPRequest.RESULT_TIMEOUT:
-		return REASON_TIMEOUT
-	if result != HTTPRequest.RESULT_SUCCESS:
-		return REASON_NETWORK
-	if code < 200 or code >= 300:
-		return "HTTP_%d" % code
-	return ""

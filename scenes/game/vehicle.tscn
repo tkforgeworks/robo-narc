@@ -1,23 +1,23 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://dt30wrufipu5g"]
 
-[ext_resource type="Script" path="res://src/game/vehicles/vehicle.gd" id="1_vehicle"]
-[ext_resource type="Script" path="res://src/game/vehicles/plate_overlay.gd" id="2_plate"]
-[ext_resource type="Script" path="res://src/game/vehicles/vehicle_lights.gd" id="3_lights"]
+[ext_resource type="Script" uid="uid://7v5fbk0v7lbg" path="res://src/game/vehicles/vehicle.gd" id="1_vehicle"]
+[ext_resource type="Script" uid="uid://bcboqm5v23amp" path="res://src/game/vehicles/plate_overlay.gd" id="2_plate"]
+[ext_resource type="Script" uid="uid://bjk6hjugynobf" path="res://src/game/vehicles/vehicle_lights.gd" id="3_lights"]
 
-[node name="Vehicle" type="Node2D"]
+[node name="Vehicle" type="Node2D" unique_id=2102184308]
 script = ExtResource("1_vehicle")
 
-[node name="Body" type="Sprite2D" parent="."]
+[node name="Body" type="Sprite2D" parent="." unique_id=1543757063]
 centered = false
 
-[node name="PlateOverlay" type="Sprite2D" parent="."]
+[node name="PlateOverlay" type="Sprite2D" parent="." unique_id=709003600]
 centered = false
 script = ExtResource("2_plate")
 
-[node name="VehicleLights" type="Node" parent="."]
+[node name="VehicleLights" type="Node" parent="." unique_id=814966883]
 script = ExtResource("3_lights")
 
-[node name="CapturedMark" type="Label" parent="."]
+[node name="CapturedMark" type="Label" parent="." unique_id=1223260691]
 visible = false
 offset_right = 90.0
 offset_bottom = 14.0
