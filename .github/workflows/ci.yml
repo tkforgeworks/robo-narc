@@ -1,0 +1,100 @@
+# [core] Template-layer CI: headless unit tests, then a web export with a
+# compressed-size report. Lift as-is into other TK ForgeWorks Godot projects.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  GODOT_VERSION: "4.6.2"
+  # itch.io upload limit. The compressed zip is what itch.io transfers.
+  WEB_BUNDLE_LIMIT_MB: "1024"
+
+jobs:
+  test:
+    name: Unit tests (GUT)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot ${{ env.GODOT_VERSION }}
+        run: |
+          curl -sSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip -d godot-bin
+          sudo mv "godot-bin/Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
+          chmod +x /usr/local/bin/godot
+          godot --version
+
+      - name: Import project
+        run: godot --headless --path . --import
+
+      - name: Run GUT tests
+        run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gexit
+
+  export-web:
+    name: Web export
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot ${{ env.GODOT_VERSION }}
+        run: |
+          curl -sSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip -d godot-bin
+          sudo mv "godot-bin/Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
+          chmod +x /usr/local/bin/godot
+
+      - name: Cache export templates
+        id: templates
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+          key: godot-export-templates-${{ env.GODOT_VERSION }}
+
+      - name: Install export templates
+        if: steps.templates.outputs.cache-hit != 'true'
+        run: |
+          curl -sSL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          unzip -q templates.tpz -d templates-tmp
+          DEST="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$DEST"
+          mv templates-tmp/templates/* "$DEST/"
+
+      - name: Import project
+        run: godot --headless --path . --import
+
+      - name: Export web (release, no threads)
+        run: |
+          mkdir -p build/web
+          godot --headless --path . --export-release "Web" build/web/index.html
+          test -f build/web/index.wasm
+
+      - name: Measure bundle size
+        run: |
+          cd build
+          zip -qr robonarc-web.zip web
+          RAW_MB=$(du -sm web | cut -f1)
+          ZIP_MB=$(du -sm robonarc-web.zip | cut -f1)
+          {
+            echo "### Web bundle"
+            echo "| Measure | Size |"
+            echo "|---|---|"
+            echo "| Raw build/web | ${RAW_MB} MB |"
+            echo "| Zipped (itch.io transfer) | ${ZIP_MB} MB |"
+            echo "| Limit | ${WEB_BUNDLE_LIMIT_MB} MB |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "raw=${RAW_MB} MB zipped=${ZIP_MB} MB limit=${WEB_BUNDLE_LIMIT_MB} MB"
+          if [ "$ZIP_MB" -gt "$WEB_BUNDLE_LIMIT_MB" ]; then
+            echo "::error::Compressed web bundle (${ZIP_MB} MB) exceeds ${WEB_BUNDLE_LIMIT_MB} MB"
+            exit 1
+          fi
+
+      - name: Upload web build
+        uses: actions/upload-artifact@v4
+        with:
+          name: robonarc-web
+          path: build/robonarc-web.zip
+          retention-days: 14

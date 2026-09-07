@@ -18,9 +18,24 @@ authoritative reference for the existing mechanics and tuning values. See
 
 ## Repo Conventions
 
-- **Not a standard tkforgeworks repo**: no CI/CD, no branch protection rules
+- **CI**: `.github/workflows/ci.yml` runs the headless GUT tests and a web export
+  with a compressed-size report on every push to `main` and every PR (constitution
+  Principle V: this workflow is part of the org template). No branch protection rules
 - **Clean commit history**: greenfield repo — only commit when something genuinely
-  needs to be stored; no work-in-progress or churn commits
-- **Spec-first workflow planned**: the updated game will be built using
-  [github/spec-kit](https://github.com/spec-kit). Keep the repo minimal until
-  spec-kit is initialized; don't add scaffolding that would conflict with it
+  needs to be stored; no work-in-progress or churn commits. Spec-kit docs under
+  `.specify/` and `specs/` are the exception and get brief `docs:` commits
+- **Spec-first workflow**: built with [github/spec-kit](https://github.com/spec-kit).
+  Constitution at `.specify/memory/constitution.md`; feature artifacts under `specs/`
+
+## Building & Testing
+
+- **Godot**: 4.6.2 stable, GL Compatibility. Console binary on this machine:
+  `C:\Program Files\Godot\Godot 4.6.2\Godot_v4.6.2-stable_win64_console.exe`
+- **Tests** (GUT 9, headless):
+  `godot --headless --path . -s addons/gut/gut_cmdln.gd -gexit`
+- **Web export**: `godot --headless --path . --export-release "Web" build/web/index.html`
+  then serve `build/web` over localhost (wasm will not run from `file://`)
+- **Layout**: `src/core/` + `scenes/core/` + `tests/core/` are the game-agnostic
+  template layer; `src/game/`, `scenes/game/`, `data/game/` are RoboNarc. Art lives
+  under `assets/` per `specs/001-robonarc-game/contracts/asset-conventions.md`;
+  drop-in vehicle variants go in `assets/vehicles/<style>/`
