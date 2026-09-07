@@ -35,6 +35,15 @@ func start() -> void:
 	_set_phase(Phase.COUNT_IN)
 
 
+## Live retune: keeps the elapsed time and moves the end point.
+func set_duration(new_duration: float) -> void:
+	if phase == Phase.IDLE or phase == Phase.ENDED:
+		return
+	var elapsed := duration - time_left
+	duration = maxf(new_duration, 0.1)
+	time_left = maxf(duration - elapsed, 0.0)
+
+
 ## Count-in finished: hand control to the player.
 func begin_running() -> void:
 	if phase == Phase.COUNT_IN:

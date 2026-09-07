@@ -18,6 +18,36 @@ static func list(object: Object) -> Array[Dictionary]:
 	return result
 
 
+## Same properties, grouped by `@export_group` in declaration order. Each entry
+## is `{"name": String, "properties": Array[Dictionary]}`; ungrouped properties
+## fall under "General".
+static func grouped(object: Object) -> Array[Dictionary]:
+	var groups: Array[Dictionary] = []
+	var current: Dictionary = {}
+	for property in object.get_property_list():
+		var usage: int = property["usage"]
+		if usage & PROPERTY_USAGE_GROUP:
+			current = {"name": property["name"], "properties": [] as Array[Dictionary]}
+			groups.append(current)
+			continue
+		if (usage & PROPERTY_USAGE_SCRIPT_VARIABLE) == 0 or (usage & PROPERTY_USAGE_EDITOR) == 0:
+			continue
+		if current.is_empty():
+			current = {"name": "General", "properties": [] as Array[Dictionary]}
+			groups.append(current)
+		(current["properties"] as Array[Dictionary]).append(property)
+	return groups.filter(func(g: Dictionary) -> bool:
+		return not (g["properties"] as Array).is_empty())
+
+
+## Copies every exported value from `source` onto `target` in place, so nodes
+## holding a reference to `target` see the new values.
+static func copy_values(source: Object, target: Object) -> void:
+	for property_name in names(source):
+		if has(target, property_name):
+			target.set(property_name, source.get(property_name))
+
+
 static func names(object: Object) -> PackedStringArray:
 	var result := PackedStringArray()
 	for property in list(object):

@@ -34,10 +34,13 @@ func test_set_value_rejects_unknown() -> void:
 	assert_signal_not_emitted(_tuning, "changed")
 
 
-func test_reset_restores_defaults() -> void:
+func test_reset_restores_defaults_in_place() -> void:
+	var held := _tuning.config
 	_tuning.set_value("points_correct", 999)
 	_tuning.reset_to_defaults()
 	assert_eq(_tuning.config.points_correct, 100)
+	assert_same(_tuning.config, held, "nodes holding the config must not go stale")
+	assert_signal_emit_count(_tuning, "reset", 2)
 
 
 func test_style_provider_round_trip() -> void:

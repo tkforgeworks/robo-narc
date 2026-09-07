@@ -48,10 +48,15 @@ func set_value(property_name: String, value: Variant) -> bool:
 	return true
 
 
+## Restores the shipped defaults IN PLACE, so every node that was handed
+## `config` keeps a valid reference, then emits `reset`.
 func reset_to_defaults() -> void:
 	_store.clear()
-	load_config(load_defaults())
+	TunableProperties.copy_values(load_defaults(), config)
+	for problem in config.validate():
+		DebugLog.warn(TAG, "config problem: %s" % problem)
 	DebugLog.info(TAG, "reset to defaults")
+	reset.emit()
 
 
 ## Debug builds only: writes current values (and styles) to the override file.

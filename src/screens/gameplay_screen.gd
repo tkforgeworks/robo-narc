@@ -61,6 +61,19 @@ func enter(_payload: Variant) -> void:
 	_clock.start()
 
 
+## Live tuning: the few values that are latched at shift start re-apply here.
+func bind_tuning(tuning: TuningService) -> void:
+	tuning.changed.connect(func(property_name: String) -> void:
+		if property_name == "shift_length_sec":
+			_clock.set_duration(config.shift_length_sec)
+			_hud.set_time(_clock.time_left)
+		elif property_name == "box_size":
+			_capture_box.center_in_playfield())
+	tuning.reset.connect(func() -> void:
+		_clock.set_duration(config.shift_length_sec)
+		_hud.set_time(_clock.time_left))
+
+
 func bind_input_source(input_source: InputSource) -> void:
 	_capture_box.source = input_source.source
 	input_source.source_changed.connect(func(s: InputSource.Source) -> void: _capture_box.source = s)
