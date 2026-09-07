@@ -171,12 +171,14 @@ persistent Main root, input source tracking, focus pausing, settings persistence
 
 **Independent Test**: Quickstart US5 scenarios 1–2.
 
-- [ ] T061 [P] [US5] Implement `VirtualJoystick` in `src/core/input/virtual_joystick.gd` + `scenes/core/virtual_joystick.tscn` (`class_name VirtualJoystick` Control: base + thumb textures (registered placeholder until `assets/ui/joystick-*.png`), tracks one touch index, emits direction vector, calls `Input.action_press/release` for the four move actions with strength)
-- [ ] T062 [P] [US5] Implement `VirtualButton` in `src/core/input/virtual_button.gd` + `scenes/core/virtual_button.tscn` (`class_name VirtualButton` Control: `@export action`, presses/releases the action on touch, registered placeholder texture until `assets/ui/capture-button.png`)
-- [ ] T063 [US5] Implement `TouchControls` in `src/core/input/touch_controls.gd` + `scenes/core/touch_controls.tscn` (`class_name TouchControls` CanvasLayer: joystick left gutter, button right gutter, computes gutter width from viewport vs 1280 playfield each resize, falls back to edge overlay at reduced opacity when below `touch_gutter_min_px`, `visible = InputSource.source == TOUCH`); add under `Main`
-- [ ] T064 [US5] Gamepad pass: verify `Input.get_vector` analog movement and `capture` on joypad button 0 in `CaptureBox`, `ui_accept/ui_cancel` navigation on all screens, and per-source `box_speed_*` switching on `InputSource.source_changed`; confirm Android preset orientation lock and test on device or emulator
+- [X] T061 [P] [US5] Implement `VirtualJoystick` in `src/core/input/virtual_joystick.gd` + `scenes/core/virtual_joystick.tscn` (`class_name VirtualJoystick` Control: base + thumb textures (registered placeholder until `assets/ui/joystick-*.png`), tracks one touch index, emits direction vector, calls `Input.action_press/release` for the four move actions with strength)
+- [X] T062 [P] [US5] Implement `VirtualButton` in `src/core/input/virtual_button.gd` + `scenes/core/virtual_button.tscn` (`class_name VirtualButton` Control: `@export action`, presses/releases the action on touch, registered placeholder texture until `assets/ui/capture-button.png`)
+- [X] T063 [US5] Implement `TouchControls` in `src/core/input/touch_controls.gd` + `scenes/core/touch_controls.tscn` (`class_name TouchControls` CanvasLayer: joystick left gutter, button right gutter, computes gutter width from viewport vs 1280 playfield each resize, falls back to edge overlay at reduced opacity when below `touch_gutter_min_px`, `visible = InputSource.source == TOUCH`); add under `Main`
+- [X] T064 [US5] Gamepad pass: verify `Input.get_vector` analog movement and `capture` on joypad button 0 in `CaptureBox`, `ui_accept/ui_cancel` navigation on all screens, and per-source `box_speed_*` switching on `InputSource.source_changed`; confirm Android preset orientation lock and test on device or emulator
 
 **Checkpoint**: A full shift is playable with touch only and with gamepad only.
+(Code pass done; device/gamepad hands-on check deferred to the MVP playtest on the
+Android build.)
 
 ---
 

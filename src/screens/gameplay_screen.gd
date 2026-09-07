@@ -26,8 +26,9 @@ var _registry: VehicleRegistry
 @onready var _bus_driver: BusDriver = $BusDriver
 @onready var _clock: ShiftClock = $ShiftClock
 @onready var _score_keeper: ScoreKeeper = $ScoreKeeper
-@onready var _capture_box: CaptureBox = $Overlay/CaptureBox
-@onready var _count_in: CountIn = $Overlay/CountIn
+@onready var _overlay_frame: Control = $Overlay/Frame
+@onready var _capture_box: CaptureBox = $Overlay/Frame/CaptureBox
+@onready var _count_in: CountIn = $Overlay/Frame/CountIn
 @onready var _hud: Hud = $Hud
 
 
@@ -37,8 +38,8 @@ func _enter_tree() -> void:
 	if config == null:
 		config = Tuning.config
 	for path: String in ["RoadView", "BusStopZones", "VehicleLayer", "VehicleSpawner",
-			"BusDriver", "ShiftClock", "ScoreKeeper", "Overlay/BusOverlay",
-			"Overlay/CaptureBox", "Hud/FeedbackBanner"]:
+			"BusDriver", "ShiftClock", "ScoreKeeper", "Overlay/Frame/BusOverlay",
+			"Overlay/Frame/CaptureBox", "Hud/Frame/FeedbackBanner"]:
 		get_node(path).config = config
 
 
@@ -52,6 +53,17 @@ func _ready() -> void:
 	_count_in.finished.connect(_on_count_in_finished)
 	_capture_box.capture_attempted.connect(_on_capture_attempted)
 	_score_keeper.score_changed.connect(_on_score_changed)
+	get_viewport().size_changed.connect(_apply_playfield)
+	_apply_playfield()
+
+
+## Centres the fixed playfield in the expand-stretched viewport. The overlay
+## and HUD frames follow so their anchors stay relative to the playfield.
+func _apply_playfield() -> void:
+	var offset := Playfield.offset(get_viewport())
+	position = offset
+	_overlay_frame.position = offset
+	_hud.frame.position = offset
 
 
 ## Called by ScreenHost after instantiation.

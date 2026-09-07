@@ -3,10 +3,13 @@ extends CanvasLayer
 ## Score, time, and (debug builds) frame time. Feedback text lives in the
 ## FeedbackBanner child.
 
-@onready var _score_label: Label = $ScoreLabel
-@onready var _time_label: Label = $TimeLabel
-@onready var _frame_label: Label = $FrameLabel
-@onready var banner: FeedbackBanner = $FeedbackBanner
+## Children sit under Frame, a 1280 x 720 Control that GameplayScreen moves to
+## the playfield offset so anchors stay relative to the playfield.
+@onready var frame: Control = $Frame
+@onready var _score_label: Label = $Frame/ScoreLabel
+@onready var _time_label: Label = $Frame/TimeLabel
+@onready var _frame_label: Label = $Frame/FrameLabel
+@onready var banner: FeedbackBanner = $Frame/FeedbackBanner
 
 var _frame_accum: float = 0.0
 

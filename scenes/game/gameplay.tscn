@@ -39,10 +39,15 @@ script = ExtResource("8_score")
 [node name="Overlay" type="CanvasLayer" parent="."]
 layer = 3
 
-[node name="BusOverlay" parent="Overlay" instance=ExtResource("12_bus")]
+[node name="Frame" type="Control" parent="Overlay"]
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
 
-[node name="CaptureBox" parent="Overlay" instance=ExtResource("9_box")]
+[node name="BusOverlay" parent="Overlay/Frame" instance=ExtResource("12_bus")]
 
-[node name="CountIn" parent="Overlay" instance=ExtResource("10_countin")]
+[node name="CaptureBox" parent="Overlay/Frame" instance=ExtResource("9_box")]
+
+[node name="CountIn" parent="Overlay/Frame" instance=ExtResource("10_countin")]
 
 [node name="Hud" parent="." instance=ExtResource("11_hud")]

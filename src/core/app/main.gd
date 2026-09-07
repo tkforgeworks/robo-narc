@@ -17,6 +17,8 @@ var debug_menu: DebugMenu = null
 @onready var input_source: InputSource = $InputSource
 @onready var focus_pauser: FocusPauser = $FocusPauser
 @onready var audio_mixer: AudioMixer = $AudioMixer
+@onready var letterbox: Letterbox = $Letterbox
+@onready var touch_controls: TouchControls = $TouchControls
 
 
 ## The mixer applies settings in its own _ready, which runs before ours.
@@ -29,6 +31,8 @@ func _ready() -> void:
 	if OS.is_debug_build():
 		_install_debug_tools()
 	screen_host.screen_changed.connect(_on_screen_changed)
+	touch_controls.bind_input_source(input_source)
+	touch_controls.bind_tuning(Tuning)
 	if initial_screen == null:
 		DebugLog.error(TAG, "no initial_screen set on main.tscn")
 		return
@@ -54,6 +58,12 @@ func _install_debug_tools() -> void:
 ## `bind_input_source(InputSource)`, `bind_tuning(TuningService)`,
 ## `bind_debug_menu(DebugMenu)`.
 func _on_screen_changed(screen: Node) -> void:
+	# Control screens are responsive and fill the window. Node2D screens are the
+	# fixed 1280 x 720 playfield (see Playfield): letterboxed, with touch controls
+	# in the gutters.
+	var fixed_playfield := screen is Node2D
+	letterbox.visible = fixed_playfield
+	touch_controls.set_playfield_active(fixed_playfield)
 	var handles_resume := screen.has_method("on_focus_resume_requested")
 	focus_pauser.hold_resume = handles_resume
 	if screen.has_method("on_focus_paused"):

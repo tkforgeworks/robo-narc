@@ -27,6 +27,5 @@ func _process(_delta: float) -> void:
 
 
 func _layout() -> void:
-	var viewport := get_viewport_rect().size
-	size = Vector2(viewport.x, config.bus_overlay_height_px)
-	position = Vector2(0.0, viewport.y - size.y)
+	size = Vector2(Playfield.BASE.x, config.bus_overlay_height_px)
+	position = Vector2(0.0, Playfield.BASE.y - size.y)

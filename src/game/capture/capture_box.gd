@@ -26,7 +26,7 @@ func _ready() -> void:
 
 
 func center_in_playfield() -> void:
-	position = (get_viewport_rect().size - size) * 0.5
+	position = (Playfield.BASE - size) * 0.5
 
 
 func speed() -> float:
@@ -54,7 +54,7 @@ func _process(delta: float) -> void:
 	var direction := Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	if direction != Vector2.ZERO:
 		position += direction * speed() * delta
-		var limit := get_viewport_rect().size - size
+		var limit := Playfield.BASE - size
 		position = position.clamp(Vector2.ZERO, limit)
 
 

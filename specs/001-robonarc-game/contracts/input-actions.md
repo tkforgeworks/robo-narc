@@ -43,6 +43,21 @@ directly. `NameEntry` opens the OS virtual keyboard on touch
 (`DisplayServer.virtual_keyboard_show`) and accepts gamepad navigation through an
 on-screen letter grid when the source is GAMEPAD.
 
+## Playfield and gutters
+
+`Playfield.BASE` is 1280 × 720. Under the `expand` stretch aspect the viewport grows
+instead of scaling, so `Playfield.offset(viewport)` centres the design area and the
+remainder is gutter. `Main` treats `Node2D` screens as fixed-playfield screens: it
+shows `Letterbox` over the gutters and lets `TouchControls` place the joystick in
+the left gutter and the capture button in the right one. `Control` screens are
+responsive and fill the window. Gutters narrower than `touch_gutter_min_px` (or
+than the 96 px control minimum) put both controls on the playfield edges at 45 %
+opacity instead.
+
+`VirtualJoystick` feeds move actions with `Input.action_press(action, strength)`;
+`VirtualButton` additionally pushes an `InputEventAction` so `_unhandled_input`
+handlers (CaptureBox) see the press.
+
 ## Platform lock
 
 Android export preset: `screen/orientation = sensor_landscape`;

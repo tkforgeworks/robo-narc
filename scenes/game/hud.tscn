@@ -7,7 +7,12 @@
 layer = 5
 script = ExtResource("1_hud")
 
-[node name="ScoreLabel" type="Label" parent="."]
+[node name="Frame" type="Control" parent="."]
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+
+[node name="ScoreLabel" type="Label" parent="Frame"]
 offset_left = 24.0
 offset_top = 16.0
 offset_right = 324.0
@@ -15,7 +20,7 @@ offset_bottom = 52.0
 theme_override_font_sizes/font_size = 28
 text = "SCORE 0"
 
-[node name="TimeLabel" type="Label" parent="."]
+[node name="TimeLabel" type="Label" parent="Frame"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -28,7 +33,7 @@ theme_override_font_sizes/font_size = 28
 text = "TIME 01:30.0"
 horizontal_alignment = 2
 
-[node name="FeedbackBanner" type="Label" parent="."]
+[node name="FeedbackBanner" type="Label" parent="Frame"]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
@@ -41,7 +46,7 @@ theme_override_font_sizes/font_size = 30
 horizontal_alignment = 1
 script = ExtResource("2_banner")
 
-[node name="FrameLabel" type="Label" parent="."]
+[node name="FrameLabel" type="Label" parent="Frame"]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0

@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/core/input/virtual_joystick.gd" id="1_joystick"]
+
+[node name="VirtualJoystick" type="Control"]
+custom_minimum_size = Vector2(96, 96)
+offset_right = 160.0
+offset_bottom = 160.0
+mouse_filter = 2
+script = ExtResource("1_joystick")
+
+[node name="Base" type="TextureRect" parent="."]
+offset_right = 160.0
+offset_bottom = 160.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Thumb" type="TextureRect" parent="."]
+offset_right = 72.0
+offset_bottom = 72.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
