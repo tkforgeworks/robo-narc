@@ -1,13 +1,16 @@
 class_name Vehicle
 extends Node2D
 ## One vehicle ahead of the bus, seen from behind. Lives in road space
-## (road_x, z) and is projected to the screen every frame. Carries no
-## violation label; ViolationRules judges its VehicleState.
+## (road_x, z) and is projected to the screen every physics step; the whole
+## node scales with distance, so the areas authored in its scene (body
+## footprint, plate, curb-side probe) scale with it. Carries no violation
+## label; ViolationRules judges the VehicleSensor's report.
 
 enum Motion { MOVING, STOPPED_IN_ROAD, CURB_PARKED }
 
 const PLATE_CHARS := "ABCDEFGHJKLMNPRSTUVWXYZ"
 const CAPTURED_TINT := Color(0.45, 1.0, 0.55)
+const FALLBACK_REAR_WIDTH_PX := 140.0
 
 static var _next_id: int = 1
 
@@ -25,6 +28,10 @@ var merging: bool = false
 ## Injected by the spawner; falls back to the Tuning autoload.
 var config: TuningConfig
 
+@onready var body_area: OutlinedArea = $BodyArea
+@onready var plate_area: OutlinedArea = $PlateArea
+@onready var curb_probe: OutlinedArea = $CurbProbe
+@onready var sensor: VehicleSensor = $VehicleSensor
 @onready var _body: Sprite2D = $Body
 @onready var _plate: PlateOverlay = $PlateOverlay
 @onready var _lights: VehicleLights = $VehicleLights
@@ -44,23 +51,31 @@ func setup(p_road_x: float, p_z: float, p_motion: Motion, p_own_speed: float,
 	plate_text = _generate_plate_text()
 
 
+func _enter_tree() -> void:
+	if config == null:
+		config = Tuning.config
+	for area: OutlinedArea in [$BodyArea, $PlateArea, $CurbProbe]:
+		area.config = config
+	$VehicleSensor.config = config
+
+
 func _ready() -> void:
 	id = _next_id
 	_next_id += 1
-	if config == null:
-		config = Tuning.config
 	if style == null:
 		style = VehicleStyle.make_default("default")
 	apply_style()
 	_captured_mark.visible = false
+	refresh(config.lane_bus_center())
+	reset_physics_interpolation()
 
 
 func is_stationary() -> bool:
 	return motion != Motion.MOVING
 
 
-func to_state() -> VehicleState:
-	return VehicleState.new(id, road_x, z, is_stationary(), style.rear_width_px * 0.5, captured)
+func report() -> VehicleReport:
+	return sensor.report()
 
 
 ## Moves the vehicle by the road's motion relative to its own, re-projects it,
@@ -90,7 +105,7 @@ func merge_to(p_road_x: float) -> void:
 
 
 func get_plate_rect() -> Rect2:
-	return _plate.screen_rect()
+	return AreaRects.global_rect(plate_area)
 
 
 func mark_captured() -> void:
@@ -99,18 +114,27 @@ func mark_captured() -> void:
 	_plate.modulate = CAPTURED_TINT
 
 
-## (Re)applies the body style: texture, size, plate placement, light regions.
-## Public so live style tuning can refresh vehicles already on the road.
+## Hides the art, leaving the areas (and their outlines) in place.
+func set_art_visible(shown: bool) -> void:
+	_body.visible = shown
+	_plate.visible = shown
+
+
+## (Re)applies the body style: colour texture, light regions, and the plate art
+## sized to the authored PlateArea. A scene without an authored body layout
+## (the base vehicle.tscn) is laid out from the texture instead.
 func apply_style() -> void:
+	var authored := _body.texture != null
 	var texture := style.texture_at(color_index)
 	if texture == null:
-		texture = PlaceholderTexture.register_use("vehicle body")
+		texture = _body.texture if authored else PlaceholderTexture.register_use("vehicle body")
 	_body.texture = texture
 	_body.centered = false
-	var size := Vector2(texture.get_size())
-	_body.scale = Vector2.ONE * (style.rear_width_px / size.x)
-	_body.offset = Vector2(-size.x * 0.5, -size.y)
-	_plate.apply(style, _body)
+	if not authored:
+		var size := Vector2(texture.get_size())
+		_body.scale = Vector2.ONE * (FALLBACK_REAR_WIDTH_PX / size.x)
+		_body.offset = Vector2(-size.x * 0.5, -size.y)
+	_plate.apply(plate_area)
 	_lights.attach(_body, style, config)
 	_lights.set_motion(motion)
 	_captured_mark.position = _plate.position + Vector2(0.0, -_captured_mark.size.y)

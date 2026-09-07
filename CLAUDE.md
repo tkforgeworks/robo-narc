@@ -40,4 +40,5 @@ authoritative reference for the existing mechanics and tuning values. See
 - **Layout**: `src/core/` + `scenes/core/` + `tests/core/` are the game-agnostic
   template layer; `src/game/`, `scenes/game/`, `data/game/` are RoboNarc. Art lives
   under `assets/` per `specs/001-robonarc-game/contracts/asset-conventions.md`;
-  drop-in vehicle variants go in `assets/vehicles/<style>/`
+  drop-in vehicle variants go in `assets/vehicles/<style>/` with an inherited scene in
+  `scenes/game/vehicles/<style>.tscn` (plate, body, and probe rectangles are authored there)

@@ -27,7 +27,6 @@ clarified scoring changes.
 | Road | lane_bike_right | float | 700 | 0..900 / 1 | RoadGeometry |
 | Road | lane_curb_x | float | 961 | 0..1200 / 1 | RoadGeometry |
 | Road | road_edge_right_x | float | 1576 | 800..3000 / 5 | BuildingStrip |
-| Road | curb_threshold_x | float | 720 | 0..1200 / 1 | ViolationRules |
 | Road | bus_stop_zone_length | float | 20 | 5..60 / 1 | Spawner |
 | Road | stencil_period_z | float | 45 | 10..200 / 1 | RoadStencil |
 | Road | stencil_flatten | float | 0.45 | 0.1..1 / 0.05 | RoadStencil |
@@ -48,15 +47,15 @@ clarified scoring changes.
 | Traffic | moving_speed_min_ratio | float | 0.45 | 0.1..1 / 0.05 | Spawner |
 | Traffic | moving_speed_max_ratio | float | 0.65 | 0.1..1 / 0.05 | Spawner |
 | Traffic | merge_lateral_speed | float | 140 | 20..600 / 10 | Vehicle |
-| Traffic | double_park_adjacent_z | float | 9 | 1..30 / 0.5 | ViolationRules |
-| Traffic | double_park_min_x_gap | float | 100 | 20..400 / 5 | ViolationRules |
-| Traffic | bike_intrusion_min_px | float | 60 | 0..200 / 5 | ViolationRules |
+| Traffic | lane_membership_ratio | float | 0.5 | 0.1..1 / 0.05 | ViolationRules (share of body width in a lane to count as in it) |
+| Traffic | bike_intrusion_ratio | float | 0.35 | 0.05..1 / 0.05 | ViolationRules (share of body width over the bike lane) |
 | Traffic | spawn_column_gap_curb_z | float | 14 | 2..60 / 1 | Spawner |
 | Traffic | spawn_column_gap_bus_z | float | 30 | 2..80 / 1 | Spawner |
 | Traffic | honk_probability | float | 0.3 | 0..1 / 0.05 | HonkScheduler |
 | Traffic | situation_weight_* (7) | float | GDD §14 values | 0..10 / 0.01 | SituationTable |
 | Capture | plate_readable_z | float | 30 | 5..100 / 1 | CaptureJudge |
 | Capture | capture_cooldown_sec | float | 0.35 | 0..2 / 0.05 | CaptureBox |
+| Capture | capture_overlap_ratio | float | 1.0 | 0.5..1 / 0.05 | CaptureJudge (share of the plate inside the box) |
 | Capture | box_size | Vector2 | (140, 90) | 40..400 each | CaptureBox |
 | Capture | box_speed_keyboard | float | 420 | 100..1500 / 10 | CaptureBox |
 | Capture | box_speed_touch | float | 420 | 100..1500 / 10 | CaptureBox |
@@ -68,7 +67,6 @@ clarified scoring changes.
 | Vehicles | light_intensity_dim | float | 0.35 | 0..1 / 0.05 | VehicleLights |
 | Vehicles | light_intensity_off | float | 0.0 | 0..1 / 0.05 | VehicleLights |
 | Vehicles | light_glow_color | Color | (1, 0.15, 0.1) | color | VehicleLights |
-| Vehicles | rear_width_px | float | 140 | 40..300 / 1 | Vehicle (default; per-style value wins) |
 | Leaderboard | top_count | int | 20 | 5..100 / 5 | LeaderboardPanel |
 | Leaderboard | request_timeout_sec | float | 5 | 1..15 / 0.5 | LeaderboardClient |
 | Leaderboard | default_player_name | String | "Rookie" | letters, <= 12 | NameEntry |
@@ -77,12 +75,15 @@ clarified scoring changes.
 | Audio | volume_sfx_default | float | 1.0 | 0..1 | AudioMixer |
 | Debug | touch_gutter_min_px | float | 120 | 0..400 / 10 | TouchControls |
 | Debug | show_lane_overlay | bool | false | | RoadView (debug builds) |
-| Debug | show_plate_rects | bool | false | | VehicleLayer (debug builds) |
+| Debug | show_collision_shapes | bool | false | | Every OutlinedArea (lanes, zones, bodies, plates, probes, capture) |
+| Debug | hide_sprites | bool | false | | GameplayScreen (art off, areas and HUD stay) |
 
 Per-body-style tunables (`VehicleStyle`, enumerated under a "Style: <key>" section):
-`plate_rect`, `left_light_rect`, `right_light_rect` as normalized `Rect2`, each
-component 0..1 / 0.005, and `rear_width_px`. Saved overrides for styles are applied
-when the registry registers as the style provider (shift start).
+`left_light_rect`, `right_light_rect` as normalized `Rect2`, each component
+0..1 / 0.005. Plate placement and body size are authored in the style's scene
+(`scenes/game/vehicles/<key>.tscn`: `Body` sprite offset/scale, `PlateArea/Shape`),
+as are the body footprint and curb-side probe rectangles. Saved overrides for
+styles are applied when the registry registers as the style provider (shift start).
 
 Lane values were calibrated 2026-09-07 against `assets/road/backdrop.png` (vanishing
 point at image x 1217, y 0; edges measured at three rows and projected to the bus

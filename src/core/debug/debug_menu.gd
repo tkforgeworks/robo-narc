@@ -89,7 +89,7 @@ func register_action(label: String, action: Callable) -> void:
 ## Diffs the live values against the shipped defaults as .tres lines, puts them
 ## on the clipboard, logs them, and shows them in the menu for manual copying.
 func copy_tuned_values() -> void:
-	_export_text = tuning.export_text()
+	_export_text = TuningExport.text(tuning)
 	DisplayServer.clipboard_set(_export_text)
 	DebugLog.info(TAG, "tuned values:
 %s" % _export_text)

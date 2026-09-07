@@ -26,7 +26,6 @@ extends Resource
 @export_range(0.0, 900.0, 1.0) var lane_bike_right: float = 700.0
 @export_range(0.0, 1200.0, 1.0) var lane_curb_x: float = 961.0
 @export_range(800.0, 3000.0, 5.0) var road_edge_right_x: float = 1576.0
-@export_range(0.0, 1200.0, 1.0) var curb_threshold_x: float = 720.0
 @export_range(5.0, 60.0, 1.0) var bus_stop_zone_length: float = 20.0
 @export_range(10.0, 200.0, 1.0) var stencil_period_z: float = 45.0
 @export_range(0.1, 1.0, 0.05) var stencil_flatten: float = 0.45
@@ -51,9 +50,10 @@ extends Resource
 @export_range(0.1, 1.0, 0.05) var moving_speed_min_ratio: float = 0.45
 @export_range(0.1, 1.0, 0.05) var moving_speed_max_ratio: float = 0.65
 @export_range(20.0, 600.0, 10.0) var merge_lateral_speed: float = 140.0
-@export_range(1.0, 30.0, 0.5) var double_park_adjacent_z: float = 9.0
-@export_range(20.0, 400.0, 5.0) var double_park_min_x_gap: float = 100.0
-@export_range(0.0, 200.0, 5.0) var bike_intrusion_min_px: float = 60.0
+## Share of a body's width inside a lane for it to count as "in" that lane.
+@export_range(0.1, 1.0, 0.05) var lane_membership_ratio: float = 0.5
+## Share of a body's width over the bike lane that makes a parker a violator.
+@export_range(0.05, 1.0, 0.05) var bike_intrusion_ratio: float = 0.35
 @export_range(2.0, 60.0, 1.0) var spawn_column_gap_curb_z: float = 14.0
 @export_range(2.0, 80.0, 1.0) var spawn_column_gap_bus_z: float = 30.0
 @export_range(0.0, 1.0, 0.05) var honk_probability: float = 0.3
@@ -68,6 +68,8 @@ extends Resource
 @export_group("Capture")
 @export_range(5.0, 100.0, 1.0) var plate_readable_z: float = 30.0
 @export_range(0.0, 2.0, 0.05) var capture_cooldown_sec: float = 0.35
+## Share of the plate that must be inside the box (1.0 = fully framed).
+@export_range(0.5, 1.0, 0.05) var capture_overlap_ratio: float = 1.0
 @export var box_size: Vector2 = Vector2(140.0, 90.0)
 @export_range(100.0, 1500.0, 10.0) var box_speed_keyboard: float = 420.0
 @export_range(100.0, 1500.0, 10.0) var box_speed_touch: float = 420.0
@@ -83,7 +85,6 @@ extends Resource
 @export_range(0.0, 1.0, 0.05) var light_intensity_dim: float = 0.35
 @export_range(0.0, 1.0, 0.05) var light_intensity_off: float = 0.0
 @export var light_glow_color: Color = Color(1.0, 0.15, 0.1)
-@export_range(40.0, 300.0, 1.0) var rear_width_px: float = 140.0
 
 @export_group("Leaderboard")
 @export_range(5, 100, 5) var top_count: int = 20
@@ -98,7 +99,10 @@ extends Resource
 @export_group("Debug")
 @export_range(0.0, 400.0, 10.0) var touch_gutter_min_px: float = 120.0
 @export var show_lane_overlay: bool = false
-@export var show_plate_rects: bool = false
+## Outline every detection area (lanes, zones, bodies, plates, probes, capture box).
+@export var show_collision_shapes: bool = false
+## Hide the art so only the areas and HUD remain.
+@export var hide_sprites: bool = false
 
 
 ## Centre of the bus/travel lane in road space.

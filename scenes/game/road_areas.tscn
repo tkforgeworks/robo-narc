@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/game/road/road_areas.gd" id="1_areas"]
+[ext_resource type="Script" path="res://src/game/road/lane_area.gd" id="2_lane"]
+
+[node name="RoadAreas" type="Node2D"]
+script = ExtResource("1_areas")
+
+[node name="Passing" type="Area2D" parent="."]
+script = ExtResource("2_lane")
+lane = 1
+
+[node name="Shape" type="CollisionPolygon2D" parent="Passing"]
+
+[node name="Bus" type="Area2D" parent="."]
+script = ExtResource("2_lane")
+lane = 2
+
+[node name="Shape" type="CollisionPolygon2D" parent="Bus"]
+
+[node name="Bike" type="Area2D" parent="."]
+script = ExtResource("2_lane")
+lane = 3
+
+[node name="Shape" type="CollisionPolygon2D" parent="Bike"]
+
+[node name="Parking" type="Area2D" parent="."]
+script = ExtResource("2_lane")
+lane = 4
+
+[node name="Shape" type="CollisionPolygon2D" parent="Parking"]

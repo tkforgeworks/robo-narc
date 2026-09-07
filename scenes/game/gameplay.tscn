@@ -1,7 +1,8 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Script" path="res://src/screens/gameplay_screen.gd" id="1_gameplay"]
 [ext_resource type="PackedScene" path="res://scenes/game/road_view.tscn" id="2_road"]
+[ext_resource type="PackedScene" path="res://scenes/game/road_areas.tscn" id="2_areas"]
 [ext_resource type="Script" path="res://src/game/road/bus_stop_zone.gd" id="3_zones"]
 [ext_resource type="Script" path="res://src/game/vehicles/vehicle_layer.gd" id="4_layer"]
 [ext_resource type="Script" path="res://src/game/traffic/vehicle_spawner.gd" id="5_spawner"]
@@ -17,11 +18,14 @@
 [ext_resource type="Script" path="res://src/game/audio/shift_sounds.gd" id="15_sounds"]
 [ext_resource type="Script" path="res://src/game/shift/shift_tuning_hooks.gd" id="16_hooks"]
 [ext_resource type="Script" path="res://src/core/app/playfield_anchor.gd" id="17_anchor"]
+[ext_resource type="Script" path="res://src/game/shift/debug_view.gd" id="18_debug"]
 
 [node name="GameplayScreen" type="Node2D"]
 script = ExtResource("1_gameplay")
 
 [node name="RoadView" parent="." instance=ExtResource("2_road")]
+
+[node name="RoadAreas" parent="." instance=ExtResource("2_areas")]
 
 [node name="BusStopZones" type="Node2D" parent="."]
 script = ExtResource("3_zones")
@@ -68,6 +72,9 @@ script = ExtResource("15_sounds")
 
 [node name="ShiftTuningHooks" type="Node" parent="."]
 script = ExtResource("16_hooks")
+
+[node name="DebugView" type="Node" parent="."]
+script = ExtResource("18_debug")
 
 [node name="PlayfieldAnchor" type="Node" parent="."]
 script = ExtResource("17_anchor")

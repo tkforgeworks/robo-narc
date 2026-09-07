@@ -1,8 +1,8 @@
 class_name BusStopZones
 extends Node2D
-## The active bus stop zones: road-fixed spans that scroll toward the bus and
-## are drawn as a stripe along the curb. Read by the spawner (placement) and
-## the rulebook (judgment).
+## The active bus stop zones: road-fixed spans that scroll toward the bus.
+## Each is a ZoneArea child (the rulebook's landmark) drawn as a curb stripe.
+## Read by the spawner (placement) through `zones`.
 
 const STRIPE_PATH := "res://assets/road/bus-stop-stripe.png"
 ## Stripe edges in road space, offset from the curb line.
@@ -12,7 +12,12 @@ const DESPAWN_Z := -25.0
 
 var config: TuningConfig
 var zones: Array[ZoneSpan] = []
+var art_visible: bool = true:
+	set(value):
+		art_visible = value
+		queue_redraw()
 
+var _areas: Array[ZoneArea] = []
 var _camera_x: float = 0.0
 var _texture: Texture2D
 
@@ -27,7 +32,12 @@ func _ready() -> void:
 
 func spawn_zone(z: float, length: float) -> ZoneSpan:
 	var zone := ZoneSpan.new(z, length)
+	var area := ZoneArea.new(zone)
+	area.config = config
+	add_child(area)
+	area.rebuild(_camera_x)
 	zones.append(zone)
+	_areas.append(area)
 	return zone
 
 
@@ -36,13 +46,15 @@ func scroll(delta: float, road_speed: float) -> void:
 		zone.scroll(delta, road_speed)
 	for i in range(zones.size() - 1, -1, -1):
 		if zones[i].end_z() <= DESPAWN_Z:
+			_areas[i].queue_free()
+			_areas.remove_at(i)
 			zones.remove_at(i)
-	queue_redraw()
+	_rebuild()
 
 
 func set_camera_x(camera_x: float) -> void:
 	_camera_x = camera_x
-	queue_redraw()
+	_rebuild()
 
 
 ## True when any zone's far end is closer than `clearance` to the horizon.
@@ -54,11 +66,22 @@ func blocks_spawn_near_horizon(clearance: float) -> bool:
 
 
 func clear() -> void:
+	for area in _areas:
+		area.queue_free()
+	_areas.clear()
 	zones.clear()
 	queue_redraw()
 
 
+func _rebuild() -> void:
+	for area in _areas:
+		area.rebuild(_camera_x)
+	queue_redraw()
+
+
 func _draw() -> void:
+	if not art_visible:
+		return
 	var x0 := config.lane_curb_x + STRIPE_INNER
 	var x1 := config.lane_curb_x + STRIPE_OUTER
 	for zone in zones:

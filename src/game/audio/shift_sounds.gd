@@ -12,7 +12,7 @@ const CAPTURE_CUES: Dictionary = {
 func bind(count_in: CountIn, capture_box: CaptureBox, score_keeper: ScoreKeeper,
 		clock: ShiftClock, cues: AudioCues) -> void:
 	count_in.tick_played.connect(func(_number: int) -> void: cues.play("count_in_tick"))
-	capture_box.capture_attempted.connect(func(_rect: Rect2) -> void: cues.play("shutter"))
+	capture_box.capture_attempted.connect(func(_hits: Array) -> void: cues.play("shutter"))
 	score_keeper.capture_applied.connect(func(outcome: CaptureOutcome) -> void:
 		var cue := cue_for_capture(outcome.kind)
 		if not cue.is_empty():

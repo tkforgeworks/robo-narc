@@ -12,26 +12,15 @@ func before_each() -> void:
 	_config.lane_bike_right = 680.0
 	_config.lane_curb_x = 900.0
 	_config.road_edge_right_x = 1400.0
-	_config.curb_threshold_x = 700.0
-	_config.rear_width_px = 90.0
 
 
-func test_bus_lane_bounds() -> void:
-	assert_true(RoadGeometry.is_in_bus_lane(400.0, _config))
-	assert_false(RoadGeometry.is_in_bus_lane(240.0, _config), "edge is exclusive")
-	assert_false(RoadGeometry.is_in_bus_lane(600.0, _config))
-
-
-func test_curb_threshold() -> void:
-	assert_true(RoadGeometry.is_at_curb(700.0, _config))
-	assert_true(RoadGeometry.is_at_curb(800.0, _config))
-	assert_false(RoadGeometry.is_at_curb(650.0, _config))
-
-
-func test_bike_lane_intrusion() -> void:
-	assert_eq(RoadGeometry.bike_lane_intrusion(800.0, 45.0, _config), 0.0)
-	assert_almost_eq(RoadGeometry.bike_lane_intrusion(700.0, 45.0, _config), 25.0, 0.001)
-	assert_almost_eq(RoadGeometry.bike_lane_intrusion(600.0, 45.0, _config), 125.0, 0.001)
+func test_bounds_follow_the_lane_edges() -> void:
+	assert_eq(RoadGeometry.bounds_for(RoadGeometry.Lane.MEDIAN, _config), Vector2(-400, -80))
+	assert_eq(RoadGeometry.bounds_for(RoadGeometry.Lane.PASSING, _config), Vector2(-80, 240))
+	assert_eq(RoadGeometry.bounds_for(RoadGeometry.Lane.BUS, _config), Vector2(240, 560))
+	assert_eq(RoadGeometry.bounds_for(RoadGeometry.Lane.BIKE, _config), Vector2(560, 680))
+	assert_eq(RoadGeometry.bounds_for(RoadGeometry.Lane.PARKING, _config), Vector2(680, 900))
+	assert_eq(RoadGeometry.bounds_for(RoadGeometry.Lane.SIDEWALK, _config), Vector2(900, 1400))
 
 
 func test_lane_for() -> void:
@@ -45,5 +34,5 @@ func test_lane_for() -> void:
 
 func test_edges_follow_config() -> void:
 	_config.lane_bus_left = 300.0
-	assert_false(RoadGeometry.is_in_bus_lane(280.0, _config))
-	assert_true(RoadGeometry.is_in_bus_lane(320.0, _config))
+	assert_eq(RoadGeometry.lane_for(280.0, _config), RoadGeometry.Lane.PASSING)
+	assert_eq(RoadGeometry.lane_for(320.0, _config), RoadGeometry.Lane.BUS)

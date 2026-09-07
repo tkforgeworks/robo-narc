@@ -82,11 +82,13 @@ func _spawn(placement: Dictionary) -> Vehicle:
 	var column: String = placement["column"]
 	if not _column_clear(column):
 		return null
-	var vehicle: Vehicle = VEHICLE_SCENE.instantiate()
-	vehicle.config = config
 	var pick := _pick_style()
+	var style: VehicleStyle = pick["style"]
+	var scene: PackedScene = style.scene if style.scene != null else VEHICLE_SCENE
+	var vehicle: Vehicle = scene.instantiate()
+	vehicle.config = config
 	vehicle.setup(placement["x"], placement["z"], placement["motion"], placement["speed"],
-			pick["style"], pick["color_index"])
+			style, pick["color_index"])
 	_layer.add(vehicle)
 	_last_in_column[column] = vehicle
 	spawn_count += 1

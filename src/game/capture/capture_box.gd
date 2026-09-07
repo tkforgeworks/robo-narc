@@ -1,10 +1,11 @@
 class_name CaptureBox
 extends Control
 ## The camera reticle. Deliberately drawn, not an art asset. Moves from the
-## named input actions at a per-device speed and emits its screen rect on
-## capture, subject to the cooldown.
+## named input actions at a per-device speed; its CaptureArea child (an Area2D
+## kept the same size) overlaps vehicle plate areas, and a capture press
+## reports each overlapped plate with how much of it is inside the box.
 
-signal capture_attempted(rect: Rect2)
+signal capture_attempted(hits: Array[PlateHit])
 
 const COLOR_FRAME := Color(1.0, 1.0, 1.0, 0.9)
 const COLOR_COOLDOWN := Color(1.0, 0.8, 0.3, 0.9)
@@ -17,11 +18,19 @@ var source: InputSource.Source = InputSource.Source.KEYBOARD
 
 var _cooldown_left: float = 0.0
 
+@onready var _area: OutlinedArea = $CaptureArea
+@onready var _shape: CollisionShape2D = $CaptureArea/Shape
 
-func _ready() -> void:
+
+func _enter_tree() -> void:
 	if config == null:
 		config = Tuning.config
+	$CaptureArea.config = config
+
+
+func _ready() -> void:
 	size = config.box_size
+	_fit_area()
 	center_in_playfield()
 
 
@@ -42,9 +51,21 @@ func screen_rect() -> Rect2:
 	return Rect2(global_position, size)
 
 
+## Every plate the area overlaps right now, with its coverage by the box.
+func plate_hits() -> Array[PlateHit]:
+	var hits: Array[PlateHit] = []
+	var box := screen_rect()
+	for area in _area.get_overlapping_areas():
+		var vehicle := area.get_parent() as Vehicle
+		if vehicle != null and area == vehicle.plate_area:
+			hits.append(PlateHit.new(vehicle, AreaRects.coverage(AreaRects.global_rect(area), box)))
+	return hits
+
+
 func _process(delta: float) -> void:
 	if size != config.box_size:
 		size = config.box_size
+		_fit_area()
 		queue_redraw()
 	if _cooldown_left > 0.0:
 		_cooldown_left -= delta
@@ -70,9 +91,14 @@ func try_capture() -> bool:
 	if _cooldown_left > 0.0:
 		return false
 	_cooldown_left = config.capture_cooldown_sec
-	capture_attempted.emit(screen_rect())
+	capture_attempted.emit(plate_hits())
 	queue_redraw()
 	return true
+
+
+func _fit_area() -> void:
+	(_shape.shape as RectangleShape2D).size = size
+	_shape.position = size * 0.5
 
 
 func _draw() -> void:

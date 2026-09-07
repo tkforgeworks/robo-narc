@@ -22,7 +22,7 @@ Tick an item once the file is in place and the startup log no longer lists it.
   `assets/overlays/bus-cab.png`; it is stretched to that size. Logged when the
   shift starts.
 - [ ] **`license plate`** — the small rectangle on every vehicle's rear, placed and
-  sized per body style by the `plate_rect` tunables. Drop
+  sized per body style by the `PlateArea` rectangle in `scenes/game/vehicles/<style>.tscn`. Drop
   `assets/vehicles/plate.png` (landscape plate, no text needed; the capture target
   is the rect, not the pixels). Logged at the first vehicle spawn.
 - [ ] **`bus stop stripe`** — the curb-side marker for a bus stop zone, scrolling

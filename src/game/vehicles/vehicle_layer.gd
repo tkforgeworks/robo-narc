@@ -1,14 +1,18 @@
 class_name VehicleLayer
 extends Node2D
 ## Holds the live vehicles, advances them, and reports which ones have passed
-## under the bus. Freeing is a separate step so judgment can run first. In
-## debug builds it can outline every plate rect (show_plate_rects tunable).
+## under the bus. Freeing is a separate step so judgment can run first.
 
-## Vehicles that went behind the camera this frame, before they are freed.
+## Vehicles that went behind the camera this step, before they are freed.
 signal vehicles_passed(passed: Array[Vehicle])
 
 var config: TuningConfig
 var vehicles: Array[Vehicle] = []
+var art_visible: bool = true:
+	set(value):
+		art_visible = value
+		for vehicle in vehicles:
+			vehicle.set_art_visible(value)
 
 
 func _ready() -> void:
@@ -19,9 +23,11 @@ func _ready() -> void:
 func add(vehicle: Vehicle) -> void:
 	add_child(vehicle)
 	vehicles.append(vehicle)
+	if not art_visible:
+		vehicle.set_art_visible(false)
 
 
-## Moves every vehicle and returns those that passed the bus this frame.
+## Moves every vehicle and returns those that passed the bus this step.
 func advance_all(delta: float, road_speed: float, camera_x: float) -> Array[Vehicle]:
 	var passed: Array[Vehicle] = []
 	for vehicle in vehicles:
@@ -29,8 +35,6 @@ func advance_all(delta: float, road_speed: float, camera_x: float) -> Array[Vehi
 			passed.append(vehicle)
 	if not passed.is_empty():
 		vehicles_passed.emit(passed)
-	if config.show_plate_rects:
-		queue_redraw()
 	return passed
 
 
@@ -40,28 +44,13 @@ func free_passed(passed: Array[Vehicle]) -> void:
 		vehicle.queue_free()
 
 
-## Re-applies body styles, e.g. after a plate or light rect was retuned.
+## Re-applies body styles, e.g. after a light rect was retuned.
 func restyle_all() -> void:
 	for vehicle in vehicles:
 		vehicle.apply_style()
-
-
-func states() -> Array[VehicleState]:
-	var result: Array[VehicleState] = []
-	for vehicle in vehicles:
-		result.append(vehicle.to_state())
-	return result
 
 
 func clear() -> void:
 	for vehicle in vehicles:
 		vehicle.queue_free()
 	vehicles.clear()
-
-
-func _draw() -> void:
-	if not config.show_plate_rects:
-		return
-	for vehicle in vehicles:
-		if vehicle.visible:
-			draw_rect(vehicle.get_plate_rect(), Color.YELLOW, false, 1.0)

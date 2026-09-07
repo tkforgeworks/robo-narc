@@ -588,7 +588,8 @@ the game proceeds normally with a local-only note.
   bus, a motion state (moving, stopped in roadway, curb-parked), a body style and color
   variant, a plate, a captured flag, and a light state derived from its motion state.
 - **Body Style**: One of the vehicle sprite families. Carries per-style tunable data:
-  plate overlay position and size, and taillight regions for the lighting effect.
+  plate overlay position and size (authored as the plate area in each body style's
+  scene), and taillight regions for the lighting effect.
 - **Situation**: A spawn template that places one or more vehicles and any needed
   landmarks (for example a bus stop zone) to create a judgment scenario. Carries a
   spawn weight. Never carries a violation label.

@@ -57,9 +57,13 @@ Migration from the current `Assets/` tree:
 - `VehicleRegistry` lists `assets/vehicles/*/`; each subfolder is a style. Textures
   are every `<style>-<color>.png` in it (`.png.import` entries in exports are
   normalized). A style with zero textures is skipped with a warning.
-- Style data comes from `data/game/vehicle_styles/<style>.tres`; absent → default
-  `VehicleStyle` (plate rect centred at 45%–55% width, 78%–86% height; light rects
-  at the lower outer corners) plus a logged warning.
+- Style data comes from `data/game/vehicle_styles/<style>.tres` (light rects); absent
+  → default `VehicleStyle` plus a logged warning. The style's scene is
+  `scenes/game/vehicles/<style>.tscn`, inheriting `scenes/game/vehicle.tscn`, with
+  the body sprite sized so the rear is 140 px at z = 0 and the `PlateArea`,
+  `BodyArea`, and `CurbProbe` rectangles placed in the editor; absent → the base
+  scene plus a logged warning. A drop-in style is a texture folder plus a copied
+  scene with its rectangles adjusted.
 - `BuildingStrip` lists `assets/roadside/buildings/<side>/*.png` and cycles them in
   a shuffled order; count is not hard-coded.
 - Audio hooks resolve `assets/audio/sfx/<event>.ogg`, then `<event>.wav`, at

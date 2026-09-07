@@ -1,8 +1,9 @@
 class_name GameplayScreen
 extends Node2D
-## Composes the shift. Wires child nodes by signal and drives the per-frame
-## order (bus, zones, vehicles, misses). No judgment or scoring logic here;
-## live tuning, sounds, honks, and playfield centring are sibling nodes.
+## Composes the shift. Wires child nodes by signal and drives the per-step
+## order (bus, zones, lanes, vehicles, misses) in the physics step so the
+## detection areas are current when a capture lands. No judgment or scoring
+## logic here; live tuning, sounds, honks, and playfield centring are siblings.
 
 signal navigation_requested(scene: PackedScene, payload: Variant)
 
@@ -17,12 +18,14 @@ var _miss_judge: MissJudge
 var _registry: VehicleRegistry
 
 @onready var _road_view: RoadView = $RoadView
+@onready var _road_areas: RoadAreas = $RoadAreas
 @onready var _zones: BusStopZones = $BusStopZones
 @onready var _vehicle_layer: VehicleLayer = $VehicleLayer
 @onready var _spawner: VehicleSpawner = $VehicleSpawner
 @onready var _bus_driver: BusDriver = $BusDriver
 @onready var _clock: ShiftClock = $ShiftClock
 @onready var _score_keeper: ScoreKeeper = $ScoreKeeper
+@onready var _bus_overlay: BusOverlay = $Overlay/Frame/BusOverlay
 @onready var _capture_box: CaptureBox = $Overlay/Frame/CaptureBox
 @onready var _count_in: CountIn = $Overlay/Frame/CountIn
 @onready var _hud: Hud = $Hud
@@ -30,6 +33,7 @@ var _registry: VehicleRegistry
 @onready var _honks: HonkScheduler = $HonkScheduler
 @onready var _sounds: ShiftSounds = $ShiftSounds
 @onready var _tuning_hooks: ShiftTuningHooks = $ShiftTuningHooks
+@onready var _debug_view: DebugView = $DebugView
 
 
 ## Children read `config` in their own _ready, which runs before ours, so the
@@ -37,10 +41,9 @@ var _registry: VehicleRegistry
 func _enter_tree() -> void:
 	if config == null:
 		config = Tuning.config
-	for path: String in ["RoadView", "BusStopZones", "VehicleLayer", "VehicleSpawner",
-			"BusDriver", "ShiftClock", "ScoreKeeper", "HonkScheduler", "ShiftTuningHooks",
-			"Overlay/Frame/BusOverlay",
-			"Overlay/Frame/CaptureBox", "Hud/Frame/FeedbackBanner"]:
+	for path: String in ["RoadView", "RoadAreas", "BusStopZones", "VehicleLayer", "VehicleSpawner",
+			"BusDriver", "ShiftClock", "ScoreKeeper", "HonkScheduler", "ShiftTuningHooks", "DebugView",
+			"Overlay/Frame/BusOverlay", "Overlay/Frame/CaptureBox", "Hud/Frame/FeedbackBanner"]:
 		get_node(path).config = config
 
 
@@ -56,6 +59,7 @@ func _ready() -> void:
 	_score_keeper.score_changed.connect(_on_score_changed)
 	_sounds.bind(_count_in, _capture_box, _score_keeper, _clock, _cues)
 	_honks.bind(_bus_driver, _vehicle_layer, _cues)
+	_debug_view.bind(_road_view, _vehicle_layer, _zones, _bus_overlay)
 
 
 ## Called by ScreenHost after instantiation.
@@ -91,7 +95,7 @@ func on_focus_resume_requested(release: Callable) -> void:
 		_count_in.run(config.resume_count_in_sec)
 
 
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if _clock.phase != ShiftClock.Phase.RUNNING:
 		return
 	var progress := _clock.progress
@@ -100,10 +104,11 @@ func _process(delta: float) -> void:
 	_spawner.set_road_speed(_bus_driver.road_speed)
 	_zones.scroll(delta, _bus_driver.road_speed)
 	_zones.set_camera_x(_bus_driver.camera_x)
+	_road_areas.set_camera_x(_bus_driver.camera_x)
 	_road_view.scroll(delta, _bus_driver.road_speed)
 	_road_view.set_camera_x(_bus_driver.camera_x)
 	var passed := _vehicle_layer.advance_all(delta, _bus_driver.road_speed, _bus_driver.camera_x)
-	for verdict in _miss_judge.judge_passed(passed, _zones.zones, _vehicle_layer.vehicles):
+	for verdict in _miss_judge.judge_passed(passed):
 		_score_keeper.apply_miss(verdict)
 	_vehicle_layer.free_passed(passed)
 
@@ -128,9 +133,8 @@ func _on_count_in_finished() -> void:
 			_clock.resume_after_count_in()
 
 
-func _on_capture_attempted(box: Rect2) -> void:
-	var outcome := _capture_judge.judge(box, _vehicle_layer.vehicles, _zones.zones)
-	_score_keeper.apply_capture(outcome)
+func _on_capture_attempted(hits: Array[PlateHit]) -> void:
+	_score_keeper.apply_capture(_capture_judge.judge(hits))
 
 
 func _on_score_changed(score: int, delta: int, feedback: String) -> void:

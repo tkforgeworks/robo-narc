@@ -78,7 +78,7 @@ func test_rect2_composite_uses_fine_step_for_normalized_values() -> void:
 	var style := VehicleStyle.make_default("car1")
 	var property: Dictionary = {}
 	for p in TunableProperties.list(style):
-		if p["name"] == "plate_rect":
+		if p["name"] == "left_light_rect":
 			property = p
 	var row: HBoxContainer = _factory.build(style, property)
 	add_child_autofree(row)

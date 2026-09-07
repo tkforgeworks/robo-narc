@@ -5,7 +5,5 @@
 [resource]
 script = ExtResource("1_style")
 key = "car3"
-plate_rect = Rect2(0.38, 0.40, 0.24, 0.14)
 left_light_rect = Rect2(0.08, 0.33, 0.22, 0.10)
 right_light_rect = Rect2(0.70, 0.33, 0.22, 0.10)
-rear_width_px = 140.0

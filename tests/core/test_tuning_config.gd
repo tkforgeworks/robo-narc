@@ -53,7 +53,7 @@ func test_every_tunable_is_enumerable() -> void:
 	assert_gt(names.size(), 55)
 	assert_true(names.has("shift_length_sec"))
 	assert_true(names.has("situation_weight_bus_stop_zone"))
-	assert_true(names.has("show_plate_rects"))
+	assert_true(names.has("show_collision_shapes"))
 	assert_false(names.has("resource_name"), "engine properties must be excluded")
 
 

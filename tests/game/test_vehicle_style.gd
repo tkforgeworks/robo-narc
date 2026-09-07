@@ -1,13 +1,12 @@
 extends GutTest
 
 
-func test_default_style_has_centred_plate_and_no_textures() -> void:
+func test_default_style_has_no_textures_or_scene() -> void:
 	var style := VehicleStyle.make_default("car9")
 	assert_eq(style.key, "car9")
 	assert_false(style.has_textures())
 	assert_null(style.texture_at(0))
-	assert_almost_eq(style.plate_rect.get_center().x, 0.5, 0.001)
-	assert_gt(style.plate_rect.position.y, 0.6, "plate sits in the lower part of the sprite")
+	assert_null(style.scene)
 
 
 func test_texture_at_wraps_index() -> void:
@@ -21,9 +20,10 @@ func test_texture_at_wraps_index() -> void:
 	assert_eq(style.texture_at(-1), b)
 
 
-func test_rects_are_tunable_properties() -> void:
+func test_only_light_rects_are_tunable() -> void:
 	var names := TunableProperties.names(VehicleStyle.new())
-	assert_true(names.has("plate_rect"))
 	assert_true(names.has("left_light_rect"))
 	assert_true(names.has("right_light_rect"))
+	assert_false(names.has("plate_rect"), "plate placement is authored in the style scene")
 	assert_false(names.has("textures"), "runtime textures are not persisted")
+	assert_false(names.has("scene"))

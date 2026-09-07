@@ -38,7 +38,8 @@ func update(delta: float, cruise_speed: float, vehicles: Array[Vehicle]) -> void
 	var nearest_parked: Vehicle = null
 	var nearest_moving: Vehicle = null
 	for vehicle in vehicles:
-		if vehicle.z <= config.pass_z or not RoadGeometry.is_in_bus_lane(vehicle.road_x, config):
+		var in_bus_lane := RoadGeometry.lane_for(vehicle.road_x, config) == RoadGeometry.Lane.BUS
+		if vehicle.z <= config.pass_z or not in_bus_lane:
 			continue
 		if vehicle.is_stationary():
 			if vehicle.z < config.swerve_trigger_z \

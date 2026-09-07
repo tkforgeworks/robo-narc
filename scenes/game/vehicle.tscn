@@ -1,23 +1,69 @@
-[gd_scene format=3 uid="uid://dt30wrufipu5g"]
+[gd_scene load_steps=9 format=3]
 
-[ext_resource type="Script" uid="uid://7v5fbk0v7lbg" path="res://src/game/vehicles/vehicle.gd" id="1_vehicle"]
-[ext_resource type="Script" uid="uid://bcboqm5v23amp" path="res://src/game/vehicles/plate_overlay.gd" id="2_plate"]
-[ext_resource type="Script" uid="uid://bjk6hjugynobf" path="res://src/game/vehicles/vehicle_lights.gd" id="3_lights"]
+[ext_resource type="Script" path="res://src/game/vehicles/vehicle.gd" id="1_vehicle"]
+[ext_resource type="Script" path="res://src/game/vehicles/plate_overlay.gd" id="2_plate"]
+[ext_resource type="Script" path="res://src/game/vehicles/vehicle_lights.gd" id="3_lights"]
+[ext_resource type="Script" path="res://src/game/judgment/outlined_area.gd" id="4_area"]
+[ext_resource type="Script" path="res://src/game/judgment/vehicle_sensor.gd" id="5_sensor"]
 
-[node name="Vehicle" type="Node2D" unique_id=2102184308]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(140, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_plate"]
+size = Vector2(28, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_probe"]
+size = Vector2(120, 200)
+
+[node name="Vehicle" type="Node2D"]
 script = ExtResource("1_vehicle")
 
-[node name="Body" type="Sprite2D" parent="." unique_id=1543757063]
+[node name="Body" type="Sprite2D" parent="."]
 centered = false
 
-[node name="PlateOverlay" type="Sprite2D" parent="." unique_id=709003600]
+[node name="PlateOverlay" type="Sprite2D" parent="."]
 centered = false
 script = ExtResource("2_plate")
 
-[node name="VehicleLights" type="Node" parent="." unique_id=814966883]
+[node name="BodyArea" type="Area2D" parent="."]
+collision_layer = 1
+collision_mask = 12
+script = ExtResource("4_area")
+outline_color = Color(0.3, 1, 0.6, 1)
+
+[node name="Shape" type="CollisionShape2D" parent="BodyArea"]
+position = Vector2(0, -8)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="PlateArea" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 0
+monitoring = false
+script = ExtResource("4_area")
+outline_color = Color(1, 1, 0.3, 1)
+
+[node name="Shape" type="CollisionShape2D" parent="PlateArea"]
+position = Vector2(0, -45)
+shape = SubResource("RectangleShape2D_plate")
+
+[node name="CurbProbe" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+script = ExtResource("4_area")
+outline_color = Color(1, 0.5, 1, 1)
+
+[node name="Shape" type="CollisionShape2D" parent="CurbProbe"]
+position = Vector2(130, -40)
+shape = SubResource("RectangleShape2D_probe")
+
+[node name="VehicleLights" type="Node" parent="."]
 script = ExtResource("3_lights")
 
-[node name="CapturedMark" type="Label" parent="." unique_id=1223260691]
+[node name="VehicleSensor" type="Node" parent="."]
+script = ExtResource("5_sensor")
+
+[node name="CapturedMark" type="Label" parent="."]
 visible = false
 offset_right = 90.0
 offset_bottom = 14.0

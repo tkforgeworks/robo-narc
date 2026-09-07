@@ -1,22 +1,28 @@
 class_name VehicleRegistry
 extends RefCounted
 ## Discovers vehicle body styles from assets/vehicles/<style>/ and pairs each
-## with its VehicleStyle data (or a logged default). Also serves as the
-## Tuning style provider and the spawner's style source.
+## with its VehicleStyle data (or a logged default) and its authored scene
+## under scenes/game/vehicles/<style>.tscn (or the base vehicle scene). Also
+## serves as the Tuning style provider and the spawner's style source.
 
 const TAG := "Vehicles"
 const VEHICLES_DIR := "res://assets/vehicles"
 const STYLES_DIR := "res://data/game/vehicle_styles"
+const SCENES_DIR := "res://scenes/game/vehicles"
+const BASE_SCENE_PATH := "res://scenes/game/vehicle.tscn"
 
 var styles: Array[VehicleStyle] = []
 
 var _vehicles_dir: String
 var _styles_dir: String
+var _scenes_dir: String
 
 
-func _init(vehicles_dir: String = VEHICLES_DIR, styles_dir: String = STYLES_DIR) -> void:
+func _init(vehicles_dir: String = VEHICLES_DIR, styles_dir: String = STYLES_DIR,
+		scenes_dir: String = SCENES_DIR) -> void:
 	_vehicles_dir = vehicles_dir
 	_styles_dir = styles_dir
+	_scenes_dir = scenes_dir
 	scan()
 
 
@@ -29,6 +35,7 @@ func scan() -> void:
 			continue
 		var style := _load_style(key)
 		style.textures = textures
+		style.scene = _load_scene(key)
 		styles.append(style)
 	DebugLog.info(TAG, "registered %d style(s): %s" % [styles.size(), ", ".join(keys())])
 
@@ -68,3 +75,11 @@ func _load_style(key: String) -> VehicleStyle:
 			return resource
 	DebugLog.warn(TAG, "no style data for '%s' (expected %s); using defaults" % [key, path])
 	return VehicleStyle.make_default(key)
+
+
+func _load_scene(key: String) -> PackedScene:
+	var path := _scenes_dir.path_join(key + ".tscn")
+	if ResourceLoader.exists(path):
+		return load(path)
+	DebugLog.warn(TAG, "no scene for '%s' (expected %s); using %s" % [key, path, BASE_SCENE_PATH])
+	return load(BASE_SCENE_PATH)

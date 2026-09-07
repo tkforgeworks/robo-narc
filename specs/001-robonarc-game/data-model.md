@@ -22,10 +22,9 @@ Bus, Traffic, Capture, Scoring, Vehicles, Leaderboard, Audio, Debug. Invariants:
 | Field | Type | Rule |
 |-------|------|------|
 | key | String | folder name, `^[a-z0-9_]+$`, unique |
-| plate_rect | Rect2 | normalized to sprite (0..1), tunable |
 | left_light_rect | Rect2 | normalized, tunable |
 | right_light_rect | Rect2 | normalized, tunable |
-| rear_width_px | float | width at full scale, default 90 |
+| scene | PackedScene | filled at runtime: `scenes/game/vehicles/<key>.tscn` (body offset/scale, PlateArea, BodyArea, CurbProbe authored there) or the base vehicle scene |
 | textures | Array[Texture2D] | filled at runtime by VehicleRegistry, one per color |
 
 ### SituationTable (`src/game/traffic/situation_table.gd`, extends RefCounted)

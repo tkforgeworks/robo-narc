@@ -65,6 +65,7 @@ export), `debug_menu`.
 | `debug_section_builder.gd` | Builds the menu's grids |
 | `tunable_control_factory.gd` | One control per property type |
 | `debug_trigger.gd` | F1 or three-finger tap opens the menu |
+| `debug_shapes.gd` | Outlines an Area2D's shapes from its `_draw` (used by the game's `OutlinedArea`) |
 
 ### Assets (`src/core/assets/`)
 

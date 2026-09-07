@@ -92,7 +92,11 @@ at least once; desktop is fine for iteration.
    cars in the road show bright lights, curb cars off, moving cars dim.
 2. Toggle `show_plate_rects` in the debug menu; plate overlays sit on each rear.
 3. Copy `car1` to `assets/vehicles/car9/` with renamed files; rerun. Expect `car9`
-   in the rotation and a logged warning about default style data.
+   in the rotation and logged warnings about default style data and the base scene.
+   Copy `scenes/game/vehicles/car1.tscn` to `car9.tscn` to author its rectangles.
+5. Debug menu: turn on `show_collision_shapes`, then `hide_sprites`. Expect lane
+   trapezoids, zone footprints, and per-vehicle body / plate / probe rectangles
+   moving with nothing else drawn.
 4. During a swerve the backdrop slides with the cars and no edge appears.
 
 ### US4 Screens
