@@ -8,6 +8,8 @@ signal timed_out
 
 @export var timeout_sec: float = 60.0
 @export var autostart: bool = true
+## When true, input cancels the countdown instead of restarting it.
+@export var cancel_on_input: bool = false
 
 var time_left: float = 0.0
 var running: bool = false
@@ -41,5 +43,9 @@ func _process(delta: float) -> void:
 
 
 func _input(_event: InputEvent) -> void:
-	if running:
+	if not running:
+		return
+	if cancel_on_input:
+		running = false
+	else:
 		time_left = timeout_sec

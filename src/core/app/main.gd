@@ -1,8 +1,9 @@
 class_name Main
 extends Node
 ## Persistent root scene. Composes the screen host, input-source tracker, focus
-## pauser, settings store, and (debug builds) the tuning menu, and wires them
-## to whichever screen is active. Game-agnostic: the first screen is an export.
+## pauser, audio mixer, settings store, and (debug builds) the tuning menu, and
+## wires them to whichever screen is active. Game-agnostic: the first screen
+## is an export.
 
 const TAG := "Main"
 const DEBUG_MENU_SCENE: PackedScene = preload("res://scenes/core/debug_menu.tscn")
@@ -15,10 +16,16 @@ var debug_menu: DebugMenu = null
 @onready var screen_host: ScreenHost = $ScreenHost
 @onready var input_source: InputSource = $InputSource
 @onready var focus_pauser: FocusPauser = $FocusPauser
+@onready var audio_mixer: AudioMixer = $AudioMixer
+
+
+## The mixer applies settings in its own _ready, which runs before ours.
+func _enter_tree() -> void:
+	settings = SettingsStore.new(SettingsStore.DEFAULT_PATH, Tuning.config)
+	get_node("AudioMixer").settings = settings
 
 
 func _ready() -> void:
-	settings = SettingsStore.new(SettingsStore.DEFAULT_PATH, Tuning.config)
 	if OS.is_debug_build():
 		_install_debug_tools()
 	screen_host.screen_changed.connect(_on_screen_changed)
@@ -34,6 +41,7 @@ func _install_debug_tools() -> void:
 	debug_menu.tuning = Tuning
 	debug_menu.settings = settings
 	add_child(debug_menu)
+	debug_menu.volume_changed.connect(audio_mixer.set_volume)
 	var trigger := DebugTrigger.new()
 	trigger.name = "DebugTrigger"
 	add_child(trigger)
@@ -42,8 +50,9 @@ func _install_debug_tools() -> void:
 
 ## Connects core services to screens that opt in by defining the methods:
 ## `on_focus_paused()`, `on_focus_resume_requested(release: Callable)`,
-## `bind_settings(SettingsStore)`, `bind_input_source(InputSource)`,
-## `bind_tuning(TuningService)`, `bind_debug_menu(DebugMenu)`.
+## `bind_settings(SettingsStore)`, `bind_audio_mixer(AudioMixer)`,
+## `bind_input_source(InputSource)`, `bind_tuning(TuningService)`,
+## `bind_debug_menu(DebugMenu)`.
 func _on_screen_changed(screen: Node) -> void:
 	var handles_resume := screen.has_method("on_focus_resume_requested")
 	focus_pauser.hold_resume = handles_resume
@@ -54,6 +63,8 @@ func _on_screen_changed(screen: Node) -> void:
 				screen.on_focus_resume_requested.bind(focus_pauser.release))
 	if screen.has_method("bind_settings"):
 		screen.bind_settings(settings)
+	if screen.has_method("bind_audio_mixer"):
+		screen.bind_audio_mixer(audio_mixer)
 	if screen.has_method("bind_input_source"):
 		screen.bind_input_source(input_source)
 	if screen.has_method("bind_tuning"):

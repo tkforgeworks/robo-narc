@@ -25,6 +25,13 @@ func test_input_restarts_countdown() -> void:
 	assert_almost_eq(_timeout.time_left, 1.0, 0.001)
 
 
+func test_cancel_on_input_stops_instead_of_restarting() -> void:
+	_timeout.cancel_on_input = true
+	_timeout.start(1.0)
+	_timeout._input(InputEventKey.new())
+	assert_false(_timeout.running)
+
+
 func test_stop_prevents_timeout() -> void:
 	_timeout.start(0.05)
 	_timeout.stop()

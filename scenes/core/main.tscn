@@ -1,14 +1,15 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://src/core/app/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://src/core/app/screen_host.gd" id="2_host"]
 [ext_resource type="Script" path="res://src/core/input/input_source.gd" id="3_input"]
 [ext_resource type="Script" path="res://src/core/app/focus_pauser.gd" id="4_focus"]
-[ext_resource type="PackedScene" path="res://scenes/screens/title_screen.tscn" id="5_title"]
+[ext_resource type="Script" path="res://src/core/app/audio_mixer.gd" id="5_mixer"]
+[ext_resource type="PackedScene" path="res://scenes/screens/title_screen.tscn" id="6_title"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
-initial_screen = ExtResource("5_title")
+initial_screen = ExtResource("6_title")
 
 [node name="ScreenHost" type="Node" parent="."]
 script = ExtResource("2_host")
@@ -18,3 +19,6 @@ script = ExtResource("3_input")
 
 [node name="FocusPauser" type="Node" parent="."]
 script = ExtResource("4_focus")
+
+[node name="AudioMixer" type="Node" parent="."]
+script = ExtResource("5_mixer")

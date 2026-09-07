@@ -1,0 +1,96 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/screens/settings_screen.gd" id="1_settings"]
+
+[node name="SettingsScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_settings")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.07, 0.08, 0.16, 1)
+
+[node name="Column" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -180.0
+offset_right = 260.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Heading" type="Label" parent="Column"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="Grid" type="GridContainer" parent="Column"]
+layout_mode = 2
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 18
+columns = 2
+
+[node name="MasterLabel" type="Label" parent="Column/Grid"]
+layout_mode = 2
+text = "Master"
+
+[node name="MasterSlider" type="HSlider" parent="Column/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="MusicLabel" type="Label" parent="Column/Grid"]
+layout_mode = 2
+text = "Music"
+
+[node name="MusicSlider" type="HSlider" parent="Column/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 0.7
+
+[node name="SfxLabel" type="Label" parent="Column/Grid"]
+layout_mode = 2
+text = "SFX"
+
+[node name="SfxSlider" type="HSlider" parent="Column/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="Hint" type="Label" parent="Column"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "Left / Right adjust the focused slider. Esc or B goes back."
+horizontal_alignment = 1
+
+[node name="BackButton" type="Button" parent="Column"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "BACK"
