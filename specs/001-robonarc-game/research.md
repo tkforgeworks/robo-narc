@@ -210,17 +210,21 @@ web export; each has a fallback so none blocks planning.
 
 ## R-14: CI/CD and template layer
 
-- **Decision**: `.gitea/workflows/ci.yml` with two jobs on a Godot 4.6.2 headless
-  container image: `test` (GUT headless, fails on any failing test) and `export-web`
-  (installs export templates, runs `--export-release Web`, uploads `build/web` as an
-  artifact). Windows and Android exports are documented in quickstart but not run in
-  CI for this feature (Android needs a keystore secret; deferred). The workflow,
-  `tests/core`, `src/core`, `scenes/core`, `addons/gut`, `project.godot` conventions
-  and `export_presets.cfg` are the extractable template.
+- **Decision**: `.github/workflows/ci.yml` (GitHub Actions; the repo is hosted at
+  `github.com/tkforgeworks/robo-narc`) with two jobs on `ubuntu-latest` using a Godot
+  4.6.2 headless container image (for example `barichello/godot-ci:4.6.2`, which
+  ships the editor and export templates): `test` (GUT headless, fails on any failing
+  test) and `export-web` (runs `--export-release Web`, uploads `build/web` with
+  `actions/upload-artifact`). Triggers: push to `main` and pull requests. Windows and
+  Android exports are documented in quickstart but not run in CI for this feature
+  (Android needs a keystore secret; deferred). The workflow, `tests/core`,
+  `src/core`, `scenes/core`, `addons/gut`, `project.godot` conventions and
+  `export_presets.cfg` are the extractable template.
 - **Rationale**: Principle V requires a CI story now; Principle III makes the web
-  export the natural smoke test. Gitea Actions is GitHub-Actions compatible so the
-  same file serves the org template.
+  export the natural smoke test. The project lives on GitHub, so GitHub Actions is
+  the zero-setup option and the template's target host.
 - **Note**: The repo's CLAUDE.md says "no CI/CD"; the constitution (v1.1.0,
   Principle V) supersedes it. CLAUDE.md should be updated when the workflow lands.
-- **Alternatives considered**: No CI (violates Principle V); GitHub Actions only
-  (the org hosts on Gitea).
+- **Alternatives considered**: No CI (violates Principle V); Gitea Actions (the org
+  has a Gitea instance, but this repo is on GitHub and the workflow syntax is
+  compatible if it is ever mirrored).

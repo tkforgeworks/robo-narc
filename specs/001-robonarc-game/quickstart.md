@@ -120,5 +120,5 @@ at least once; desktop is fine for iteration.
 
 ## CI
 
-`.gitea/workflows/ci.yml` runs the test command above and the web export on every
+`.github/workflows/ci.yml` runs the test command above and the web export on every
 push. A red `test` job or a failed export blocks the change.

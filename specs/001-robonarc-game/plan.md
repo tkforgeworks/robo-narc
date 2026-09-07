@@ -61,7 +61,7 @@ sprites, 30 building sprites, one leaderboard table, one CI workflow.
 | II. Small Class-Based Scripts | PASS | Every script has `class_name`; the prototype's 312-line `gameplay.gd` splits into `ShiftClock`, `BusDriver`, `CaptureJudge`, `MissJudge`, `ScoreKeeper`, `Hud`, `FeedbackBanner`. Pure logic (`RoadGeometry`, `Perspective`, `ViolationRules`, `NameValidator`, `RankCalculator`) is stateless and scene-free. |
 | III. Web Compatibility | PASS | Web export preset is the first thing built; `thread_support=false`; leaderboard uses `HTTPRequest` with CORS-friendly Supabase; persistence via `user://`; shader is a plain `canvas_item` shader supported by GL Compatibility on WebGL 2. CI exports web on every push. |
 | IV. Everything Tunable | PASS | `TuningConfig` resource holds every feel-value with `@export` and ranges; `DebugMenu` enumerates it via `get_property_list()` so new tunables need no menu edits; per-body-style plate and taillight regions are tunables too; reset-to-defaults reloads the shipped `.tres`. |
-| V. Organization Template | PASS | `src/core/`, `scenes/core/`, `tests/core/`, `.gitea/workflows/`, `addons/`, export presets and `project.godot` hygiene form the template layer; `src/game/`, `scenes/game/`, `assets/`, `data/game/` are game-specific. Decisions recorded in research.md with rationale. |
+| V. Organization Template | PASS | `src/core/`, `scenes/core/`, `tests/core/`, `.github/workflows/`, `addons/`, export presets and `project.godot` hygiene form the template layer; `src/game/`, `scenes/game/`, `assets/`, `data/game/` are game-specific. Decisions recorded in research.md with rationale. |
 
 **Autoload justification (Principle I)**: `Tuning` is the single autoload. It is read
 every frame by a dozen nodes across every scene, must be reachable by the debug menu
@@ -100,7 +100,7 @@ specs/001-robonarc-game/
 project.godot                 # 4.6, GL Compatibility, canvas_items + expand stretch, no Jolt/D3D12
 export_presets.cfg            # Web (no threads), Windows, Android (landscape)
 .gitignore
-.gitea/workflows/ci.yml       # [core] headless GUT tests + web export artifact
+.github/workflows/ci.yml      # [core] headless GUT tests + web export artifact
 
 addons/gut/                   # [core] test addon, excluded from exports
 
