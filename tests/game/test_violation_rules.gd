@@ -9,6 +9,15 @@ var _nobody: Array[VehicleState] = []
 
 func before_each() -> void:
 	_config = TuningConfig.new()
+	_config.road_edge_left_x = -400.0
+	_config.lane_road_left = -80.0
+	_config.lane_bus_left = 240.0
+	_config.lane_bus_right = 560.0
+	_config.lane_bike_right = 680.0
+	_config.lane_curb_x = 900.0
+	_config.road_edge_right_x = 1400.0
+	_config.curb_threshold_x = 700.0
+	_config.rear_width_px = 90.0
 
 
 func _vehicle(id: int, road_x: float, z: float, stationary: bool = true) -> VehicleState:

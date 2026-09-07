@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="VehicleStyle" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/game/vehicles/vehicle_style.gd" id="1_style"]
+
+[resource]
+script = ExtResource("1_style")
+key = "car1"
+plate_rect = Rect2(0.40, 0.60, 0.19, 0.10)
+left_light_rect = Rect2(0.07, 0.42, 0.10, 0.16)
+right_light_rect = Rect2(0.83, 0.42, 0.10, 0.16)
+rear_width_px = 140.0

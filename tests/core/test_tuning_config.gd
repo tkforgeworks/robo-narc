@@ -21,8 +21,9 @@ func test_defaults_match_contract_samples() -> void:
 
 func test_derived_lane_centres() -> void:
 	var config := TuningConfig.new()
-	assert_eq(config.lane_bus_center(), 400.0)
-	assert_eq(config.lane_passing_center(), 80.0)
+	assert_eq(config.lane_bus_center(), 345.0)
+	assert_eq(config.lane_passing_center(), -48.5)
+	assert_eq(config.lane_bike_center(), 621.0)
 
 
 func test_defaults_validate_clean() -> void:

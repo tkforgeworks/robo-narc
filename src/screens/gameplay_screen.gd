@@ -17,6 +17,7 @@ var config: TuningConfig
 var _ramp: DifficultyRamp
 var _capture_judge: CaptureJudge
 var _miss_judge: MissJudge
+var _registry: VehicleRegistry
 
 @onready var _road_view: RoadView = $RoadView
 @onready var _zones: BusStopZones = $BusStopZones
@@ -35,8 +36,9 @@ var _miss_judge: MissJudge
 func _enter_tree() -> void:
 	if config == null:
 		config = Tuning.config
-	for path: String in ["RoadView", "BusStopZones", "VehicleSpawner", "BusDriver",
-			"ShiftClock", "ScoreKeeper", "Overlay/CaptureBox", "Hud/FeedbackBanner"]:
+	for path: String in ["RoadView", "BusStopZones", "VehicleLayer", "VehicleSpawner",
+			"BusDriver", "ShiftClock", "ScoreKeeper", "Overlay/BusOverlay",
+			"Overlay/CaptureBox", "Hud/FeedbackBanner"]:
 		get_node(path).config = config
 
 
@@ -55,7 +57,8 @@ func _ready() -> void:
 ## Called by ScreenHost after instantiation.
 func enter(_payload: Variant) -> void:
 	_bus_driver.reset()
-	_spawner.configure(_vehicle_layer, _zones)
+	_registry = VehicleRegistry.new()
+	_spawner.configure(_vehicle_layer, _zones, _registry)
 	_score_keeper.begin(config.shift_length_sec)
 	_hud.set_time(config.shift_length_sec)
 	_clock.start()
@@ -63,6 +66,10 @@ func enter(_payload: Variant) -> void:
 
 ## Live tuning: the few values that are latched at shift start re-apply here.
 func bind_tuning(tuning: TuningService) -> void:
+	if _registry != null:
+		tuning.register_style_provider(_registry)
+	tuning.style_changed.connect(func(_key: String, _prop: String) -> void:
+		_vehicle_layer.restyle_all())
 	tuning.changed.connect(func(property_name: String) -> void:
 		if property_name == "shift_length_sec":
 			_clock.set_duration(config.shift_length_sec)
@@ -98,6 +105,7 @@ func _process(delta: float) -> void:
 	_spawner.set_road_speed(_bus_driver.road_speed)
 	_zones.scroll(delta, _bus_driver.road_speed)
 	_zones.set_camera_x(_bus_driver.camera_x)
+	_road_view.scroll(delta, _bus_driver.road_speed)
 	_road_view.set_camera_x(_bus_driver.camera_x)
 	var passed := _vehicle_layer.advance_all(delta, _bus_driver.road_speed, _bus_driver.camera_x)
 	for verdict in _miss_judge.judge_passed(passed, _zones.zones, _vehicle_layer.vehicles):

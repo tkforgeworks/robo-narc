@@ -27,6 +27,7 @@ var config: TuningConfig
 
 @onready var _body: Sprite2D = $Body
 @onready var _plate: PlateOverlay = $PlateOverlay
+@onready var _lights: VehicleLights = $VehicleLights
 @onready var _captured_mark: Label = $CapturedMark
 
 
@@ -50,7 +51,7 @@ func _ready() -> void:
 		config = Tuning.config
 	if style == null:
 		style = VehicleStyle.make_default("default")
-	_apply_style()
+	apply_style()
 	_captured_mark.visible = false
 
 
@@ -80,6 +81,7 @@ func refresh(camera_x: float) -> void:
 	scale = Vector2.ONE * Perspective.scale_at(z, config)
 	z_index = clampi(int(config.z_max - z), 0, 4000)
 	visible = z <= config.z_max and z > -10.0
+	_lights.set_motion(motion)
 
 
 func merge_to(p_road_x: float) -> void:
@@ -97,7 +99,9 @@ func mark_captured() -> void:
 	_plate.modulate = CAPTURED_TINT
 
 
-func _apply_style() -> void:
+## (Re)applies the body style: texture, size, plate placement, light regions.
+## Public so live style tuning can refresh vehicles already on the road.
+func apply_style() -> void:
 	var texture := style.texture_at(color_index)
 	if texture == null:
 		texture = PlaceholderTexture.register_use("vehicle body")
@@ -107,6 +111,8 @@ func _apply_style() -> void:
 	_body.scale = Vector2.ONE * (style.rear_width_px / size.x)
 	_body.offset = Vector2(-size.x * 0.5, -size.y)
 	_plate.apply(style, _body)
+	_lights.attach(_body, style, config)
+	_lights.set_motion(motion)
 	_captured_mark.position = _plate.position + Vector2(0.0, -_captured_mark.size.y)
 
 

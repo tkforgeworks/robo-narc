@@ -66,8 +66,15 @@ func save_overrides() -> Error:
 	return _store.save(config, get_styles())
 
 
+## Styles usually register after startup, so their saved overrides apply here.
 func register_style_provider(provider: Object) -> void:
 	_style_provider = provider
+	if apply_overrides_on_ready and OS.is_debug_build() and _store.exists():
+		var applied := _store.apply_styles(get_styles())
+		if applied > 0:
+			DebugLog.info(TAG, "applied %d style override(s)" % applied)
+			for style in get_styles():
+				style_changed.emit(str(style.get("key")), "*")
 
 
 func get_styles() -> Array[Resource]:

@@ -50,6 +50,16 @@ func load_into(config: TuningConfig, styles: Array[Resource] = []) -> int:
 		for property_name in file.get_section_keys(SECTION_TUNING):
 			if _apply(config, property_name, file.get_value(SECTION_TUNING, property_name)):
 				applied += 1
+	return applied + apply_styles(styles)
+
+
+## Applies only the `[style.<key>]` sections; used when styles register after
+## the config overrides were already applied.
+func apply_styles(styles: Array[Resource]) -> int:
+	var file := ConfigFile.new()
+	if file.load(path) != OK:
+		return 0
+	var applied := 0
 	for style in styles:
 		var section := STYLE_PREFIX + str(style.get("key"))
 		if not file.has_section(section):

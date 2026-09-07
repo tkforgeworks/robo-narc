@@ -13,20 +13,28 @@ clarified scoring changes.
 | Shift | resume_count_in_sec | float | 3 | 0..5 / 1 | CountIn |
 | Shift | results_idle_timeout_sec | float | 60 | 5..600 / 5 | IdleTimeout |
 | Shift | feedback_time_sec | float | 1.4 | 0.3..4 / 0.1 | FeedbackBanner |
-| Road | horizon_y | float | 140 | 60..300 / 1 | Perspective |
+| Road | horizon_y | float | -5 | -300..300 / 1 | Perspective (calibrated to backdrop) |
 | Road | bus_screen_y | float | 760 | 600..900 / 1 | Perspective |
-| Road | vanishing_point_x | float | 570 | 400..900 / 1 | Perspective |
+| Road | vanishing_point_x | float | 553 | 300..900 / 1 | Perspective (calibrated) |
 | Road | perspective_c | float | 15 | 5..40 / 0.5 | Perspective |
 | Road | z_max | float | 100 | 50..200 / 5 | Perspective, Spawner |
 | Road | pass_z | float | 1 | 0..5 / 0.5 | MissJudge |
 | Road | backdrop_slide_factor | float | 0.35 | 0..1 / 0.05 | RoadView |
-| Road | lane_road_left | float | -80 | -400..0 / 5 | RoadGeometry |
-| Road | lane_bus_left | float | 240 | 0..600 / 5 | RoadGeometry |
-| Road | lane_bus_right | float | 560 | 0..800 / 5 | RoadGeometry |
-| Road | lane_bike_right | float | 680 | 0..900 / 5 | RoadGeometry |
-| Road | lane_curb_x | float | 900 | 0..1200 / 5 | RoadGeometry |
-| Road | curb_threshold_x | float | 700 | 0..1200 / 5 | ViolationRules |
+| Road | road_edge_left_x | float | -538 | -1500..0 / 5 | RoadView, BuildingStrip |
+| Road | lane_road_left | float | -245 | -800..0 / 1 | RoadGeometry |
+| Road | lane_bus_left | float | 148 | 0..600 / 1 | RoadGeometry |
+| Road | lane_bus_right | float | 542 | 0..800 / 1 | RoadGeometry |
+| Road | lane_bike_right | float | 700 | 0..900 / 1 | RoadGeometry |
+| Road | lane_curb_x | float | 961 | 0..1200 / 1 | RoadGeometry |
+| Road | road_edge_right_x | float | 1576 | 800..3000 / 5 | BuildingStrip |
+| Road | curb_threshold_x | float | 720 | 0..1200 / 1 | ViolationRules |
 | Road | bus_stop_zone_length | float | 20 | 5..60 / 1 | Spawner |
+| Road | stencil_period_z | float | 45 | 10..200 / 1 | RoadStencil |
+| Road | stencil_flatten | float | 0.45 | 0.1..1 / 0.05 | RoadStencil |
+| Road | building_height_px | float | 420 | 100..1200 / 10 | BuildingStrip |
+| Road | building_gap_z | float | 14 | 2..60 / 1 | BuildingStrip |
+| Road | building_offset_px | float | 120 | 0..600 / 10 | BuildingStrip |
+| Road | bus_overlay_height_px | float | 180 | 0..400 / 5 | BusOverlay |
 | Bus | cruise_speed_start | float | 14 | 5..60 / 0.5 | DifficultyRamp |
 | Bus | cruise_speed_end | float | 26 | 5..80 / 0.5 | DifficultyRamp |
 | Bus | brake_decel | float | 16 | 1..60 / 1 | BusDriver |
@@ -60,7 +68,7 @@ clarified scoring changes.
 | Vehicles | light_intensity_dim | float | 0.35 | 0..1 / 0.05 | VehicleLights |
 | Vehicles | light_intensity_off | float | 0.0 | 0..1 / 0.05 | VehicleLights |
 | Vehicles | light_glow_color | Color | (1, 0.15, 0.1) | color | VehicleLights |
-| Vehicles | rear_width_px | float | 90 | 40..200 / 1 | Vehicle |
+| Vehicles | rear_width_px | float | 140 | 40..300 / 1 | Vehicle (default; per-style value wins) |
 | Leaderboard | top_count | int | 20 | 5..100 / 5 | LeaderboardPanel |
 | Leaderboard | request_timeout_sec | float | 5 | 1..15 / 0.5 | LeaderboardClient |
 | Leaderboard | default_player_name | String | "Rookie" | letters, <= 12 | NameEntry |
@@ -71,9 +79,14 @@ clarified scoring changes.
 | Debug | show_lane_overlay | bool | false | | RoadView (debug builds) |
 | Debug | show_plate_rects | bool | false | | VehicleLayer (debug builds) |
 
-Per-body-style tunables (`VehicleStyle`, enumerated under a "Vehicle styles" section):
+Per-body-style tunables (`VehicleStyle`, enumerated under a "Style: <key>" section):
 `plate_rect`, `left_light_rect`, `right_light_rect` as normalized `Rect2`, each
-component 0..1 / 0.005.
+component 0..1 / 0.005, and `rear_width_px`. Saved overrides for styles are applied
+when the registry registers as the style provider (shift start).
+
+Lane values were calibrated 2026-09-07 against `assets/road/backdrop.png` (vanishing
+point at image x 1217, y 0; edges measured at three rows and projected to the bus
+line). Tests that need the prototype geometry set it explicitly.
 
 ## Debug menu behavior
 

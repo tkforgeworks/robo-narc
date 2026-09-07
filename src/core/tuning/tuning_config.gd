@@ -12,20 +12,28 @@ extends Resource
 @export_range(0.3, 4.0, 0.1) var feedback_time_sec: float = 1.4
 
 @export_group("Road")
-@export_range(60.0, 300.0, 1.0) var horizon_y: float = 140.0
+@export_range(-300.0, 300.0, 1.0) var horizon_y: float = -5.0
 @export_range(600.0, 900.0, 1.0) var bus_screen_y: float = 760.0
-@export_range(400.0, 900.0, 1.0) var vanishing_point_x: float = 570.0
+@export_range(300.0, 900.0, 1.0) var vanishing_point_x: float = 553.0
 @export_range(5.0, 40.0, 0.5) var perspective_c: float = 15.0
 @export_range(50.0, 200.0, 5.0) var z_max: float = 100.0
 @export_range(0.0, 5.0, 0.5) var pass_z: float = 1.0
 @export_range(0.0, 1.0, 0.05) var backdrop_slide_factor: float = 0.35
-@export_range(-400.0, 0.0, 5.0) var lane_road_left: float = -80.0
-@export_range(0.0, 600.0, 5.0) var lane_bus_left: float = 240.0
-@export_range(0.0, 800.0, 5.0) var lane_bus_right: float = 560.0
-@export_range(0.0, 900.0, 5.0) var lane_bike_right: float = 680.0
-@export_range(0.0, 1200.0, 5.0) var lane_curb_x: float = 900.0
-@export_range(0.0, 1200.0, 5.0) var curb_threshold_x: float = 700.0
+@export_range(-1500.0, 0.0, 5.0) var road_edge_left_x: float = -538.0
+@export_range(-800.0, 0.0, 1.0) var lane_road_left: float = -245.0
+@export_range(0.0, 600.0, 1.0) var lane_bus_left: float = 148.0
+@export_range(0.0, 800.0, 1.0) var lane_bus_right: float = 542.0
+@export_range(0.0, 900.0, 1.0) var lane_bike_right: float = 700.0
+@export_range(0.0, 1200.0, 1.0) var lane_curb_x: float = 961.0
+@export_range(800.0, 3000.0, 5.0) var road_edge_right_x: float = 1576.0
+@export_range(0.0, 1200.0, 1.0) var curb_threshold_x: float = 720.0
 @export_range(5.0, 60.0, 1.0) var bus_stop_zone_length: float = 20.0
+@export_range(10.0, 200.0, 1.0) var stencil_period_z: float = 45.0
+@export_range(0.1, 1.0, 0.05) var stencil_flatten: float = 0.45
+@export_range(100.0, 1200.0, 10.0) var building_height_px: float = 420.0
+@export_range(2.0, 60.0, 1.0) var building_gap_z: float = 14.0
+@export_range(0.0, 600.0, 10.0) var building_offset_px: float = 120.0
+@export_range(0.0, 400.0, 5.0) var bus_overlay_height_px: float = 180.0
 
 @export_group("Bus")
 @export_range(5.0, 60.0, 0.5) var cruise_speed_start: float = 14.0
@@ -75,7 +83,7 @@ extends Resource
 @export_range(0.0, 1.0, 0.05) var light_intensity_dim: float = 0.35
 @export_range(0.0, 1.0, 0.05) var light_intensity_off: float = 0.0
 @export var light_glow_color: Color = Color(1.0, 0.15, 0.1)
-@export_range(40.0, 200.0, 1.0) var rear_width_px: float = 90.0
+@export_range(40.0, 300.0, 1.0) var rear_width_px: float = 140.0
 
 @export_group("Leaderboard")
 @export_range(5, 100, 5) var top_count: int = 20
@@ -101,6 +109,10 @@ func lane_bus_center() -> float:
 ## Centre of the passing lane in road space.
 func lane_passing_center() -> float:
 	return (lane_road_left + lane_bus_left) * 0.5
+
+
+func lane_bike_center() -> float:
+	return (lane_bus_right + lane_bike_right) * 0.5
 
 
 func situation_weights() -> Dictionary:
@@ -130,6 +142,8 @@ func validate() -> PackedStringArray:
 	if not (lane_road_left < lane_bus_left and lane_bus_left < lane_bus_right
 			and lane_bus_right < lane_bike_right and lane_bike_right < lane_curb_x):
 		problems.append("lane edges must increase left to right")
+	if not (road_edge_left_x < lane_road_left and lane_curb_x < road_edge_right_x):
+		problems.append("road edges must lie outside the lanes")
 	if moving_speed_min_ratio > moving_speed_max_ratio:
 		problems.append("moving_speed_min_ratio must be <= moving_speed_max_ratio")
 	var total := 0.0

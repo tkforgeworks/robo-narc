@@ -15,7 +15,8 @@ func test_z_zero_lands_on_bus_screen_y_at_full_scale() -> void:
 
 func test_horizon_is_approached_at_z_max() -> void:
 	var p := Perspective.project(0.0, _config.z_max, _config.lane_bus_center(), _config)
-	assert_lt(p.y, _config.horizon_y + 90.0)
+	var span := _config.bus_screen_y - _config.horizon_y
+	assert_lt(p.y, _config.horizon_y + span * 0.15)
 	assert_gt(p.y, _config.horizon_y)
 	assert_lt(Perspective.scale_at(_config.z_max, _config), 0.2)
 
