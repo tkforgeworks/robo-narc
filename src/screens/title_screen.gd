@@ -1,8 +1,8 @@
 class_name TitleScreen
 extends Control
-## Title screen: branding, cue sheet, local top scores (the shared board
-## replaces the panel in US7), Start / About / Settings / Quit, and a DEBUG
-## button in debug builds.
+## Title screen: branding, cue sheet, the shared top-20 board (local history
+## until it answers), Start / About / Settings / Quit, and a DEBUG button in
+## debug builds.
 
 signal navigation_requested(scene: PackedScene, payload: Variant)
 
@@ -13,6 +13,8 @@ const SETTINGS_SCENE_PATH := "res://scenes/screens/settings_screen.tscn"
 var config: TuningConfig
 ## Injectable for tests; defaults to the shared local score file.
 var score_store: ScoreStore
+## Injectable for tests; null lets the client load the active config.
+var leaderboard_config: LeaderboardConfig
 
 var _debug_menu: DebugMenu = null
 
@@ -21,7 +23,13 @@ var _debug_menu: DebugMenu = null
 @onready var _settings_button: Button = %SettingsButton
 @onready var _quit_button: Button = %QuitButton
 @onready var _debug_button: Button = %DebugButton
-@onready var _scores_list: VBoxContainer = %ScoresList
+@onready var _board: LeaderboardPanel = %Leaderboard
+@onready var _client: LeaderboardClient = $LeaderboardClient
+
+
+func _enter_tree() -> void:
+	if leaderboard_config != null:
+		$LeaderboardClient.config = leaderboard_config
 
 
 func _ready() -> void:
@@ -36,7 +44,10 @@ func _ready() -> void:
 	_settings_button.pressed.connect(func() -> void: _go(SETTINGS_SCENE_PATH))
 	_quit_button.pressed.connect(func() -> void: get_tree().quit())
 	_debug_button.pressed.connect(_on_debug_pressed)
-	_populate_scores()
+	_client.top_scores_received.connect(_board.show_entries)
+	_client.failed.connect(_on_fetch_failed)
+	_show_local()
+	_client.fetch_top(config.top_count)
 	_start_button.grab_focus()
 
 
@@ -46,30 +57,22 @@ func bind_debug_menu(menu: DebugMenu) -> void:
 	_debug_button.visible = true
 	menu.register_action("Clear local scores", func() -> void:
 		ScoreStore.new().clear()
-		_populate_scores()
+		score_store.read()
+		_show_local()
 		DebugLog.info("Title", "local scores cleared"))
 
 
 func score_row_count() -> int:
-	return _scores_list.get_child_count()
+	return _board.row_count()
 
 
-func _populate_scores() -> void:
-	for child in _scores_list.get_children():
-		child.queue_free()
-	var records := score_store.top(config.top_count)
-	if records.is_empty():
-		var empty := Label.new()
-		empty.text = "No shifts played yet"
-		_scores_list.add_child(empty)
-		return
-	var rank := 1
-	for record in records:
-		var row := Label.new()
-		var name := record.result.player_name
-		row.text = "%2d.  %-12s %6d" % [rank, name if not name.is_empty() else "---", record.result.score]
-		_scores_list.add_child(row)
-		rank += 1
+func _show_local(note: String = "") -> void:
+	_board.show_local(score_store.top(config.top_count), note)
+
+
+func _on_fetch_failed(_operation: String, reason: String) -> void:
+	var note := "" if reason == LeaderboardClient.REASON_DISABLED else LeaderboardPanel.UNAVAILABLE_NOTE
+	_show_local(note)
 
 
 func _go(path: String) -> void:

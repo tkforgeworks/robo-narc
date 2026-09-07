@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/screens/results_screen.gd" id="1_results"]
 [ext_resource type="Script" path="res://src/core/app/idle_timeout.gd" id="2_idle"]
+[ext_resource type="PackedScene" path="res://scenes/game/name_entry.tscn" id="3_name"]
+[ext_resource type="PackedScene" path="res://scenes/game/leaderboard_panel.tscn" id="4_board"]
+[ext_resource type="Script" path="res://src/game/services/leaderboard_client.gd" id="5_client"]
 
 [node name="ResultsScreen" type="Control"]
 layout_mode = 3
@@ -21,36 +24,52 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.07, 0.08, 0.16, 1)
 
-[node name="Column" type="VBoxContainer" parent="."]
+[node name="Layout" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -300.0
-offset_top = -260.0
-offset_right = 300.0
-offset_bottom = 260.0
+offset_left = -560.0
+offset_top = -300.0
+offset_right = 560.0
+offset_bottom = 300.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 60
+
+[node name="Column" type="VBoxContainer" parent="Layout"]
+custom_minimum_size = Vector2(620, 0)
+layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="Heading" type="Label" parent="Column"]
+[node name="Heading" type="Label" parent="Layout/Column"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 36
 text = "SHIFT OVER"
 horizontal_alignment = 1
 
-[node name="ScoreLabel" type="Label" parent="Column"]
+[node name="ScoreLabel" type="Label" parent="Layout/Column"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 72
 text = "0"
 horizontal_alignment = 1
 
-[node name="Breakdown" type="GridContainer" parent="Column"]
+[node name="NameEntry" parent="Layout/Column" instance=ExtResource("3_name")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Details" type="VBoxContainer" parent="Layout/Column"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Breakdown" type="GridContainer" parent="Layout/Column/Details"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
@@ -58,25 +77,33 @@ theme_override_constants/h_separation = 40
 theme_override_constants/v_separation = 4
 columns = 2
 
-[node name="RankLabel" type="Label" parent="Column"]
+[node name="RankLabel" type="Label" parent="Layout/Column/Details"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "Local rank: -"
 horizontal_alignment = 1
 
-[node name="PlayAgainButton" type="Button" parent="Column"]
+[node name="NoteLabel" type="Label" parent="Layout/Column/Details"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.85, 1)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+
+[node name="PlayAgainButton" type="Button" parent="Layout/Column/Details"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 28
 text = "PLAY AGAIN"
 
-[node name="TitleButton" type="Button" parent="Column"]
+[node name="TitleButton" type="Button" parent="Layout/Column/Details"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Title"
 
-[node name="CountdownLabel" type="Label" parent="Column"]
+[node name="CountdownLabel" type="Label" parent="Layout/Column/Details"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -84,6 +111,14 @@ theme_override_font_sizes/font_size = 16
 text = "Back to title in 10"
 horizontal_alignment = 1
 
+[node name="Board" parent="Layout" instance=ExtResource("4_board")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+
 [node name="IdleTimeout" type="Node" parent="."]
 script = ExtResource("2_idle")
 autostart = false
+
+[node name="LeaderboardClient" type="Node" parent="."]
+script = ExtResource("5_client")

@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://src/screens/title_screen.gd" id="1_title"]
 [ext_resource type="PackedScene" path="res://scenes/game/cue_sheet.tscn" id="2_cue"]
+[ext_resource type="PackedScene" path="res://scenes/game/leaderboard_panel.tscn" id="3_board"]
+[ext_resource type="Script" path="res://src/game/services/leaderboard_client.gd" id="4_client"]
 
 [node name="TitleScreen" type="Control"]
 layout_mode = 3
@@ -94,18 +96,10 @@ theme_override_constants/separation = 24
 [node name="CueSheet" parent="Layout/Right" instance=ExtResource("2_cue")]
 layout_mode = 2
 
-[node name="ScoresHeading" type="Label" parent="Layout/Right"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 22
-text = "TOP SHIFTS"
-
-[node name="ScoresScroll" type="ScrollContainer" parent="Layout/Right"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
-
-[node name="ScoresList" type="VBoxContainer" parent="Layout/Right/ScoresScroll"]
+[node name="Leaderboard" parent="Layout/Right" instance=ExtResource("3_board")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 2
+size_flags_vertical = 3
+
+[node name="LeaderboardClient" type="Node" parent="."]
+script = ExtResource("4_client")

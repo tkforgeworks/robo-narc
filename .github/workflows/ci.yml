@@ -66,6 +66,30 @@ jobs:
       - name: Import project
         run: godot --headless --path . --import
 
+      # Optional: repository secrets SUPABASE_URL and SUPABASE_ANON_KEY enable the
+      # shared leaderboard in the exported build. Absent secrets leave it disabled.
+      - name: Configure leaderboard from secrets
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "leaderboard secrets not set; exporting with the leaderboard disabled"
+            exit 0
+          fi
+          cat > data/game/leaderboard_config.local.tres <<EOF
+          [gd_resource type="Resource" script_class="LeaderboardConfig" load_steps=2 format=3]
+
+          [ext_resource type="Script" path="res://src/game/services/leaderboard_config.gd" id="1_config"]
+
+          [resource]
+          script = ExtResource("1_config")
+          base_url = "$SUPABASE_URL"
+          anon_key = "$SUPABASE_ANON_KEY"
+          enabled = true
+          EOF
+          echo "leaderboard enabled for this export"
+
       - name: Export web (release, no threads)
         run: |
           mkdir -p build/web

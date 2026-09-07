@@ -2,6 +2,8 @@
 .godot/
 *.tmp
 export_credentials.cfg
+# Supabase URL / anon key for the leaderboard (see data/game/leaderboard_config.tres)
+data/game/leaderboard_config.local.tres
 android/build/
 
 # Build output (web, windows, android exports)
