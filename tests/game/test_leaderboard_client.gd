@@ -90,6 +90,7 @@ func test_fetch_failures_map_to_reasons() -> void:
 		[HTTPRequest.RESULT_TIMEOUT, 0, "", "TIMEOUT"],
 		[HTTPRequest.RESULT_CANT_CONNECT, 0, "", "NETWORK"],
 		[HTTPRequest.RESULT_SUCCESS, 401, "{}", "HTTP_401"],
+		[HTTPRequest.RESULT_CONNECTION_ERROR, 400, "{}", "HTTP_400"],
 		[HTTPRequest.RESULT_SUCCESS, 200, "not json", "BAD_JSON"],
 		[HTTPRequest.RESULT_SUCCESS, 200, '{"rank":1}', "BAD_JSON"],
 	]

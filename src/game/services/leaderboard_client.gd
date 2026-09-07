@@ -190,7 +190,11 @@ func _maybe_release() -> void:
 		queue_free()
 
 
+## A status code, when the server sent one, beats the transport result: the
+## web build reports some 4xx answers with a non-success result.
 static func failure_reason(result: int, code: int) -> String:
+	if code >= 400:
+		return "HTTP_%d" % code
 	if result == HTTPRequest.RESULT_TIMEOUT:
 		return REASON_TIMEOUT
 	if result != HTTPRequest.RESULT_SUCCESS:
