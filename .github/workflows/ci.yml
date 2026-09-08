@@ -1,6 +1,7 @@
 # [core] Template-layer CI: headless unit tests, then five exports in parallel:
 # tuning (debug) and release builds for web and Windows, plus a release Android
-# APK. Lift as-is into other TK ForgeWorks Godot projects; adjust the matrix.
+# APK. Pull requests run the tests only; the exports run when a merge lands on
+# main. Lift as-is into other TK ForgeWorks Godot projects; adjust the matrix.
 #
 # Optional repository secrets:
 #   SUPABASE_URL, SUPABASE_ANON_KEY     enable the shared leaderboard in every build
@@ -44,6 +45,8 @@ jobs:
   export:
     name: Export ${{ matrix.name }}
     needs: test
+    # Exports only for merges (pushes) to main; PRs stop after the unit tests.
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
