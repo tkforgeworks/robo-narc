@@ -207,8 +207,7 @@ jobs:
       - name: Export ${{ matrix.preset }} (${{ matrix.mode }})
         run: |
           mkdir -p "$(dirname '${{ matrix.output }}')"
-          VERBOSE=''; [ "${{ matrix.android }}" = "true" ] && VERBOSE='--verbose'
-          godot --headless $VERBOSE --path . --export-${{ matrix.mode }} "${{ matrix.preset }}" "${{ matrix.output }}"
+          godot --headless --path . --export-${{ matrix.mode }} "${{ matrix.preset }}" "${{ matrix.output }}"
           test -f "${{ matrix.output }}"
           ls -la "$(dirname '${{ matrix.output }}')"
 

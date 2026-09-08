@@ -101,4 +101,6 @@ common/physics_interpolation=true
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
+; Android export refuses to run without ETC2/ASTC import enabled (a silent check in headless mode).
+; Our textures import lossless, so this changes nothing for them.
+textures/vram_compression/import_etc2_astc=true
