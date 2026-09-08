@@ -194,10 +194,21 @@ jobs:
       - name: Import project
         run: godot --headless --path . --import
 
+      - name: Android diagnostics
+        if: matrix.android
+        run: |
+          echo '--- editor settings ---'; cat "$HOME/.config/godot/editor_settings-${GODOT_VERSION%.*}.tres"
+          echo '--- java ---'; "$JAVA_HOME/bin/java" -version 2>&1 | head -1
+          echo '--- build-tools ---'; ls "$ANDROID_SDK/build-tools"
+          echo '--- platform-tools ---'; ls "$ANDROID_SDK/platform-tools" | head -5
+          echo '--- templates ---'; ls "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable" | grep -i android
+          echo '--- keystore ---'; ls -la "$GODOT_ANDROID_KEYSTORE_RELEASE_PATH"
+
       - name: Export ${{ matrix.preset }} (${{ matrix.mode }})
         run: |
           mkdir -p "$(dirname '${{ matrix.output }}')"
-          godot --headless --path . --export-${{ matrix.mode }} "${{ matrix.preset }}" "${{ matrix.output }}"
+          VERBOSE=''; [ "${{ matrix.android }}" = "true" ] && VERBOSE='--verbose'
+          godot --headless $VERBOSE --path . --export-${{ matrix.mode }} "${{ matrix.preset }}" "${{ matrix.output }}"
           test -f "${{ matrix.output }}"
           ls -la "$(dirname '${{ matrix.output }}')"
 
