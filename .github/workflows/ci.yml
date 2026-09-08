@@ -99,9 +99,9 @@ jobs:
       - name: Measure bundle size
         run: |
           cd build
-          zip -qr robonarc-web.zip web
+          zip -qr tf3-web.zip web
           RAW_MB=$(du -sm web | cut -f1)
-          ZIP_MB=$(du -sm robonarc-web.zip | cut -f1)
+          ZIP_MB=$(du -sm tf3-web.zip | cut -f1)
           {
             echo "### Web bundle"
             echo "| Measure | Size |"
@@ -119,6 +119,6 @@ jobs:
       - name: Upload web build
         uses: actions/upload-artifact@v4
         with:
-          name: robonarc-web
-          path: build/robonarc-web.zip
+          name: tf3-web
+          path: build/tf3-web.zip
           retention-days: 14

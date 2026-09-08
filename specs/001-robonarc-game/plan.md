@@ -1,4 +1,4 @@
-# Implementation Plan: RoboNarc Convention Game
+# Implementation Plan: Traffic Fighter 3: Next Generation (TF3) Convention Game
 
 **Branch**: `001-robonarc-game` | **Date**: 2026-09-07 | **Spec**: [spec.md](spec.md)
 
@@ -6,7 +6,7 @@
 
 ## Summary
 
-Rebuild the RoboNarc prototype as a composition-first Godot 4.6 project: a 90-second
+Rebuild the TF3 prototype as a composition-first Godot 4.6 project: a 90-second
 bus-camera judgment game with premade art, three input schemes, audio piping, a shared
 Supabase leaderboard, and a self-enumerating debug tuning menu. The prototype's pure
 logic (perspective projection, violation rulebook, situation spawner, bus driving
@@ -14,7 +14,7 @@ behavior) carries over as stateless classes; everything else is re-expressed as
 composed scenes under a persistent `Main` root. The reusable skeleton (tuning system,
 debug menu, logging, input source detection, focus pausing, settings persistence,
 asset discovery, CI, tests) lives in `src/core/` and `scenes/core/` so it can be lifted
-into the org template; RoboNarc-specific content lives in `src/game/` and
+into the org template; TF3-specific content lives in `src/game/` and
 `scenes/game/`.
 
 ## Technical Context
@@ -128,7 +128,7 @@ src/
 │   ├── app/          main.gd, screen_host.gd, focus_pauser.gd, idle_timeout.gd,
 │   │                 settings_store.gd, audio_mixer.gd, placeholder_texture.gd
 │   └── assets/       sprite_folder_scanner.gd
-├── game/                     # RoboNarc-specific
+├── game/                     # TF3-specific
 │   ├── road/         road_geometry.gd, perspective.gd, road_view.gd,
 │   │                 road_stencil.gd, bus_stop_zone.gd, building_strip.gd
 │   ├── vehicles/     vehicle.gd, vehicle_style.gd, vehicle_registry.gd,

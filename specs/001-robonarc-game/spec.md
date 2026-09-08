@@ -1,4 +1,4 @@
-# Feature Specification: RoboNarc Convention Game
+# Feature Specification: Traffic Fighter 3: Next Generation (TF3) Convention Game
 
 **Feature Branch**: `001-robonarc-game`
 
@@ -10,7 +10,7 @@
 
 ## Overview
 
-RoboNarc is a short, single-session arcade game in which the player is the automated
+TF3 is a short, single-session arcade game in which the player is the automated
 enforcement camera on a city bus. Traffic appears at the horizon and rolls toward the
 player. The player moves a capture box over the license plates of vehicles that are
 committing violations (blocking the bus lane, double parking, sitting in the bike lane

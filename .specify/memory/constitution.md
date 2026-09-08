@@ -15,7 +15,7 @@ Sync Impact Report
   Platform & Technical Constraints, Development Workflow, Governance
 -->
 
-# RoboNarc Constitution
+# Traffic Fighter 3: Next Generation (TF3) Constitution
 
 ## Core Principles
 
@@ -110,18 +110,18 @@ for development and for final polish.
 
 ### V. Organization Template Project
 
-RoboNarc is the first game project of the TK ForgeWorks organization and MUST be
+TF3 is the first game project of the TK ForgeWorks organization and MUST be
 built so that its structure can be lifted into an org-level Godot starter template.
 
 - Project structure, CI/CD configuration, testing setup, export presets, debug
   tooling, and the spec-kit workflow MUST be designed as reusable, game-agnostic
-  scaffolding first and RoboNarc-specific content second. Game-specific code and
+  scaffolding first and TF3-specific content second. Game-specific code and
   assets MUST be separable from the reusable skeleton by directory boundary.
 - Every reusable piece (directory layout, CI pipeline, test harness, debug menu
   framework, tuning-resource pattern, export configuration, agent guidance files)
   MUST be documented well enough that a new game project can adopt it without
-  reading RoboNarc's gameplay code.
-- When a design choice is equally good for RoboNarc either way, the option that
+  reading TF3's gameplay code.
+- When a design choice is equally good for TF3 either way, the option that
   generalizes better to other Godot games MUST be preferred.
 - Decisions that shape the template (tooling, CI, test framework, directory
   conventions) MUST be recorded with their rationale so they can be carried to the

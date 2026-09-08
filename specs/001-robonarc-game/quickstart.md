@@ -1,4 +1,4 @@
-# Quickstart: RoboNarc Convention Game
+# Quickstart: Traffic Fighter 3: Next Generation (TF3) Convention Game
 
 Validation guide for the feature. Implementation details are in
 [plan.md](plan.md) and tasks.md; contracts are under [contracts/](contracts/).

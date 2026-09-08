@@ -1,13 +1,13 @@
-# RoboNarc
+# Traffic Fighter 3: Next Generation (TF3)
 
-Evolution of the RoboNarc game prototype. The original prototype lives at
+Evolution of the RoboNarc game prototype (the repo keeps that name). The original prototype lives at
 `C:/code/gamedev/robo_narc` (Godot 4.6.2, GDScript) — its `GDD.md` is the
 authoritative reference for the existing mechanics and tuning values. See
 `README.md` here for the project introduction.
 
 ## Tracking
 
-- **Jira project**: RoboNarc, key **ROB** — all work items go there
+- **Jira project**: TF3, key **ROB** — all work items go there
 
 ## Godot Conventions
 
@@ -38,7 +38,7 @@ authoritative reference for the existing mechanics and tuning values. See
 - **Web export**: `godot --headless --path . --export-release "Web" build/web/index.html`
   then serve `build/web` over localhost (wasm will not run from `file://`)
 - **Layout**: `src/core/` + `scenes/core/` + `tests/core/` are the game-agnostic
-  template layer; `src/game/`, `scenes/game/`, `data/game/` are RoboNarc. Art lives
+  template layer; `src/game/`, `scenes/game/`, `data/game/` are TF3. Art lives
   under `assets/` per `specs/001-robonarc-game/contracts/asset-conventions.md`;
   drop-in vehicle variants go in `assets/vehicles/<style>/` with an inherited scene in
   `scenes/game/vehicles/<style>.tscn` (plate, body, and probe rectangles are authored there)

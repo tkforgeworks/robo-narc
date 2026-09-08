@@ -9,7 +9,7 @@ signal navigation_requested(scene: PackedScene, payload: Variant)
 const TITLE_SCENE_PATH := "res://scenes/screens/title_screen.tscn"
 const IMAGE_DIR := "res://assets/ui/about"
 
-const PITCH := """RoboNarc is modeled on Automated Camera Enforcement: cameras mounted on city buses, like the ones on New York City's MTA fleet, that photograph the license plates of vehicles blocking bus lanes and bus stops.
+const PITCH := """Traffic Fighter 3: Next Generation (TF3) is modeled on Automated Camera Enforcement: cameras mounted on city buses, like the ones on New York City's MTA fleet, that photograph the license plates of vehicles blocking bus lanes and bus stops.
 
 Every car parked in a bus lane slows down everyone on the bus behind it. Camera enforcement keeps buses moving, gives riders a reliable trip, and does it without pulling officers off other work. Plates are reviewed by people before any ticket is issued.
 

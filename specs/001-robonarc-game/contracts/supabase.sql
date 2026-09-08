@@ -1,4 +1,4 @@
--- RoboNarc shared leaderboard schema (contracts/leaderboard-api.md).
+-- TF3 (Traffic Fighter 3: Next Generation) shared leaderboard schema (contracts/leaderboard-api.md).
 -- Apply once in the Supabase SQL editor (Dashboard -> SQL -> New query -> Run).
 -- Idempotent: safe to re-run.
 

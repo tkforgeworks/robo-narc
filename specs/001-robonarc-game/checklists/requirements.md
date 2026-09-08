@@ -1,4 +1,4 @@
-# Specification Quality Checklist: RoboNarc Convention Game
+# Specification Quality Checklist: Traffic Fighter 3: Next Generation (TF3) Convention Game
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
 **Created**: 2026-09-07

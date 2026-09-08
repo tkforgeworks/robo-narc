@@ -1,4 +1,4 @@
-# Tasks: RoboNarc Convention Game
+# Tasks: Traffic Fighter 3: Next Generation (TF3) Convention Game
 
 **Input**: Design documents from `/specs/001-robonarc-game/`
 
@@ -28,7 +28,7 @@ log.
 ## Path Conventions
 
 Single Godot project at the repository root. Layout per plan.md: `src/core/` (template
-layer), `src/game/` (RoboNarc), `src/screens/`, `scenes/{core,game,screens}/`,
+layer), `src/game/` (TF3), `src/screens/`, `scenes/{core,game,screens}/`,
 `data/{core,game}/`, `assets/`, `tests/{core,game}/`, `addons/gut/`,
 `.github/workflows/`.
 
@@ -39,7 +39,7 @@ layer), `src/game/` (RoboNarc), `src/screens/`, `scenes/{core,game,screens}/`,
 **Purpose**: A Godot 4.6.2 project that opens cleanly, exports to web, runs an empty
 test suite in CI, and holds the premade art under the agreed folder layout.
 
-- [X] T001 Create `project.godot` at repo root: name RoboNarc, `config/features=("4.6","GL Compatibility")`, `renderer/rendering_method=gl_compatibility` (+ `.mobile`), viewport 1280×720, `stretch/mode=canvas_items`, `stretch/aspect=expand`, `handheld/orientation=sensor_landscape`, `emulate_mouse_from_touch=false`, `emulate_touch_from_mouse=false`, main scene `res://scenes/core/main.tscn`; no Jolt or D3D12 settings (research R-01, R-08)
+- [X] T001 Create `project.godot` at repo root: name TF3, `config/features=("4.6","GL Compatibility")`, `renderer/rendering_method=gl_compatibility` (+ `.mobile`), viewport 1280×720, `stretch/mode=canvas_items`, `stretch/aspect=expand`, `handheld/orientation=sensor_landscape`, `emulate_mouse_from_touch=false`, `emulate_touch_from_mouse=false`, main scene `res://scenes/core/main.tscn`; no Jolt or D3D12 settings (research R-01, R-08)
 - [X] T002 Add the input map to `project.godot` per `contracts/input-actions.md`: `move_up/down/left/right` (WASD + arrows + left stick + d-pad), `capture` (Space + joypad button 0), `debug_menu` (F1), deadzone 0.2
 - [X] T003 Create `export_presets.cfg` with presets `Web` (`variant/thread_support=false`, `extensions_support=false`, VRAM compression off, export path `build/web/index.html`, exclude filter `addons/*,tests/*`), `Windows Desktop`, and `Android` (`screen/orientation=sensor_landscape`, gamepad enabled); same exclude filter on all
 - [X] T004 [P] Create `.gitignore` for Godot (`.godot/`, `build/`, `*.import` kept, `export_credentials.cfg`, `*.tmp`) and `README` pointer note in `assets/audio/README.md` describing the SFX event file names from `contracts/asset-conventions.md`

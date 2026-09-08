@@ -1,4 +1,4 @@
-# Research: RoboNarc Convention Game
+# Research: Traffic Fighter 3: Next Generation (TF3) Convention Game
 
 **Feature**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md) | **Date**: 2026-09-07
 

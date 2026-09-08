@@ -1,4 +1,4 @@
-# Data Model: RoboNarc Convention Game
+# Data Model: Traffic Fighter 3: Next Generation (TF3) Convention Game
 
 **Feature**: [spec.md](spec.md) | **Plan**: [plan.md](plan.md)
 

@@ -1,4 +1,4 @@
-# RoboNarc
+# Traffic Fighter 3: Next Generation (TF3)
 
 An evolution of the RoboNarc prototype (original at `C:/code/gamedev/robo_narc`).
 
@@ -94,4 +94,4 @@ mechanic, richer road furniture).
 
 Greenfield rebuild of the game, to be planned and built spec-first with
 [github/spec-kit](https://github.com/spec-kit). Work is tracked in Jira under the
-**ROB** project (RoboNarc).
+**ROB** project (TF3).

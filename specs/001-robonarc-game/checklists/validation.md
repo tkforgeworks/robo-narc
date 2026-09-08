@@ -3,7 +3,7 @@
 **Purpose**: Results of running the [quickstart.md](../quickstart.md) scenarios per
 platform (task T078). Re-run and update before each release.
 **Last run**: 2026-09-07, commit after the polish split (web release export served
-from `build/web` over localhost; Windows release export `build/windows/RoboNarc.exe`;
+from `build/web` over localhost; Windows release export `build/windows/TF3.exe`;
 Supabase project live with the publishable key).
 
 Legend: ✓ passed this run · ◐ passed in an earlier session or by unit test only ·

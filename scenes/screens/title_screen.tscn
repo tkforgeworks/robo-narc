@@ -46,8 +46,9 @@ alignment = 1
 
 [node name="Title" type="Label" parent="Layout/Left"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 72
-text = "RoboNarc"
+theme_override_font_sizes/font_size = 54
+text = "Traffic Fighter 3
+Next Generation"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Layout/Left"]

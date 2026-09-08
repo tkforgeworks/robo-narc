@@ -1,9 +1,9 @@
 # Template extraction guide
 
-RoboNarc is the first TK ForgeWorks game and doubles as the org's Godot starter
+Traffic Fighter 3: Next Generation (TF3) is the first TK ForgeWorks game and doubles as the org's Godot starter
 template (constitution Principle V). Everything marked `[core]` below is
-game-agnostic and can be lifted into a new project without reading any RoboNarc
-gameplay code. Everything else is RoboNarc.
+game-agnostic and can be lifted into a new project without reading any TF3
+gameplay code. Everything else is TF3.
 
 ## The boundary
 
@@ -114,10 +114,10 @@ and are the smoke test of the template itself.
 ## Things that look core but are not
 
 - `src/game/services/leaderboard_*`: the Supabase client is generic in shape but
-  its payload is RoboNarc's `ShiftResult`. Lift it with the `ShiftResult` fields
+  its payload is TF3's `ShiftResult`. Lift it with the `ShiftResult` fields
   swapped for the new game's record.
 - `src/game/services/profanity_filter.gd` and `name_validator.gd`: reusable as-is
   for any name entry; kept in the game layer only because the rules come from
-  RoboNarc's spec.
-- `src/game/ui/leaderboard_panel.gd`, `name_entry.gd`: reusable UI with RoboNarc
+  TF3's spec.
+- `src/game/ui/leaderboard_panel.gd`, `name_entry.gd`: reusable UI with TF3
   wording.
