@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://b4ta2w3ltago5"]
+
+[ext_resource type="Script" uid="uid://d3nroc2mrpc41" path="res://src/core/app/main.gd" id="1_main"]
+[ext_resource type="Script" uid="uid://dui04p3i03wjo" path="res://src/core/app/screen_host.gd" id="2_host"]
+[ext_resource type="Script" uid="uid://dpt078tclkfqh" path="res://src/core/input/input_source.gd" id="3_input"]
+[ext_resource type="Script" uid="uid://c5gm0yuoeeij2" path="res://src/core/app/focus_pauser.gd" id="4_focus"]
+[ext_resource type="Script" uid="uid://c6gsiy03e72wa" path="res://src/core/app/audio_mixer.gd" id="5_mixer"]
+[ext_resource type="PackedScene" path="res://scenes/screens/title_screen.tscn" id="6_title"]
+[ext_resource type="Script" uid="uid://lcqhay7fnsa8" path="res://src/core/app/letterbox.gd" id="7_letterbox"]
+[ext_resource type="PackedScene" path="res://scenes/core/touch_controls.tscn" id="8_touch"]
+[ext_resource type="Script" uid="uid://chy73kcyook8y" path="res://src/core/app/music_player.gd" id="9_music"]
+[ext_resource type="PackedScene" path="res://scenes/core/splash_screen.tscn" id="10_splash"]
+
+[node name="Main" type="Node" unique_id=909877687]
+script = ExtResource("1_main")
+initial_screen = ExtResource("10_splash")
+first_game_screen = ExtResource("6_title")
+
+[node name="ScreenHost" type="Node" parent="." unique_id=1945253801]
+script = ExtResource("2_host")
+
+[node name="InputSource" type="Node" parent="." unique_id=1169202206]
+script = ExtResource("3_input")
+
+[node name="FocusPauser" type="Node" parent="." unique_id=1308617758]
+script = ExtResource("4_focus")
+
+[node name="AudioMixer" type="Node" parent="." unique_id=440579529]
+script = ExtResource("5_mixer")
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="AudioMixer" unique_id=923977383]
+script = ExtResource("9_music")
+
+[node name="Letterbox" type="CanvasLayer" parent="." unique_id=883019211]
+layer = 50
+visible = false
+script = ExtResource("7_letterbox")
+
+[node name="TouchControls" parent="." unique_id=51265198 instance=ExtResource("8_touch")]

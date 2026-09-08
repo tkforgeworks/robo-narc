@@ -1,0 +1,13 @@
+# Normalize line endings: LF in the repo and on disk for all text files.
+# Godot writes LF; this stops core.autocrlf from rewriting (and warning about) them.
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.ogg binary
+*.wav binary
+*.ttf binary
+*.otf binary
+*.wasm binary
+*.pck binary

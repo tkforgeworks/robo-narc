@@ -1,0 +1,75 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/screens/about_screen.gd" id="1_about"]
+[ext_resource type="Script" path="res://src/core/ui/link_text.gd" id="2_links"]
+
+[node name="AboutScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_about")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.07, 0.08, 0.16, 1)
+
+[node name="Column" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -280.0
+offset_right = 400.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 18
+
+[node name="Heading" type="Label" parent="Column"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "ABOUT TF3"
+horizontal_alignment = 1
+
+[node name="Image" type="TextureRect" parent="Column"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 160)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PitchText" type="Label" parent="Column"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 20
+text = "..."
+autowrap_mode = 3
+
+[node name="Links" type="RichTextLabel" parent="Column"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 18
+bbcode_enabled = true
+text = "[center][url=https://github.com/tkforgeworks/robo-narc/issues/new]Report a bug[/url]   ·   [url=https://github.com/tkforgeworks/robo-narc]Source on GitHub[/url][/center]"
+fit_content = true
+scroll_active = false
+script = ExtResource("2_links")
+
+[node name="BackButton" type="Button" parent="Column"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "BACK"

@@ -1,0 +1,249 @@
+# [core] Template-layer CI: headless unit tests, then five exports in parallel:
+# tuning (debug) and release builds for web and Windows, plus a release Android
+# APK. Lift as-is into other TK ForgeWorks Godot projects; adjust the matrix.
+#
+# Optional repository secrets:
+#   SUPABASE_URL, SUPABASE_ANON_KEY     enable the shared leaderboard in every build
+#   ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_USER, ANDROID_KEYSTORE_PASSWORD
+#                                       sign the APK with a store keystore; without
+#                                       them a throwaway debug keystore is generated
+#                                       (installs fine for playtesting, not for Play)
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  GODOT_VERSION: "4.6.2"
+  # itch.io upload limit. The compressed zip is what itch.io transfers.
+  WEB_BUNDLE_LIMIT_MB: "1024"
+
+jobs:
+  test:
+    name: Unit tests (GUT)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot ${{ env.GODOT_VERSION }}
+        run: |
+          curl -sSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip -d godot-bin
+          sudo mv "godot-bin/Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
+          chmod +x /usr/local/bin/godot
+          godot --version
+
+      - name: Import project
+        run: godot --headless --path . --import
+
+      - name: Run GUT tests
+        run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gexit
+
+  export:
+    name: Export ${{ matrix.name }}
+    needs: test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: web-tuning
+            preset: Web
+            mode: debug
+            output: build/web/index.html
+            artifact: tf3-web-tuning
+            upload: build/web
+          - name: web
+            preset: Web
+            mode: release
+            output: build/web/index.html
+            artifact: tf3-web
+            upload: build/web
+            size_gate: true
+          - name: windows-tuning
+            preset: Windows Desktop
+            mode: debug
+            output: build/windows/TF3.exe
+            artifact: tf3-windows-tuning
+            upload: build/windows/TF3.exe
+          - name: windows
+            preset: Windows Desktop
+            mode: release
+            output: build/windows/TF3.exe
+            artifact: tf3-windows
+            upload: build/windows/TF3.exe
+          - name: android
+            preset: Android
+            mode: release
+            output: build/android/TF3.apk
+            artifact: tf3-android
+            upload: build/android/TF3.apk
+            android: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Godot ${{ env.GODOT_VERSION }}
+        run: |
+          curl -sSL -o godot.zip "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip -d godot-bin
+          sudo mv "godot-bin/Godot_v${GODOT_VERSION}-stable_linux.x86_64" /usr/local/bin/godot
+          chmod +x /usr/local/bin/godot
+
+      - name: Cache export templates
+        id: templates
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/godot/export_templates/${{ env.GODOT_VERSION }}.stable
+          key: godot-export-templates-${{ env.GODOT_VERSION }}
+
+      - name: Install export templates
+        if: steps.templates.outputs.cache-hit != 'true'
+        run: |
+          curl -sSL -o templates.tpz "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
+          unzip -q templates.tpz -d templates-tmp
+          DEST="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
+          mkdir -p "$DEST"
+          mv templates-tmp/templates/* "$DEST/"
+
+      # --- Android only ----------------------------------------------------------
+      - name: Set up Java 17
+        if: matrix.android
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Install Android SDK components
+        if: matrix.android
+        run: |
+          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          echo "ANDROID_SDK=$SDK" >> "$GITHUB_ENV"
+          yes | "$SDK/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$SDK/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "build-tools;35.0.0" "platforms;android-35" > /dev/null
+
+      - name: Prepare Android keystore
+        if: matrix.android
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_USER: ${{ secrets.ANDROID_KEYSTORE_USER }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          KS="$HOME/release.keystore"
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$KEYSTORE_USER" ] && [ -n "$KEYSTORE_PASSWORD" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$KS"
+            echo "using the store keystore from secrets"
+          else
+            KEYSTORE_USER="androiddebugkey"
+            KEYSTORE_PASSWORD="android"
+            keytool -genkeypair -keystore "$KS" -alias "$KEYSTORE_USER" \
+              -storepass "$KEYSTORE_PASSWORD" -keypass "$KEYSTORE_PASSWORD" \
+              -dname "CN=TF3 CI,O=TK ForgeWorks,C=US" -keyalg RSA -keysize 2048 -validity 10000
+            echo "::notice::No ANDROID_KEYSTORE_* secrets; APK signed with a throwaway keystore (playtest only)"
+          fi
+          # Godot's Android exporter reads these instead of the editor settings.
+          {
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_PATH=$KS"
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_USER=$KEYSTORE_USER"
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=$KEYSTORE_PASSWORD"
+            echo "GODOT_ANDROID_KEYSTORE_DEBUG_PATH=$KS"
+            echo "GODOT_ANDROID_KEYSTORE_DEBUG_USER=$KEYSTORE_USER"
+            echo "GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=$KEYSTORE_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+      - name: Point Godot at the Android SDK and Java
+        if: matrix.android
+        run: |
+          mkdir -p "$HOME/.config/godot"
+          for f in editor_settings-4.tres "editor_settings-${GODOT_VERSION%.*}.tres"; do
+            cat > "$HOME/.config/godot/$f" <<EOF
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/java_sdk_path = "$JAVA_HOME"
+          export/android/android_sdk_path = "$ANDROID_SDK"
+          EOF
+          done
+
+      # --- All builds ---------------------------------------------------------------
+      # Optional: repository secrets SUPABASE_URL and SUPABASE_ANON_KEY enable the
+      # shared leaderboard in the exported build. Absent secrets leave it disabled.
+      - name: Configure leaderboard from secrets
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "leaderboard secrets not set; exporting with the leaderboard disabled"
+            exit 0
+          fi
+          cat > data/game/leaderboard_config.local.tres <<EOF
+          [gd_resource type="Resource" script_class="LeaderboardConfig" load_steps=2 format=3]
+
+          [ext_resource type="Script" path="res://src/game/services/leaderboard_config.gd" id="1_config"]
+
+          [resource]
+          script = ExtResource("1_config")
+          base_url = "$SUPABASE_URL"
+          anon_key = "$SUPABASE_ANON_KEY"
+          enabled = true
+          EOF
+          echo "leaderboard enabled for this export"
+
+      - name: Import project
+        run: godot --headless --path . --import
+
+      - name: Android diagnostics
+        if: matrix.android
+        run: |
+          echo '--- editor settings ---'; cat "$HOME/.config/godot/editor_settings-${GODOT_VERSION%.*}.tres"
+          echo '--- java ---'; "$JAVA_HOME/bin/java" -version 2>&1 | head -1
+          echo '--- build-tools ---'; ls "$ANDROID_SDK/build-tools"
+          echo '--- platform-tools ---'; ls "$ANDROID_SDK/platform-tools" | head -5
+          echo '--- templates ---'; ls "$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable" | grep -i android
+          echo '--- keystore ---'; ls -la "$GODOT_ANDROID_KEYSTORE_RELEASE_PATH"
+
+      - name: Export ${{ matrix.preset }} (${{ matrix.mode }})
+        run: |
+          mkdir -p "$(dirname '${{ matrix.output }}')"
+          godot --headless --path . --export-${{ matrix.mode }} "${{ matrix.preset }}" "${{ matrix.output }}"
+          test -f "${{ matrix.output }}"
+          ls -la "$(dirname '${{ matrix.output }}')"
+
+      - name: Zip web build
+        if: matrix.preset == 'Web'
+        run: |
+          cd build
+          zip -qr "../${{ matrix.artifact }}.zip" web
+          echo "UPLOAD_PATH=${{ matrix.artifact }}.zip" >> "$GITHUB_ENV"
+
+      - name: Measure bundle size
+        if: matrix.size_gate
+        run: |
+          RAW_MB=$(du -sm build/web | cut -f1)
+          ZIP_MB=$(du -sm "${{ matrix.artifact }}.zip" | cut -f1)
+          {
+            echo "### Web bundle"
+            echo "| Measure | Size |"
+            echo "|---|---|"
+            echo "| Raw build/web | ${RAW_MB} MB |"
+            echo "| Zipped (itch.io transfer) | ${ZIP_MB} MB |"
+            echo "| Limit | ${WEB_BUNDLE_LIMIT_MB} MB |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "raw=${RAW_MB} MB zipped=${ZIP_MB} MB limit=${WEB_BUNDLE_LIMIT_MB} MB"
+          if [ "$ZIP_MB" -gt "$WEB_BUNDLE_LIMIT_MB" ]; then
+            echo "::error::Compressed web bundle (${ZIP_MB} MB) exceeds ${WEB_BUNDLE_LIMIT_MB} MB"
+            exit 1
+          fi
+
+      - name: Choose upload path
+        if: matrix.preset != 'Web'
+        run: echo "UPLOAD_PATH=${{ matrix.upload }}" >> "$GITHUB_ENV"
+
+      - name: Upload ${{ matrix.artifact }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ env.UPLOAD_PATH }}
+          retention-days: 14

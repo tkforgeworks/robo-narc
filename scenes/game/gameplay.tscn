@@ -1,0 +1,81 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://src/screens/gameplay_screen.gd" id="1_gameplay"]
+[ext_resource type="PackedScene" path="res://scenes/game/road_view.tscn" id="2_road"]
+[ext_resource type="PackedScene" path="res://scenes/game/road_areas.tscn" id="2_areas"]
+[ext_resource type="Script" path="res://src/game/road/bus_stop_zone.gd" id="3_zones"]
+[ext_resource type="Script" path="res://src/game/vehicles/vehicle_layer.gd" id="4_layer"]
+[ext_resource type="Script" path="res://src/game/traffic/vehicle_spawner.gd" id="5_spawner"]
+[ext_resource type="Script" path="res://src/game/traffic/bus_driver.gd" id="6_driver"]
+[ext_resource type="Script" path="res://src/game/shift/shift_clock.gd" id="7_clock"]
+[ext_resource type="Script" path="res://src/game/shift/score_keeper.gd" id="8_score"]
+[ext_resource type="PackedScene" path="res://scenes/game/capture_box.tscn" id="9_box"]
+[ext_resource type="PackedScene" path="res://scenes/game/count_in.tscn" id="10_countin"]
+[ext_resource type="PackedScene" path="res://scenes/game/hud.tscn" id="11_hud"]
+[ext_resource type="PackedScene" path="res://scenes/game/bus_overlay.tscn" id="12_bus"]
+[ext_resource type="Script" path="res://src/game/audio/audio_cues.gd" id="13_cues"]
+[ext_resource type="Script" path="res://src/game/audio/honk_scheduler.gd" id="14_honks"]
+[ext_resource type="Script" path="res://src/game/audio/shift_sounds.gd" id="15_sounds"]
+[ext_resource type="Script" path="res://src/game/shift/shift_tuning_hooks.gd" id="16_hooks"]
+[ext_resource type="Script" path="res://src/core/app/playfield_anchor.gd" id="17_anchor"]
+[ext_resource type="Script" path="res://src/game/shift/debug_view.gd" id="18_debug"]
+
+[node name="GameplayScreen" type="Node2D"]
+script = ExtResource("1_gameplay")
+
+[node name="RoadView" parent="." instance=ExtResource("2_road")]
+
+[node name="RoadAreas" parent="." instance=ExtResource("2_areas")]
+
+[node name="BusStopZones" type="Node2D" parent="."]
+script = ExtResource("3_zones")
+
+[node name="VehicleLayer" type="Node2D" parent="."]
+script = ExtResource("4_layer")
+
+[node name="VehicleSpawner" type="Node" parent="."]
+script = ExtResource("5_spawner")
+
+[node name="BusDriver" type="Node" parent="."]
+script = ExtResource("6_driver")
+
+[node name="ShiftClock" type="Node" parent="."]
+script = ExtResource("7_clock")
+
+[node name="ScoreKeeper" type="Node" parent="."]
+script = ExtResource("8_score")
+
+[node name="Overlay" type="CanvasLayer" parent="."]
+layer = 3
+
+[node name="Frame" type="Control" parent="Overlay"]
+offset_right = 1280.0
+offset_bottom = 720.0
+mouse_filter = 2
+
+[node name="BusOverlay" parent="Overlay/Frame" instance=ExtResource("12_bus")]
+
+[node name="CaptureBox" parent="Overlay/Frame" instance=ExtResource("9_box")]
+
+[node name="CountIn" parent="Overlay/Frame" instance=ExtResource("10_countin")]
+
+[node name="Hud" parent="." instance=ExtResource("11_hud")]
+
+[node name="AudioCues" type="Node" parent="."]
+script = ExtResource("13_cues")
+
+[node name="HonkScheduler" type="Node" parent="."]
+script = ExtResource("14_honks")
+
+[node name="ShiftSounds" type="Node" parent="."]
+script = ExtResource("15_sounds")
+
+[node name="ShiftTuningHooks" type="Node" parent="."]
+script = ExtResource("16_hooks")
+
+[node name="DebugView" type="Node" parent="."]
+script = ExtResource("18_debug")
+
+[node name="PlayfieldAnchor" type="Node" parent="."]
+script = ExtResource("17_anchor")
+frames = [NodePath("../Overlay/Frame"), NodePath("../Hud/Frame")]

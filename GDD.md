@@ -1,4 +1,4 @@
-# RoboNarc — Game Design Document
+# Traffic Fighter 3: Next Generation (TF3) — Game Design Document
 
 **Version:** 1.0-draft (rebuild target — evolution of prototype v0.3 at
 `C:/code/gamedev/robo_narc`)

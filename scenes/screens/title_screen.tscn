@@ -1,0 +1,106 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/screens/title_screen.gd" id="1_title"]
+[ext_resource type="PackedScene" path="res://scenes/game/cue_sheet.tscn" id="2_cue"]
+[ext_resource type="PackedScene" path="res://scenes/game/leaderboard_panel.tscn" id="3_board"]
+[ext_resource type="Script" path="res://src/game/services/leaderboard_client.gd" id="4_client"]
+
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_title")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.07, 0.08, 0.16, 1)
+
+[node name="Layout" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -580.0
+offset_top = -300.0
+offset_right = 580.0
+offset_bottom = 300.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 60
+
+[node name="Left" type="VBoxContainer" parent="Layout"]
+custom_minimum_size = Vector2(460, 0)
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Title" type="Label" parent="Layout/Left"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 54
+text = "Traffic Fighter 3
+Next Generation"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Layout/Left"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Bus-mounted camera enforcement. Snap the violators, spare the innocent."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Spacer" type="Control" parent="Layout/Left"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="Layout/Left"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "START SHIFT"
+
+[node name="AboutButton" type="Button" parent="Layout/Left"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "About"
+
+[node name="SettingsButton" type="Button" parent="Layout/Left"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="Layout/Left"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Quit"
+
+[node name="DebugButton" type="Button" parent="Layout/Left"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "DEBUG / TUNING"
+
+[node name="Right" type="VBoxContainer" parent="Layout"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 24
+
+[node name="CueSheet" parent="Layout/Right" instance=ExtResource("2_cue")]
+layout_mode = 2
+
+[node name="Leaderboard" parent="Layout/Right" instance=ExtResource("3_board")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LeaderboardClient" type="Node" parent="."]
+script = ExtResource("4_client")

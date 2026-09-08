@@ -1,0 +1,56 @@
+class_name VehicleLayer
+extends Node2D
+## Holds the live vehicles, advances them, and reports which ones have passed
+## under the bus. Freeing is a separate step so judgment can run first.
+
+## Vehicles that went behind the camera this step, before they are freed.
+signal vehicles_passed(passed: Array[Vehicle])
+
+var config: TuningConfig
+var vehicles: Array[Vehicle] = []
+var art_visible: bool = true:
+	set(value):
+		art_visible = value
+		for vehicle in vehicles:
+			vehicle.set_art_visible(value)
+
+
+func _ready() -> void:
+	if config == null:
+		config = Tuning.config
+
+
+func add(vehicle: Vehicle) -> void:
+	add_child(vehicle)
+	vehicles.append(vehicle)
+	if not art_visible:
+		vehicle.set_art_visible(false)
+
+
+## Moves every vehicle and returns those that passed the bus this step.
+func advance_all(delta: float, road_speed: float, camera_x: float) -> Array[Vehicle]:
+	var passed: Array[Vehicle] = []
+	for vehicle in vehicles:
+		if vehicle.advance(delta, road_speed, camera_x):
+			passed.append(vehicle)
+	if not passed.is_empty():
+		vehicles_passed.emit(passed)
+	return passed
+
+
+func free_passed(passed: Array[Vehicle]) -> void:
+	for vehicle in passed:
+		vehicles.erase(vehicle)
+		vehicle.queue_free()
+
+
+## Re-applies body styles, e.g. after a light rect was retuned.
+func restyle_all() -> void:
+	for vehicle in vehicles:
+		vehicle.apply_style()
+
+
+func clear() -> void:
+	for vehicle in vehicles:
+		vehicle.queue_free()
+	vehicles.clear()

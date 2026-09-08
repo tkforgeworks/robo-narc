@@ -1,0 +1,19 @@
+# Godot 4
+.godot/
+*.tmp
+export_credentials.cfg
+# Supabase URL / anon key for the leaderboard (see data/game/leaderboard_config.tres)
+data/game/leaderboard_config.local.tres
+android/build/
+
+# Build output (web, windows, android exports)
+build/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Keep .import sidecar files; they are part of the project.

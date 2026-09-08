@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/game/capture/capture_box.gd" id="1_box"]
+[ext_resource type="Script" path="res://src/game/judgment/outlined_area.gd" id="2_area"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_capture"]
+size = Vector2(140, 90)
+
+[node name="CaptureBox" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 140.0
+offset_bottom = 90.0
+mouse_filter = 2
+script = ExtResource("1_box")
+
+[node name="CaptureArea" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 2
+monitorable = false
+script = ExtResource("2_area")
+outline_color = Color(1, 1, 1, 0.6)
+
+[node name="Shape" type="CollisionShape2D" parent="CaptureArea"]
+position = Vector2(70, 45)
+shape = SubResource("RectangleShape2D_capture")
