@@ -108,10 +108,12 @@ func _post(transport: LeaderboardTransport, path: String, payload: Dictionary,
 func _on_fetch_completed(result: int, code: int, body: String) -> void:
 	var reason := LeaderboardRequests.failure_reason(result, code)
 	if not reason.is_empty():
+		DebugLog.warn(TAG, "fetch failed: %s (result %d, code %d)" % [reason, result, code])
 		failed.emit(OP_FETCH, reason)
 		return
 	var entries: Variant = LeaderboardRequests.parse_top_scores(body)
 	if entries == null:
+		DebugLog.warn(TAG, "fetch returned unexpected JSON: %s" % body.left(120))
 		failed.emit(OP_FETCH, LeaderboardRequests.REASON_BAD_JSON)
 		return
 	top_scores_received.emit(entries)

@@ -9,6 +9,9 @@ var _request: HTTPRequest
 func _init() -> void:
 	_request = HTTPRequest.new()
 	_request.use_threads = false
+	# Browsers (and Supabase's edge) already handle gzip; letting Godot ask for it
+	# makes the web build try to decompress an already-decoded body and fail.
+	_request.accept_gzip = false
 	_request.request_completed.connect(_on_completed)
 	add_child(_request)
 
