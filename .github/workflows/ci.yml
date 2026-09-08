@@ -1,5 +1,13 @@
-# [core] Template-layer CI: headless unit tests, then a web export with a
-# compressed-size report. Lift as-is into other TK ForgeWorks Godot projects.
+# [core] Template-layer CI: headless unit tests, then five exports in parallel:
+# tuning (debug) and release builds for web and Windows, plus a release Android
+# APK. Lift as-is into other TK ForgeWorks Godot projects; adjust the matrix.
+#
+# Optional repository secrets:
+#   SUPABASE_URL, SUPABASE_ANON_KEY     enable the shared leaderboard in every build
+#   ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_USER, ANDROID_KEYSTORE_PASSWORD
+#                                       sign the APK with a store keystore; without
+#                                       them a throwaway debug keystore is generated
+#                                       (installs fine for playtesting, not for Play)
 name: CI
 
 on:
@@ -33,10 +41,46 @@ jobs:
       - name: Run GUT tests
         run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gexit
 
-  export-web:
-    name: Web export
+  export:
+    name: Export ${{ matrix.name }}
     needs: test
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: web-tuning
+            preset: Web
+            mode: debug
+            output: build/web/index.html
+            artifact: tf3-web-tuning
+            upload: build/web
+          - name: web
+            preset: Web
+            mode: release
+            output: build/web/index.html
+            artifact: tf3-web
+            upload: build/web
+            size_gate: true
+          - name: windows-tuning
+            preset: Windows Desktop
+            mode: debug
+            output: build/windows/TF3.exe
+            artifact: tf3-windows-tuning
+            upload: build/windows/TF3.exe
+          - name: windows
+            preset: Windows Desktop
+            mode: release
+            output: build/windows/TF3.exe
+            artifact: tf3-windows
+            upload: build/windows/TF3.exe
+          - name: android
+            preset: Android
+            mode: release
+            output: build/android/TF3.apk
+            artifact: tf3-android
+            upload: build/android/TF3.apk
+            android: true
     steps:
       - uses: actions/checkout@v4
 
@@ -63,9 +107,66 @@ jobs:
           mkdir -p "$DEST"
           mv templates-tmp/templates/* "$DEST/"
 
-      - name: Import project
-        run: godot --headless --path . --import
+      # --- Android only ----------------------------------------------------------
+      - name: Set up Java 17
+        if: matrix.android
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
 
+      - name: Install Android SDK components
+        if: matrix.android
+        run: |
+          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          echo "ANDROID_SDK=$SDK" >> "$GITHUB_ENV"
+          yes | "$SDK/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$SDK/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "build-tools;35.0.0" "platforms;android-35" > /dev/null
+
+      - name: Prepare Android keystore
+        if: matrix.android
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_USER: ${{ secrets.ANDROID_KEYSTORE_USER }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          KS="$HOME/release.keystore"
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$KEYSTORE_USER" ] && [ -n "$KEYSTORE_PASSWORD" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$KS"
+            echo "using the store keystore from secrets"
+          else
+            KEYSTORE_USER="androiddebugkey"
+            KEYSTORE_PASSWORD="android"
+            keytool -genkeypair -keystore "$KS" -alias "$KEYSTORE_USER" \
+              -storepass "$KEYSTORE_PASSWORD" -keypass "$KEYSTORE_PASSWORD" \
+              -dname "CN=TF3 CI,O=TK ForgeWorks,C=US" -keyalg RSA -keysize 2048 -validity 10000
+            echo "::notice::No ANDROID_KEYSTORE_* secrets; APK signed with a throwaway keystore (playtest only)"
+          fi
+          # Godot's Android exporter reads these instead of the editor settings.
+          {
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_PATH=$KS"
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_USER=$KEYSTORE_USER"
+            echo "GODOT_ANDROID_KEYSTORE_RELEASE_PASSWORD=$KEYSTORE_PASSWORD"
+            echo "GODOT_ANDROID_KEYSTORE_DEBUG_PATH=$KS"
+            echo "GODOT_ANDROID_KEYSTORE_DEBUG_USER=$KEYSTORE_USER"
+            echo "GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=$KEYSTORE_PASSWORD"
+          } >> "$GITHUB_ENV"
+
+      - name: Point Godot at the Android SDK and Java
+        if: matrix.android
+        run: |
+          mkdir -p "$HOME/.config/godot"
+          for f in editor_settings-4.tres "editor_settings-${GODOT_VERSION%.*}.tres"; do
+            cat > "$HOME/.config/godot/$f" <<EOF
+          [gd_resource type="EditorSettings" format=3]
+
+          [resource]
+          export/android/java_sdk_path = "$JAVA_HOME"
+          export/android/android_sdk_path = "$ANDROID_SDK"
+          EOF
+          done
+
+      # --- All builds ---------------------------------------------------------------
       # Optional: repository secrets SUPABASE_URL and SUPABASE_ANON_KEY enable the
       # shared leaderboard in the exported build. Absent secrets leave it disabled.
       - name: Configure leaderboard from secrets
@@ -90,18 +191,28 @@ jobs:
           EOF
           echo "leaderboard enabled for this export"
 
-      - name: Export web (release, no threads)
-        run: |
-          mkdir -p build/web
-          godot --headless --path . --export-release "Web" build/web/index.html
-          test -f build/web/index.wasm
+      - name: Import project
+        run: godot --headless --path . --import
 
-      - name: Measure bundle size
+      - name: Export ${{ matrix.preset }} (${{ matrix.mode }})
+        run: |
+          mkdir -p "$(dirname '${{ matrix.output }}')"
+          godot --headless --path . --export-${{ matrix.mode }} "${{ matrix.preset }}" "${{ matrix.output }}"
+          test -f "${{ matrix.output }}"
+          ls -la "$(dirname '${{ matrix.output }}')"
+
+      - name: Zip web build
+        if: matrix.preset == 'Web'
         run: |
           cd build
-          zip -qr tf3-web.zip web
-          RAW_MB=$(du -sm web | cut -f1)
-          ZIP_MB=$(du -sm tf3-web.zip | cut -f1)
+          zip -qr "../${{ matrix.artifact }}.zip" web
+          echo "UPLOAD_PATH=${{ matrix.artifact }}.zip" >> "$GITHUB_ENV"
+
+      - name: Measure bundle size
+        if: matrix.size_gate
+        run: |
+          RAW_MB=$(du -sm build/web | cut -f1)
+          ZIP_MB=$(du -sm "${{ matrix.artifact }}.zip" | cut -f1)
           {
             echo "### Web bundle"
             echo "| Measure | Size |"
@@ -116,9 +227,13 @@ jobs:
             exit 1
           fi
 
-      - name: Upload web build
+      - name: Choose upload path
+        if: matrix.preset != 'Web'
+        run: echo "UPLOAD_PATH=${{ matrix.upload }}" >> "$GITHUB_ENV"
+
+      - name: Upload ${{ matrix.artifact }}
         uses: actions/upload-artifact@v4
         with:
-          name: tf3-web
-          path: build/tf3-web.zip
+          name: ${{ matrix.artifact }}
+          path: ${{ env.UPLOAD_PATH }}
           retention-days: 14

@@ -132,5 +132,12 @@ at least once; desktop is fine for iteration.
 
 ## CI
 
-`.github/workflows/ci.yml` runs the test command above and the web export on every
-push. A red `test` job or a failed export blocks the change.
+`.github/workflows/ci.yml` runs the test command above, then five exports in
+parallel on every push to `main`: tuning (debug) and release builds for web and
+Windows, and a release Android APK. Each lands as a downloadable artifact on the
+run (`tf3-web-tuning`, `tf3-web`, `tf3-windows-tuning`, `tf3-windows`,
+`tf3-android`). Secrets: `SUPABASE_URL` and `SUPABASE_ANON_KEY` enable the
+leaderboard in every build; `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_USER`,
+and `ANDROID_KEYSTORE_PASSWORD` sign the APK for the store, otherwise it is signed
+with a throwaway keystore that installs for playtesting only. A red `test` job or
+a failed export blocks the change.

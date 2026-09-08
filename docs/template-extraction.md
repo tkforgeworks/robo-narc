@@ -83,7 +83,7 @@ and are the smoke test of the template itself.
 
 | File | Purpose |
 |------|---------|
-| `.github/workflows/ci.yml` | `test` job (headless GUT) then `export-web` with a compressed-size gate and an optional secrets step |
+| `.github/workflows/ci.yml` | `test` job (headless GUT) then an export matrix (web and Windows in tuning and release flavours, Android release) with a compressed-size gate on the release web build and optional leaderboard / keystore secrets |
 | `.gutconfig.json` | GUT dirs, prefix, exit codes |
 | `.gitattributes` | LF normalisation so Windows and CI agree |
 | `export_presets.cfg` | Web (no threads), Windows Desktop, Android (landscape) presets |
