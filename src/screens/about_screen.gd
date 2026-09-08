@@ -1,6 +1,8 @@
 class_name AboutScreen
 extends Control
-## Elevator pitch of the real-world program the game is modeled on (spec FR-021).
+## Elevator pitch of the real-world program the game is modeled on (spec FR-021),
+## plus the links block: edit the BBCode `text` of the Links node in the scene
+## (`[url=https://...]label[/url]`); LinkText opens them in the browser.
 
 signal navigation_requested(scene: PackedScene, payload: Variant)
 

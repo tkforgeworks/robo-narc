@@ -33,6 +33,8 @@ by injection first and fall back to the autoload.
 | `playfield.gd` | Fixed 1280 x 720 design area centred in the expand-stretched viewport; gutter maths | none |
 | `playfield_anchor.gd` | Composable node that moves its parent and listed frames to the playfield offset on resize | Playfield |
 | `letterbox.gd` | Paints the gutters for fixed-playfield screens | Playfield |
+| `splash_screen.gd` + `scenes/core/splash_screen.tscn` | Studio logo card before the first game screen; `assets/ui/logo.png`, skippable, `Main.first_game_screen` is its next screen | PlaceholderTexture |
+| `src/core/ui/link_text.gd` | RichTextLabel whose `[url]` tags open in the system browser | none |
 
 ### Input (`src/core/input/`)
 

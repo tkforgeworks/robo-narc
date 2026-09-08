@@ -9,6 +9,8 @@ const TAG := "Main"
 const DEBUG_MENU_SCENE: PackedScene = preload("res://scenes/core/debug_menu.tscn")
 
 @export var initial_screen: PackedScene
+## Handed to a SplashScreen initial screen as its `next_screen`.
+@export var first_game_screen: PackedScene
 
 var settings: SettingsStore
 var debug_menu: DebugMenu = null
@@ -37,6 +39,8 @@ func _ready() -> void:
 		DebugLog.error(TAG, "no initial_screen set on main.tscn")
 		return
 	screen_host.show_screen(initial_screen)
+	if screen_host.current is SplashScreen and first_game_screen != null:
+		(screen_host.current as SplashScreen).next_screen = first_game_screen
 	PlaceholderTexture.report.call_deferred()
 
 

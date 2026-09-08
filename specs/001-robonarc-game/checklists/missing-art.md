@@ -31,6 +31,9 @@ Tick an item once the file is in place and the startup log no longer lists it.
 - [ ] **`median`** — the decoration strip left of the road, scrolling with it. Drop
   `assets/road/median.png` (tileable vertically). Logged when the shift starts.
 
+- [ ] **`studio logo`** — the splash card before the title, up to 512 by 512 px
+  centred on a near-black background. Drop `assets/ui/logo.png`. Logged at startup.
+
 ## Not drawn at all yet (no placeholder)
 
 - [ ] Roadside props other than buildings (signs, trees, hydrants). Optional; there

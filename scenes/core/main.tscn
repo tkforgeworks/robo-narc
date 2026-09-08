@@ -9,10 +9,12 @@
 [ext_resource type="Script" uid="uid://lcqhay7fnsa8" path="res://src/core/app/letterbox.gd" id="7_letterbox"]
 [ext_resource type="PackedScene" path="res://scenes/core/touch_controls.tscn" id="8_touch"]
 [ext_resource type="Script" uid="uid://chy73kcyook8y" path="res://src/core/app/music_player.gd" id="9_music"]
+[ext_resource type="PackedScene" path="res://scenes/core/splash_screen.tscn" id="10_splash"]
 
 [node name="Main" type="Node" unique_id=909877687]
 script = ExtResource("1_main")
-initial_screen = ExtResource("6_title")
+initial_screen = ExtResource("10_splash")
+first_game_screen = ExtResource("6_title")
 
 [node name="ScreenHost" type="Node" parent="." unique_id=1945253801]
 script = ExtResource("2_host")
