@@ -14,9 +14,19 @@ func before_each() -> void:
 	watch_signals(_splash)
 
 
-func test_uses_placeholder_until_a_logo_exists() -> void:
+func test_loads_the_logo_when_it_exists() -> void:
+	var texture := (_splash.get_node("%Logo") as TextureRect).texture
+	assert_not_null(texture)
+	assert_ne(texture, PlaceholderTexture.get_texture(), "the shipped logo, not the checkerboard")
+
+
+func test_uses_placeholder_when_the_logo_is_missing() -> void:
+	var bare: SplashScreen = SCENE.instantiate()
+	bare.next_screen = NEXT
+	bare.logo_path = "res://assets/ui/no-such-logo.png"
+	add_child_autofree(bare)
+	assert_eq((bare.get_node("%Logo") as TextureRect).texture, PlaceholderTexture.get_texture())
 	assert_true(PlaceholderTexture.uses().has("studio logo"))
-	assert_not_null((_splash.get_node("%Logo") as TextureRect).texture)
 
 
 func test_navigates_after_the_hold() -> void:

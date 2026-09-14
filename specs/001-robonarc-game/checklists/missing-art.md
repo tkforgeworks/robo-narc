@@ -32,8 +32,8 @@ Tick an item once the file is in place and the startup log no longer lists it.
 - [x] **`median`** — no longer a slot. The ground beyond the road tile is a flat colour;
   widen the margin in `tools/build_road_tile.gd` to paint more of it.
 
-- [ ] **`studio logo`** — the splash card before the title, up to 512 by 512 px
-  centred on a near-black background. Drop `assets/ui/logo.png`. Logged at startup.
+- [x] **`studio logo`** — the splash card before the title, fitted inside 1024 by 512 px
+  centred on a near-black background. Lives at `assets/ui/logo.png`.
 
 ## Not drawn at all yet (no placeholder)
 
