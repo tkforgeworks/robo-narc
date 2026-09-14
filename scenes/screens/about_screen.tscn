@@ -1,10 +1,10 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://bdeht0k82pqtk"]
 
-[ext_resource type="Script" path="res://src/screens/about_screen.gd" id="1_about"]
-[ext_resource type="Script" path="res://src/core/ui/link_text.gd" id="2_links"]
-[ext_resource type="PackedScene" path="res://scenes/game/cue_sheet.tscn" id="3_cue"]
+[ext_resource type="Script" uid="uid://c14k0v5ojc0pr" path="res://src/screens/about_screen.gd" id="1_about"]
+[ext_resource type="Script" uid="uid://bhl54r8wn6a78" path="res://src/core/ui/link_text.gd" id="2_links"]
+[ext_resource type="PackedScene" uid="uid://ikcy6arj3kp0" path="res://scenes/game/cue_sheet.tscn" id="3_cue"]
 
-[node name="AboutScreen" type="Control"]
+[node name="AboutScreen" type="Control" unique_id=128056231]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_about")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1506191900]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,7 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.07, 0.08, 0.16, 1)
 
-[node name="Column" type="VBoxContainer" parent="."]
+[node name="Column" type="VBoxContainer" parent="." unique_id=1214428176]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -37,13 +37,17 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 8
 
-[node name="Heading" type="Label" parent="Column"]
-theme_type_variation = &"ScreenHeading"
+[node name="Heading" type="Label" parent="Column" unique_id=501561694]
 layout_mode = 2
+theme_type_variation = &"ScreenHeading"
 text = "ABOUT THE GAME"
 horizontal_alignment = 1
 
-[node name="Image" type="TextureRect" parent="Column"]
+[node name="HSeparator" type="HSeparator" parent="Column" unique_id=1681198015]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Image" type="TextureRect" parent="Column" unique_id=113310523]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(0, 160)
@@ -51,27 +55,35 @@ layout_mode = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PitchText" type="Label" parent="Column"]
-theme_type_variation = &"BodyText"
+[node name="PitchText" type="Label" parent="Column" unique_id=1651666400]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_vertical = 1
+theme_type_variation = &"BodyText"
 text = "..."
 autowrap_mode = 3
 
-[node name="CueSheet" parent="Column" instance=ExtResource("3_cue")]
+[node name="CueSheet" parent="Column" unique_id=196192455 instance=ExtResource("3_cue")]
 layout_mode = 2
 
-[node name="Links" type="RichTextLabel" parent="Column"]
+[node name="HSeparator2" type="HSeparator" parent="Column" unique_id=658427545]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Links" type="RichTextLabel" parent="Column" unique_id=496820300]
 unique_name_in_owner = true
 layout_mode = 2
 bbcode_enabled = true
-text = "[center][url=https://github.com/tkforgeworks/robo-narc/issues/new]Report a bug[/url]   ·   [url=https://github.com/tkforgeworks/robo-narc]Source on GitHub[/url][/center]"
+text = "[center][url=https://tkforgeworks.atlassian.net/jira/software/form/ad0874fd-a04b-4081-9257-28a9e376f37b?atlOrigin=eyJpIjoiOGEyODQ4MWM2NTc5NGJhOGJmYTdkOTM0MDZhZmE1ZTkiLCJwIjoiaiJ9]Report a bug[/url]   ·   [url=https://www.tkforgeworks.com/]TkForgeWorks[/url][/center]"
 fit_content = true
 scroll_active = false
 script = ExtResource("2_links")
 
-[node name="BackButton" type="Button" parent="Column"]
+[node name="HSeparator3" type="HSeparator" parent="Column" unique_id=1028297605]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="BackButton" type="Button" parent="Column" unique_id=1995014755]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4

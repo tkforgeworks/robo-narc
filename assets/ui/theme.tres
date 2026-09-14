@@ -1,8 +1,24 @@
-[gd_resource type="Theme" load_steps=9 format=3 uid="uid://cr354asjxjfev"]
+[gd_resource type="Theme" format=3 uid="uid://cr354asjxjfev"]
 
 [ext_resource type="FontFile" uid="uid://b6se7lbfyyiqb" path="res://assets/ui/fonts/CorsaGrotesk-Normal.otf" id="1_normal"]
 [ext_resource type="FontFile" uid="uid://bmph11cp5thmd" path="res://assets/ui/fonts/CorsaGrotesk-Bold.otf" id="2_bold"]
 [ext_resource type="FontFile" uid="uid://ccvpr6320bqh1" path="res://assets/ui/fonts/CorsaGrotesk-Italic.otf" id="3_italic"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_board_panel"]
+content_margin_left = 18.0
+content_margin_top = 14.0
+content_margin_right = 18.0
+content_margin_bottom = 14.0
+bg_color = Color(0, 0, 0, 0.22)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.85, 0.85, 0.9, 0.45)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_focus"]
 content_margin_left = 18.0
@@ -36,6 +52,18 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_debug_panel"]
+bg_color = Color(0.08, 0.09, 0.12, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.3, 0.4, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menu_panel"]
 content_margin_left = 40.0
 content_margin_top = 28.0
@@ -52,108 +80,80 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_debug_panel"]
-bg_color = Color(0.08, 0.09, 0.12, 0.96)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.3, 0.4, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_board_panel"]
-content_margin_left = 18.0
-content_margin_top = 14.0
-content_margin_right = 18.0
-content_margin_bottom = 14.0
-bg_color = Color(0, 0, 0, 0.22)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.85, 0.85, 0.9, 0.45)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
 [resource]
 default_font = ExtResource("1_normal")
 default_font_size = 18
+BigScore/base_type = &"Label"
+BigScore/font_sizes/font_size = 72
+BigScore/fonts/font = ExtResource("2_bold")
+BoardBronze/base_type = &"Label"
+BoardBronze/colors/font_color = Color(0.87, 0.58, 0.35, 1)
+BoardBronze/font_sizes/font_size = 21
+BoardBronze/fonts/font = ExtResource("2_bold")
+BoardGold/base_type = &"Label"
+BoardGold/colors/font_color = Color(1, 0.84, 0.3, 1)
+BoardGold/font_sizes/font_size = 24
+BoardGold/fonts/font = ExtResource("2_bold")
+BoardPanel/base_type = &"PanelContainer"
+BoardPanel/styles/panel = SubResource("StyleBoxFlat_board_panel")
+BoardSilver/base_type = &"Label"
+BoardSilver/colors/font_color = Color(0.85, 0.87, 0.93, 1)
+BoardSilver/font_sizes/font_size = 22
+BoardSilver/fonts/font = ExtResource("2_bold")
+BodyText/base_type = &"Label"
+BodyText/font_sizes/font_size = 20
 Button/colors/font_color = Color(0.95, 0.95, 0.97, 1)
-Button/fonts/font = ExtResource("2_bold")
 Button/colors/font_focus_color = Color(1, 1, 1, 1)
 Button/colors/font_hover_color = Color(1, 1, 1, 1)
+Button/fonts/font = ExtResource("2_bold")
 Button/styles/focus = SubResource("StyleBoxFlat_button_focus")
 Button/styles/hover = SubResource("StyleBoxFlat_button_focus")
 Button/styles/normal = SubResource("StyleBoxFlat_button")
 Button/styles/pressed = SubResource("StyleBoxFlat_button_focus")
-Label/colors/font_color = Color(0.93, 0.93, 0.96, 1)
-Label/colors/font_outline_color = Color(0, 0, 0, 0.8)
-Label/constants/outline_size = 3
-BigScore/base_type = &"Label"
-BigScore/fonts/font = ExtResource("2_bold")
-BigScore/font_sizes/font_size = 72
-BodyText/base_type = &"Label"
-BodyText/font_sizes/font_size = 20
 Caption/base_type = &"Label"
 Caption/colors/font_color = Color(0.8, 0.8, 0.85, 1)
-Caption/fonts/font = ExtResource("3_italic")
 Caption/font_sizes/font_size = 15
+Caption/fonts/font = ExtResource("3_italic")
 CapturedMark/base_type = &"Label"
 CapturedMark/colors/font_color = Color(0.45, 1, 0.55, 1)
 CapturedMark/colors/font_outline_color = Color(0, 0, 0, 1)
-CapturedMark/fonts/font = ExtResource("2_bold")
 CapturedMark/font_sizes/font_size = 11
+CapturedMark/fonts/font = ExtResource("2_bold")
 CountIn/base_type = &"Label"
-CountIn/fonts/font = ExtResource("2_bold")
 CountIn/font_sizes/font_size = 120
+CountIn/fonts/font = ExtResource("2_bold")
 DebugPanel/base_type = &"PanelContainer"
 DebugPanel/styles/panel = SubResource("StyleBoxFlat_debug_panel")
 FeedbackBanner/base_type = &"Label"
-FeedbackBanner/fonts/font = ExtResource("2_bold")
 FeedbackBanner/font_sizes/font_size = 30
+FeedbackBanner/fonts/font = ExtResource("2_bold")
 HudReadout/base_type = &"Label"
-HudReadout/fonts/font = ExtResource("2_bold")
 HudReadout/font_sizes/font_size = 28
+HudReadout/fonts/font = ExtResource("2_bold")
+Label/colors/font_color = Color(0.93, 0.93, 0.96, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 0.8)
+Label/constants/outline_size = 3
 MenuPanel/base_type = &"PanelContainer"
 MenuPanel/styles/panel = SubResource("StyleBoxFlat_menu_panel")
 NameEdit/base_type = &"LineEdit"
 NameEdit/font_sizes/font_size = 30
 PanelTitle/base_type = &"Label"
-PanelTitle/fonts/font = ExtResource("2_bold")
 PanelTitle/font_sizes/font_size = 24
+PanelTitle/fonts/font = ExtResource("2_bold")
 PrimaryButton/base_type = &"Button"
 PrimaryButton/font_sizes/font_size = 28
 ScreenHeading/base_type = &"Label"
-ScreenHeading/fonts/font = ExtResource("2_bold")
 ScreenHeading/font_sizes/font_size = 40
+ScreenHeading/fonts/font = ExtResource("2_bold")
 SectionHeading/base_type = &"Label"
-SectionHeading/fonts/font = ExtResource("2_bold")
 SectionHeading/font_sizes/font_size = 22
+SectionHeading/fonts/font = ExtResource("2_bold")
 Tagline/base_type = &"Label"
-Tagline/fonts/font = ExtResource("3_italic")
 Tagline/font_sizes/font_size = 18
+Tagline/fonts/font = ExtResource("3_italic")
 TitleLabel/base_type = &"Label"
-TitleLabel/fonts/font = ExtResource("2_bold")
 TitleLabel/font_sizes/font_size = 54
+TitleLabel/fonts/font = ExtResource("2_bold")
 WarningText/base_type = &"Label"
 WarningText/colors/font_color = Color(1, 0.6, 0.3, 1)
 WarningText/font_sizes/font_size = 16
-BoardPanel/base_type = &"PanelContainer"
-BoardPanel/styles/panel = SubResource("StyleBoxFlat_board_panel")
-BoardGold/base_type = &"Label"
-BoardGold/colors/font_color = Color(1, 0.84, 0.3, 1)
-BoardGold/fonts/font = ExtResource("2_bold")
-BoardGold/font_sizes/font_size = 24
-BoardSilver/base_type = &"Label"
-BoardSilver/colors/font_color = Color(0.85, 0.87, 0.93, 1)
-BoardSilver/fonts/font = ExtResource("2_bold")
-BoardSilver/font_sizes/font_size = 22
-BoardBronze/base_type = &"Label"
-BoardBronze/colors/font_color = Color(0.87, 0.58, 0.35, 1)
-BoardBronze/fonts/font = ExtResource("2_bold")
-BoardBronze/font_sizes/font_size = 21

@@ -8,9 +8,10 @@ signal navigation_requested(scene: PackedScene, payload: Variant)
 
 const TITLE_SCENE_PATH := "res://scenes/screens/title_screen.tscn"
 
-const BLURB := """About the company goes here.
+const BLURB := """
+Hayden AI powers safer, smarter, and more efficient cities. We combine advanced vision AI with purpose-built, vehicle-mounted hardware to analyze urban environments in real time. Cities use our technology to make streets safer and improve transit performance for everyone. Learn more at the link below! 
 
-Replace this text in src/screens/company_screen.gd (BLURB) and add links in the Links node of scenes/screens/company_screen.tscn."""
+"""
 
 @onready var _text: Label = %BlurbText
 @onready var _back_button: Button = %BackButton

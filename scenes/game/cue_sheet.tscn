@@ -1,8 +1,184 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://ikcy6arj3kp0"]
 
-[ext_resource type="Script" path="res://src/game/ui/cue_sheet.gd" id="1_cue"]
+[ext_resource type="Script" uid="uid://cw1uyg2a7qsvh" path="res://src/game/ui/cue_sheet.gd" id="1_cue"]
+[ext_resource type="Theme" uid="uid://cr354asjxjfev" path="res://assets/ui/theme.tres" id="2_vqv0p"]
 
-[node name="CueSheet" type="VBoxContainer"]
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_rv0pt"]
+color = Color(0, 0, 0, 0)
+
+[node name="CueSheet" type="VBoxContainer" unique_id=776423854]
 custom_minimum_size = Vector2(440, 0)
 theme_override_constants/separation = 6
 script = ExtResource("1_cue")
+
+[node name="Label" type="Label" parent="." unique_id=359037267]
+layout_mode = 2
+theme = ExtResource("2_vqv0p")
+theme_type_variation = &"SectionHeading"
+text = "How to spot a Potential Violator"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="." unique_id=45982435]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_rv0pt")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1431177193]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="HBoxContainer" unique_id=1136256368]
+layout_mode = 2
+text = "Vehicles"
+
+[node name="stopped" type="Label" parent="HBoxContainer" unique_id=850197459]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+text = "stopped"
+
+[node name="Label3" type="Label" parent="HBoxContainer" unique_id=35742135]
+layout_mode = 2
+text = "in the"
+
+[node name="vioArea" type="Label" parent="HBoxContainer" unique_id=1415093710]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.7411765, 0, 0, 0.69803923)
+theme_override_constants/outline_size = 10
+text = "red bus lane"
+
+[node name="Label5" type="Label" parent="HBoxContainer" unique_id=1543912582]
+layout_mode = 2
+text = "="
+
+[node name="vioType" type="Label" parent="HBoxContainer" unique_id=1192425099]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+text = "bus lane violation"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="." unique_id=1940114318]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="HBoxContainer2" unique_id=377325656]
+layout_mode = 2
+text = "Vehicles"
+
+[node name="stopped" type="Label" parent="HBoxContainer2" unique_id=1085511864]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+text = "parked"
+
+[node name="Label3" type="Label" parent="HBoxContainer2" unique_id=48062585]
+layout_mode = 2
+text = "in the"
+
+[node name="vioArea" type="Label" parent="HBoxContainer2" unique_id=375100813]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.8117647, 0.43529412, 0, 0.69803923)
+theme_override_constants/outline_size = 10
+text = "yellow bus stop zone"
+
+[node name="Label5" type="Label" parent="HBoxContainer2" unique_id=1144937569]
+layout_mode = 2
+text = "="
+
+[node name="vioType" type="Label" parent="HBoxContainer2" unique_id=1714919377]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+text = "bus stop violation"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="." unique_id=2099657289]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="HBoxContainer3" unique_id=67609884]
+layout_mode = 2
+text = "Vehicles"
+
+[node name="stopped" type="Label" parent="HBoxContainer3" unique_id=1561738399]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+text = "stopped"
+
+[node name="Label3" type="Label" parent="HBoxContainer3" unique_id=809907973]
+layout_mode = 2
+text = "in the"
+
+[node name="vioArea" type="Label" parent="HBoxContainer3" unique_id=516478219]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0.101960786, 0.43529412, 0, 0.69803923)
+theme_override_constants/outline_size = 10
+text = "green bike lane"
+
+[node name="Label5" type="Label" parent="HBoxContainer3" unique_id=412275773]
+layout_mode = 2
+text = "="
+
+[node name="vioType" type="Label" parent="HBoxContainer3" unique_id=1091723376]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+text = "bike lane violation"
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="." unique_id=783333160]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="HBoxContainer4" unique_id=1321483731]
+layout_mode = 2
+text = "Vehicles"
+
+[node name="stopped" type="Label" parent="HBoxContainer4" unique_id=575611322]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+text = "stopped"
+
+[node name="Label3" type="Label" parent="HBoxContainer4" unique_id=190498177]
+layout_mode = 2
+text = "next to"
+
+[node name="vioArea" type="Label" parent="HBoxContainer4" unique_id=56677236]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+text = "a curb parked car"
+
+[node name="Label5" type="Label" parent="HBoxContainer4" unique_id=738667129]
+layout_mode = 2
+text = "="
+
+[node name="vioType" type="Label" parent="HBoxContainer4" unique_id=607337536]
+layout_mode = 2
+theme_override_constants/outline_size = 10
+text = "double parking violation"
+
+[node name="HSeparator2" type="HSeparator" parent="." unique_id=367078831]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_rv0pt")
+
+[node name="Label2" type="Label" parent="." unique_id=77057555]
+layout_mode = 2
+theme = ExtResource("2_vqv0p")
+theme_type_variation = &"SectionHeading"
+text = "Some Reminders"
+horizontal_alignment = 1
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="." unique_id=1919758904]
+layout_mode = 2
+alignment = 1
+
+[node name="Label4" type="Label" parent="HBoxContainer5" unique_id=969075086]
+layout_mode = 2
+text = "License plates must be close enough to read before you can capture them."
+horizontal_alignment = 1
+
+[node name="HSeparator3" type="HSeparator" parent="." unique_id=554561810]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_rv0pt")
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="." unique_id=741866804]
+layout_mode = 2
+alignment = 1
+
+[node name="Label4" type="Label" parent="HBoxContainer6" unique_id=741280543]
+layout_mode = 2
+text = "Moving cars that merge when the bus is heading toward the bus stop are innocent! 
+They will not be ticketed."
+horizontal_alignment = 1
