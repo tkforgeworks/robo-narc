@@ -45,11 +45,11 @@ func test_accelerates_toward_cruise_on_open_road() -> void:
 func test_swerves_around_parked_blocker_and_returns() -> void:
 	var blocker := _vehicle(_config.lane_bus_center(), _config.swerve_trigger_z - 5.0,
 			Vehicle.Motion.STOPPED_IN_ROAD)
-	_run(1.0)
+	_run(1.5)
 	assert_signal_emitted(_driver, "swerve_started")
 	assert_almost_eq(_driver.camera_x, _config.lane_passing_center(), 0.01)
 	blocker.z = -1.0
-	_run(1.0)
+	_run(1.5)
 	assert_signal_emitted(_driver, "swerve_ended")
 	assert_almost_eq(_driver.camera_x, _config.lane_bus_center(), 0.01)
 

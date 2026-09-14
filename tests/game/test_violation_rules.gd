@@ -25,6 +25,7 @@ func test_moving_vehicles_are_innocent_anywhere() -> void:
 
 
 func test_stationary_in_bus_lane_by_membership_ratio() -> void:
+	_config.lane_membership_ratio = 0.5
 	assert_eq(ViolationRules.evaluate(_report(true, {RoadGeometry.Lane.BUS: 0.6}), _config).kind,
 			Verdict.Kind.BUS_LANE)
 	assert_eq(ViolationRules.evaluate(_report(true, {RoadGeometry.Lane.BUS: 0.3,
@@ -40,6 +41,8 @@ func test_legal_curb_parking_is_innocent() -> void:
 
 
 func test_bike_lane_intrusion_ratio() -> void:
+	_config.lane_membership_ratio = 0.5
+	_config.bike_intrusion_ratio = 0.35
 	var sloppy := {RoadGeometry.Lane.BIKE: 0.2, RoadGeometry.Lane.PARKING: 0.8}
 	assert_eq(ViolationRules.evaluate(_report(true, sloppy), _config).kind, Verdict.Kind.INNOCENT,
 			"under the intrusion ratio and at the curb")
@@ -79,6 +82,7 @@ func test_rule_order_bus_lane_beats_double_park() -> void:
 
 
 func test_report_helpers() -> void:
+	_config.lane_membership_ratio = 0.5
 	var report := _report(true, {RoadGeometry.Lane.PARKING: 0.5})
 	assert_true(report.at_curb(_config))
 	assert_eq(report.ratio(RoadGeometry.Lane.BUS), 0.0)

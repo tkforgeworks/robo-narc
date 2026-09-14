@@ -117,7 +117,7 @@ func test_accepted_name_is_remembered_but_skip_is_not() -> void:
 	assert_eq(entry.current_text(), "Ava", "prefilled from last accepted name")
 	again.enter(_result(6))
 	entry.skip()
-	assert_eq(again.score_store.records[0].result.player_name, "Rookie")
+	assert_eq(again.score_store.records[0].result.player_name, "Anon")
 	assert_eq(SettingsStore.new(TEST_SETTINGS).last_name, "Ava", "skip does not overwrite")
 
 

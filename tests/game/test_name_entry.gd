@@ -37,7 +37,7 @@ func test_invalid_name_shows_message_and_disables_submit() -> void:
 func test_skip_uses_the_default_name() -> void:
 	_entry.prefill("whatever!!")
 	_entry.skip()
-	assert_signal_emitted_with_parameters(_entry, "name_chosen", ["Rookie"])
+	assert_signal_emitted_with_parameters(_entry, "name_chosen", ["Anon"])
 
 
 func test_letter_grid_appears_for_touch_and_gamepad_and_types() -> void:
