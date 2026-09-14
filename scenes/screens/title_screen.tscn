@@ -45,15 +45,15 @@ theme_override_constants/separation = 14
 alignment = 1
 
 [node name="Title" type="Label" parent="Layout/Left"]
+theme_type_variation = &"TitleLabel"
 layout_mode = 2
-theme_override_font_sizes/font_size = 54
 text = "Traffic Fighter 3
 Next Generation"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="Layout/Left"]
+theme_type_variation = &"Tagline"
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
 text = "Bus-mounted camera enforcement. Snap the violators, spare the innocent."
 horizontal_alignment = 1
 autowrap_mode = 3
@@ -63,9 +63,9 @@ custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
 [node name="StartButton" type="Button" parent="Layout/Left"]
+theme_type_variation = &"PrimaryButton"
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 30
 text = "START SHIFT"
 
 [node name="AboutButton" type="Button" parent="Layout/Left"]

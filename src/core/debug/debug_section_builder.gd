@@ -4,7 +4,6 @@ extends RefCounted
 ## style (through TunableControlFactory) and the live-volume sliders. Owns no
 ## state beyond the container it fills.
 
-const HEADING_FONT_SIZE := 20
 const SLIDER_WIDTH := 200.0
 const TEXT_BOX_HEIGHT := 120.0
 
@@ -90,5 +89,5 @@ func _label(text: String) -> Label:
 func _add_heading(text: String) -> void:
 	var heading := Label.new()
 	heading.text = text
-	heading.add_theme_font_size_override("font_size", HEADING_FONT_SIZE)
+	heading.theme_type_variation = &"SectionHeading"
 	_container.add_child(heading)

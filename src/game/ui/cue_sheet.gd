@@ -18,7 +18,7 @@ func _ready() -> void:
 		return
 	var heading := Label.new()
 	heading.text = HEADING
-	heading.add_theme_font_size_override("font_size", 22)
+	heading.theme_type_variation = &"SectionHeading"
 	add_child(heading)
 	for row in ROWS:
 		var line := Label.new()
@@ -27,7 +27,7 @@ func _ready() -> void:
 	var lights := Label.new()
 	lights.text = LIGHT_CUE
 	lights.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	lights.add_theme_font_size_override("font_size", 15)
+	lights.theme_type_variation = &"Caption"
 	add_child(lights)
 
 

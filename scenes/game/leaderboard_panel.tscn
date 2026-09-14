@@ -7,17 +7,16 @@ theme_override_constants/separation = 8
 script = ExtResource("1_panel")
 
 [node name="Heading" type="Label" parent="."]
+theme_type_variation = &"SectionHeading"
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
 text = "TOP SHIFTS"
 
 [node name="Note" type="Label" parent="."]
+theme_type_variation = &"Caption"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.8, 0.85, 1)
-theme_override_font_sizes/font_size = 14
 text = "leaderboard unavailable"
 
 [node name="Scroll" type="ScrollContainer" parent="."]

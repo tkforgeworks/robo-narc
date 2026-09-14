@@ -37,8 +37,8 @@ grow_vertical = 2
 theme_override_constants/separation = 18
 
 [node name="Heading" type="Label" parent="Column"]
+theme_type_variation = &"ScreenHeading"
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
 text = "ABOUT TF3"
 horizontal_alignment = 1
 
@@ -51,17 +51,16 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="PitchText" type="Label" parent="Column"]
+theme_type_variation = &"BodyText"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 20
 text = "..."
 autowrap_mode = 3
 
 [node name="Links" type="RichTextLabel" parent="Column"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 18
 bbcode_enabled = true
 text = "[center][url=https://github.com/tkforgeworks/robo-narc/issues/new]Report a bug[/url]   ·   [url=https://github.com/tkforgeworks/robo-narc]Source on GitHub[/url][/center]"
 fit_content = true

@@ -36,8 +36,8 @@ grow_vertical = 2
 theme_override_constants/separation = 20
 
 [node name="Heading" type="Label" parent="Column"]
+theme_type_variation = &"ScreenHeading"
 layout_mode = 2
-theme_override_font_sizes/font_size = 40
 text = "SETTINGS"
 horizontal_alignment = 1
 
@@ -84,8 +84,8 @@ step = 0.01
 value = 1.0
 
 [node name="Hint" type="Label" parent="Column"]
+theme_type_variation = &"Caption"
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
 text = "Left / Right adjust the focused slider. Esc or B goes back."
 horizontal_alignment = 1
 
