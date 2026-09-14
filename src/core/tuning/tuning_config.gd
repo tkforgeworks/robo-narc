@@ -18,7 +18,6 @@ extends Resource
 @export_range(5.0, 40.0, 0.5) var perspective_c: float = 15.0
 @export_range(50.0, 200.0, 5.0) var z_max: float = 100.0
 @export_range(0.0, 5.0, 0.5) var pass_z: float = 1.0
-@export_range(0.0, 1.5, 0.05) var backdrop_shear_factor: float = 1.0
 @export_range(-1500.0, 0.0, 5.0) var road_edge_left_x: float = -538.0
 @export_range(-800.0, 0.0, 1.0) var lane_road_left: float = -245.0
 @export_range(0.0, 600.0, 1.0) var lane_bus_left: float = 148.0
@@ -33,14 +32,8 @@ extends Resource
 @export_range(-200.0, 400.0, 5.0) var bus_stop_offset_px: float = 60.0
 ## Extra lean of the shelter's ground line, on top of the automatic aim at the vanishing point.
 @export_range(-30.0, 30.0, 0.5) var bus_stop_lean_deg: float = 0.0
-@export_range(10.0, 200.0, 1.0) var stencil_period_z: float = 45.0
-## Length of each lane stencil along the road, in z units.
-@export_range(2.0, 60.0, 1.0) var stencil_length_bus_z: float = 14.0
-@export_range(2.0, 60.0, 1.0) var stencil_length_bike_z: float = 8.0
-## Painted lane line width in road px at z = 0, and the dash rhythm in z units.
-@export_range(2.0, 40.0, 1.0) var lane_line_width_px: float = 8.0
-@export_range(1.0, 30.0, 0.5) var lane_dash_length_z: float = 5.0
-@export_range(1.0, 30.0, 0.5) var lane_dash_gap_z: float = 5.0
+## Road-tile rows per z unit: how long one repeat of road-tile.png is on the road.
+@export_range(5.0, 200.0, 1.0) var road_tile_px_per_z: float = 30.0
 @export_range(100.0, 1200.0, 10.0) var building_height_px: float = 420.0
 @export_range(2.0, 60.0, 1.0) var building_gap_z: float = 4.0
 @export_range(-300.0, 600.0, 10.0) var building_offset_px: float = -60.0

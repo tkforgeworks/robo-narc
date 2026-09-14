@@ -29,8 +29,8 @@ Tick an item once the file is in place and the startup log no longer lists it.
   every bus stop zone, `bus_stop_height_px` tall at z = 0 and scaled with distance.
   Lives at `assets/roadside/bus-stop.png`. An optional `assets/road/bus-stop-stripe.png`
   is drawn over the zone's road span when present; nothing is drawn without it.
-- [ ] **`median`** — the decoration strip left of the road, scrolling with it. Drop
-  `assets/road/median.png` (tileable vertically). Logged when the shift starts.
+- [x] **`median`** — no longer a slot. The ground beyond the road tile is a flat colour;
+  widen the margin in `tools/build_road_tile.gd` to paint more of it.
 
 - [ ] **`studio logo`** — the splash card before the title, up to 512 by 512 px
   centred on a near-black background. Drop `assets/ui/logo.png`. Logged at startup.

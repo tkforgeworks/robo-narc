@@ -1,11 +1,8 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://src/game/road/road_view.gd" id="1_road"]
 [ext_resource type="Texture2D" path="res://assets/road/sky.png" id="2_sky"]
-[ext_resource type="Texture2D" path="res://assets/road/road.png" id="3_roadtex"]
-[ext_resource type="Script" path="res://src/game/road/road_markings.gd" id="4_markings"]
-[ext_resource type="Texture2D" path="res://assets/road/stencil-bus-only-straight.png" id="5_bus_stencil"]
-[ext_resource type="Texture2D" path="res://assets/road/stencil-bike-lane.png" id="6_bike_stencil"]
+[ext_resource type="Script" path="res://src/game/road/road_surface.gd" id="3_surface"]
 [ext_resource type="Script" path="res://src/game/road/building_strip.gd" id="7_strip"]
 
 [node name="RoadView" type="Node2D"]
@@ -15,14 +12,8 @@ script = ExtResource("1_road")
 texture = ExtResource("2_sky")
 centered = false
 
-[node name="Road" type="Sprite2D" parent="."]
-texture = ExtResource("3_roadtex")
-centered = false
-
-[node name="Markings" type="Node2D" parent="."]
-script = ExtResource("4_markings")
-bus_stencil = ExtResource("5_bus_stencil")
-bike_stencil = ExtResource("6_bike_stencil")
+[node name="Surface" type="Node2D" parent="."]
+script = ExtResource("3_surface")
 
 [node name="BuildingsLeft" type="Node2D" parent="."]
 script = ExtResource("7_strip")

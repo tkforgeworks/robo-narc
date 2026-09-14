@@ -19,7 +19,6 @@ clarified scoring changes.
 | Road | perspective_c | float | 15 | 5..40 / 0.5 | Perspective |
 | Road | z_max | float | 100 | 50..200 / 5 | Perspective, Spawner |
 | Road | pass_z | float | 1 | 0..5 / 0.5 | MissJudge |
-| Road | backdrop_shear_factor | float | 1.0 | 0..1.5 / 0.05 | RoadView (1.0 = exact perspective shear on swerve) |
 | Road | road_edge_left_x | float | -538 | -1500..0 / 5 | RoadView, BuildingStrip |
 | Road | lane_road_left | float | -245 | -800..0 / 1 | RoadGeometry |
 | Road | lane_bus_left | float | 148 | 0..600 / 1 | RoadGeometry |
@@ -31,12 +30,7 @@ clarified scoring changes.
 | Road | bus_stop_height_px | float | 300 | 50..800 / 10 | BusStopZones |
 | Road | bus_stop_offset_px | float | 60 | -200..400 / 5 | BusStopZones |
 | Road | bus_stop_lean_deg | float | 0 | -30..30 / 0.5 | BusStopZones |
-| Road | stencil_period_z | float | 45 | 10..200 / 1 | RoadMarkings |
-| Road | stencil_length_bus_z | float | 14 | 2..60 / 1 | RoadMarkings |
-| Road | stencil_length_bike_z | float | 8 | 2..60 / 1 | RoadMarkings |
-| Road | lane_line_width_px | float | 8 | 2..40 / 1 | RoadMarkings (dashes) |
-| Road | lane_dash_length_z | float | 5 | 1..30 / 0.5 | RoadMarkings |
-| Road | lane_dash_gap_z | float | 5 | 1..30 / 0.5 | RoadMarkings |
+| Road | road_tile_px_per_z | float | 30 | 5..200 / 1 | RoadSurface + tools/build_road_tile.gd |
 | Road | building_height_px | float | 420 | 100..1200 / 10 | BuildingStrip |
 | Road | building_gap_z | float | 4 | 2..60 / 1 | BuildingStrip |
 | Road | building_offset_px | float | -60 | -300..600 / 10 | BuildingStrip |
