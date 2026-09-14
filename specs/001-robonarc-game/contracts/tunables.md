@@ -34,7 +34,7 @@ clarified scoring changes.
 | Road | stencil_period_z | float | 45 | 10..200 / 1 | RoadMarkings |
 | Road | stencil_length_bus_z | float | 14 | 2..60 / 1 | RoadMarkings |
 | Road | stencil_length_bike_z | float | 8 | 2..60 / 1 | RoadMarkings |
-| Road | lane_line_width_px | float | 8 | 2..40 / 1 | RoadMarkings |
+| Road | lane_line_width_px | float | 8 | 2..40 / 1 | RoadMarkings (dashes) |
 | Road | lane_dash_length_z | float | 5 | 1..30 / 0.5 | RoadMarkings |
 | Road | lane_dash_gap_z | float | 5 | 1..30 / 0.5 | RoadMarkings |
 | Road | building_height_px | float | 420 | 100..1200 / 10 | BuildingStrip |

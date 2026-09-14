@@ -1,10 +1,10 @@
 class_name RoadMarkings
 extends Node2D
-## Paint that lies in the road surface and flows past the bus: the bus lane's
-## dashed left edge, its solid right edge (the bike lane's left), and a
-## continuous stream of lane stencils. Everything is a quad in road space
-## projected through Perspective, so it foreshortens like the lanes do and
-## wraps seamlessly instead of snapping (spec FR-003).
+## Paint that lies in the road surface and moves past the bus: the bus lane's
+## dashed left edge and a continuous stream of lane stencils. Solid lines do
+## not move, so they stay painted in road.png. Everything here is a quad in
+## road space projected through Perspective, so it foreshortens like the
+## lanes do and wraps seamlessly instead of snapping (spec FR-003).
 
 enum Lane { BUS, BIKE }
 
@@ -88,7 +88,6 @@ func _stencil_length(lane: Lane) -> float:
 
 func _draw() -> void:
 	var half := config.lane_line_width_px * 0.5
-	_quad(config.lane_bus_right - half, config.lane_bus_right + half, 0.0, config.z_max, LINE_COLOR)
 	for z in dash_zs():
 		_quad(config.lane_bus_left - half, config.lane_bus_left + half, z,
 				z + config.lane_dash_length_z, LINE_COLOR)

@@ -21,7 +21,7 @@ assets/
 ├── road/
 │   ├── backdrop.png            # sky + road (2732 × 1235), reference only
 │   ├── sky.png                 # static sky layer (used by RoadView)
-│   ├── road.png                # lane fills + solid edges only; the bus lane's two edge lines are drawn by RoadMarkings
+│   ├── road.png                # lane fills + every solid line; only the bus lane's dashed left edge is drawn by RoadMarkings
 │   ├── stencil-bus-only-straight.png  # straight art; RoadMarkings projects it onto the lane
 │   ├── stencil-bike-lane.png
 │   ├── bus-stop-stripe.png     # optional zone marker on the road; nothing drawn when absent
