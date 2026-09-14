@@ -1,31 +1,24 @@
 class_name BusOverlay
 extends TextureRect
-## The "you are driving a bus" cab/hood frame across the bottom of the screen.
-## Uses assets/overlays/bus-cab.png when it exists, else the placeholder.
+## The "you are driving a bus" cab frame: a top bar and a dashboard with a
+## transparent windshield between them, stretched over the whole playfield.
+## Uses assets/ui/bus-overlay.png when it exists, else a placeholder strip
+## along the bottom edge.
 
-const CAB_PATH := "res://assets/overlays/bus-cab.png"
-
-var config: TuningConfig
+const ART_PATH := "res://assets/ui/bus-overlay.png"
+const PLACEHOLDER_HEIGHT_PX := 80.0
 
 
 func _ready() -> void:
-	if config == null:
-		config = Tuning.config
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if ResourceLoader.exists(CAB_PATH):
-		texture = load(CAB_PATH)
+	if ResourceLoader.exists(ART_PATH):
+		texture = load(ART_PATH)
+		expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		stretch_mode = TextureRect.STRETCH_SCALE
+		size = Playfield.BASE
+		position = Vector2.ZERO
 	else:
 		texture = PlaceholderTexture.register_use("bus cab overlay")
 		stretch_mode = TextureRect.STRETCH_TILE
-	_layout()
-
-
-func _process(_delta: float) -> void:
-	if not is_equal_approx(size.y, config.bus_overlay_height_px):
-		_layout()
-
-
-func _layout() -> void:
-	size = Vector2(Playfield.BASE.x, config.bus_overlay_height_px)
-	position = Vector2(0.0, Playfield.BASE.y - size.y)
+		size = Vector2(Playfield.BASE.x, PLACEHOLDER_HEIGHT_PX)
+		position = Vector2(0.0, Playfield.BASE.y - size.y)

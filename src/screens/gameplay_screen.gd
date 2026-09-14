@@ -43,7 +43,7 @@ func _enter_tree() -> void:
 		config = Tuning.config
 	for path: String in ["RoadView", "RoadAreas", "BusStopZones", "VehicleLayer", "VehicleSpawner",
 			"BusDriver", "ShiftClock", "ScoreKeeper", "HonkScheduler", "ShiftTuningHooks", "DebugView",
-			"Overlay/Frame/BusOverlay", "Overlay/Frame/CaptureBox", "Hud/Frame/FeedbackBanner"]:
+			"Overlay/Frame/CaptureBox", "Hud/Frame/FeedbackBanner"]:
 		get_node(path).config = config
 
 

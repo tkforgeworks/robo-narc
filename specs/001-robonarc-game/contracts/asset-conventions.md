@@ -26,10 +26,10 @@ assets/
 │   ├── bus-stop-stripe.png     # MISSING → placeholder
 │   └── median.png              # MISSING → placeholder
 ├── overlays/
-│   ├── bus-cab.png             # MISSING → placeholder
 │   └── plate.png               # MISSING → placeholder
 ├── ui/
 │   ├── placeholder.png
+│   ├── bus-overlay.png         # full-frame cab (top bar + dashboard), stretched to the 1280 × 720 playfield
 │   ├── fonts/                  # MISSING → engine fallback font
 │   ├── theme.tres              # MISSING → default theme
 │   ├── joystick-base.png, joystick-thumb.png, capture-button.png  # MISSING → placeholder

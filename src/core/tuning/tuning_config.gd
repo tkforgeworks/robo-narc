@@ -32,7 +32,6 @@ extends Resource
 @export_range(100.0, 1200.0, 10.0) var building_height_px: float = 420.0
 @export_range(2.0, 60.0, 1.0) var building_gap_z: float = 4.0
 @export_range(-300.0, 600.0, 10.0) var building_offset_px: float = -60.0
-@export_range(0.0, 400.0, 5.0) var bus_overlay_height_px: float = 80.0
 
 @export_group("Bus")
 @export_range(5.0, 60.0, 0.5) var cruise_speed_start: float = 12.0

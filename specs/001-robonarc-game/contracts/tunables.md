@@ -33,7 +33,6 @@ clarified scoring changes.
 | Road | building_height_px | float | 420 | 100..1200 / 10 | BuildingStrip |
 | Road | building_gap_z | float | 4 | 2..60 / 1 | BuildingStrip |
 | Road | building_offset_px | float | -60 | -300..600 / 10 | BuildingStrip |
-| Road | bus_overlay_height_px | float | 80 | 0..400 / 5 | BusOverlay |
 | Bus | cruise_speed_start | float | 12 | 5..60 / 0.5 | DifficultyRamp |
 | Bus | cruise_speed_end | float | 30 | 5..80 / 0.5 | DifficultyRamp |
 | Bus | brake_decel | float | 8 | 1..60 / 1 | BusDriver |

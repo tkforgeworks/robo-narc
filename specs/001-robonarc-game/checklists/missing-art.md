@@ -17,10 +17,10 @@ Tick an item once the file is in place and the startup log no longer lists it.
   `assets/ui/joystick-thumb.png`. Logged at startup.
 - [ ] **`touch capture button`** — right gutter during gameplay on touch. Drop
   `assets/ui/capture-button.png` (square; 96 to 140 px). Logged at startup.
-- [ ] **`bus cab overlay`** — the strip across the bottom of the playfield during
-  gameplay, `bus_overlay_height_px` tall (tunable) by 1280 wide. Drop
-  `assets/overlays/bus-cab.png`; it is stretched to that size. Logged when the
-  shift starts.
+- [x] **`bus cab overlay`** — the full-frame cab (top bar, transparent windshield,
+  dashboard) stretched over the 1280 × 720 playfield during gameplay. Lives at
+  `assets/ui/bus-overlay.png`; without it an 80 px placeholder strip is tiled along
+  the bottom edge. Logged when the shift starts.
 - [ ] **`license plate`** — the small rectangle on every vehicle's rear, placed and
   sized per body style by the `PlateArea` rectangle in `scenes/game/vehicles/<style>.tscn`. Drop
   `assets/vehicles/plate.png` (landscape plate, no text needed; the capture target
