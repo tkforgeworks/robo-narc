@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/screens/title_screen.gd" id="1_title"]
 [ext_resource type="PackedScene" path="res://scenes/game/cue_sheet.tscn" id="2_cue"]
 [ext_resource type="PackedScene" path="res://scenes/game/leaderboard_panel.tscn" id="3_board"]
 [ext_resource type="Script" path="res://src/game/services/leaderboard_client.gd" id="4_client"]
+[ext_resource type="Texture2D" path="res://assets/ui/company-logo/Hayden_Logo_Stacked_RGB_Blue.png" id="9_company"]
 
 [node name="TitleScreen" type="Control"]
 layout_mode = 3
@@ -101,6 +102,24 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+
+[node name="CompanyLogo" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -204.0
+offset_top = -147.0
+offset_right = -28.0
+offset_bottom = -28.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+texture = ExtResource("9_company")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="LeaderboardClient" type="Node" parent="."]
 script = ExtResource("4_client")

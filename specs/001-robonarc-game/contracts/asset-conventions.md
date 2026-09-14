@@ -29,6 +29,9 @@ assets/
 │   └── plate.png               # MISSING → placeholder
 ├── ui/
 │   ├── placeholder.png
+│   ├── logo.png                # studio splash card (fitted in 512 × 256)
+│   ├── company-logo/           # HaydenAI mark: Blue is primary (company splash card, title corner);
+│   │                           # White/Black only where a light or dark surface needs the contrast
 │   ├── bus-overlay.png         # full-frame cab (top bar + dashboard), stretched to the 1280 × 720 playfield
 │   ├── fonts/                  # MISSING → engine fallback font
 │   ├── theme.tres              # project theme; all text styling via the type variations below
