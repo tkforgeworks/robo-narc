@@ -49,6 +49,8 @@ func test_shelter_shrinks_with_distance_and_hides_when_art_is_off() -> void:
 	assert_eq(sprites.size(), 2)
 	assert_gt(sprites[0].scale.y, sprites[1].scale.y, "nearer shelter draws larger")
 	assert_true(sprites[0].visible)
+	assert_true(_zones.marks().visible, "hazard stripes draw with the art")
 	_zones.art_visible = false
 	assert_false(sprites[0].visible)
 	assert_false(sprites[1].visible)
+	assert_false(_zones.marks().visible, "hazard stripes hide with the art")

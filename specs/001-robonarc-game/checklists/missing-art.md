@@ -27,8 +27,8 @@ Tick an item once the file is in place and the startup log no longer lists it.
   is the rect, not the pixels). Logged at the first vehicle spawn.
 - [x] **`bus stop shelter`** — a shelter sprite on the right curb at the near end of
   every bus stop zone, `bus_stop_height_px` tall at z = 0 and scaled with distance.
-  Lives at `assets/roadside/bus-stop.png`. An optional `assets/road/bus-stop-stripe.png`
-  is drawn over the zone's road span when present; nothing is drawn without it.
+  Lives at `assets/roadside/bus-stop.png`. The zone's curb-lane rectangle is marked by
+  generated yellow hazard stripes (`bus_stop_marking_opacity`); no art slot.
 - [x] **`median`** — no longer a slot. The ground beyond the road tile is a flat colour;
   widen the margin in `tools/build_road_tile.gd` to paint more of it.
 

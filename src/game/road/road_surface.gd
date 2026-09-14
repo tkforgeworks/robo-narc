@@ -91,14 +91,9 @@ func _draw() -> void:
 	var f_far := Perspective.factor(FAR_Z, config.perspective_c)
 	var v_near := tile_v(0.0)
 	var v_far := tile_v(FAR_Z)
-	var colors := PackedColorArray([
-		Color(0.0, v_far * f_far, f_far, 1.0),
-		Color(f_far, v_far * f_far, f_far, 1.0),
-		Color(f_near, v_near * f_near, f_near, 1.0),
-		Color(0.0, v_near * f_near, f_near, 1.0),
-	])
 	var uvs := PackedVector2Array([Vector2(0, v_far), Vector2(1, v_far), Vector2(1, v_near), Vector2(0, v_near)])
-	draw_polygon(corners(left, right, 0.0, FAR_Z), colors, uvs, tile)
+	draw_polygon(corners(left, right, 0.0, FAR_Z),
+			Perspective.projected_uv_colors(1.0, v_near, v_far, f_near, f_far), uvs, tile)
 
 
 func corners(x0: float, x1: float, z_near: float, z_far: float) -> PackedVector2Array:

@@ -28,9 +28,10 @@ clarified scoring changes.
 | Road | lane_curb_x | float | 961 | 0..1200 / 1 | RoadGeometry |
 | Road | road_edge_right_x | float | 1576 | 800..3000 / 5 | BuildingStrip |
 | Road | bus_stop_zone_length | float | 20 | 5..60 / 1 | Spawner |
-| Road | bus_stop_height_px | float | 300 | 50..800 / 10 | BusStopZones |
+| Road | bus_stop_height_px | float | 240 | 50..800 / 10 | BusStopZones |
 | Road | bus_stop_offset_px | float | 60 | -200..400 / 5 | BusStopZones |
 | Road | bus_stop_lean_deg | float | 0 | -30..30 / 0.5 | BusStopZones |
+| Road | bus_stop_marking_opacity | float | 0.5 | 0..1 / 0.05 | BusStopZones (hazard stripes over the zone) |
 | Road | road_tile_px_per_z | float | 30 | 5..200 / 1 | RoadSurface + tools/build_road_tile.gd |
 | Road | building_height_px | float | 420 | 100..1200 / 10 | BuildingStrip |
 | Road | building_gap_z | float | 4 | 2..60 / 1 | BuildingStrip |

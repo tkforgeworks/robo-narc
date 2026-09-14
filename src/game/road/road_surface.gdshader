@@ -4,6 +4,8 @@ shader_type canvas_item;
 // that depth; interpolating those linearly in screen space and dividing back
 // recovers the true texture coordinate across the whole quad.
 
+uniform float opacity : hint_range(0.0, 1.0) = 1.0;
+
 varying vec3 projected_uv;
 
 void vertex() {
@@ -13,5 +15,5 @@ void vertex() {
 
 void fragment() {
 	vec2 uv = projected_uv.xy / max(projected_uv.z, 0.00001);
-	COLOR = texture(TEXTURE, uv);
+	COLOR = texture(TEXTURE, uv) * vec4(1.0, 1.0, 1.0, opacity);
 }

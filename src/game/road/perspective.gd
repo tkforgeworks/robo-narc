@@ -38,6 +38,19 @@ static func vanishing_point(camera_x: float, config: TuningConfig) -> Vector2:
 	)
 
 
+## Vertex colours for a road-space quad drawn through road_surface.gdshader:
+## (u * f, v * f, f) per corner, in the order far-left, far-right, near-right,
+## near-left, so the shader can sample the texture perspective-correct.
+static func projected_uv_colors(u_max: float, v_near: float, v_far: float,
+		f_near: float, f_far: float) -> PackedColorArray:
+	return PackedColorArray([
+		Color(0.0, v_far * f_far, f_far, 1.0),
+		Color(u_max * f_far, v_far * f_far, f_far, 1.0),
+		Color(u_max * f_near, v_near * f_near, f_near, 1.0),
+		Color(0.0, v_near * f_near, f_near, 1.0),
+	])
+
+
 ## Screen-space scale for a sprite drawn at full size when z = 0.
 static func scale_at(z: float, config: TuningConfig) -> float:
 	return factor(z, config.perspective_c)
