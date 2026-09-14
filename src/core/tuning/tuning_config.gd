@@ -30,19 +30,19 @@ extends Resource
 @export_range(10.0, 200.0, 1.0) var stencil_period_z: float = 45.0
 @export_range(0.1, 1.0, 0.05) var stencil_flatten: float = 0.45
 @export_range(100.0, 1200.0, 10.0) var building_height_px: float = 420.0
-@export_range(2.0, 60.0, 1.0) var building_gap_z: float = 14.0
-@export_range(0.0, 600.0, 10.0) var building_offset_px: float = 120.0
-@export_range(0.0, 400.0, 5.0) var bus_overlay_height_px: float = 180.0
+@export_range(2.0, 60.0, 1.0) var building_gap_z: float = 4.0
+@export_range(-300.0, 600.0, 10.0) var building_offset_px: float = -60.0
+@export_range(0.0, 400.0, 5.0) var bus_overlay_height_px: float = 80.0
 
 @export_group("Bus")
-@export_range(5.0, 60.0, 0.5) var cruise_speed_start: float = 14.0
-@export_range(5.0, 80.0, 0.5) var cruise_speed_end: float = 26.0
-@export_range(1.0, 60.0, 1.0) var brake_decel: float = 16.0
-@export_range(1.0, 40.0, 1.0) var accel: float = 6.0
-@export_range(100.0, 2000.0, 10.0) var lane_change_speed: float = 520.0
-@export_range(10.0, 90.0, 1.0) var swerve_trigger_z: float = 38.0
+@export_range(5.0, 60.0, 0.5) var cruise_speed_start: float = 12.0
+@export_range(5.0, 80.0, 0.5) var cruise_speed_end: float = 30.0
+@export_range(1.0, 60.0, 1.0) var brake_decel: float = 8.0
+@export_range(1.0, 40.0, 1.0) var accel: float = 4.0
+@export_range(100.0, 2000.0, 10.0) var lane_change_speed: float = 400.0
+@export_range(10.0, 90.0, 1.0) var swerve_trigger_z: float = 36.0
 @export_range(5.0, 80.0, 1.0) var follow_trigger_z: float = 32.0
-@export_range(2.0, 60.0, 1.0) var merge_trigger_z: float = 24.0
+@export_range(2.0, 60.0, 1.0) var merge_trigger_z: float = 26.0
 
 @export_group("Traffic")
 @export_range(0.3, 5.0, 0.1) var spawn_interval_start: float = 1.5
@@ -66,14 +66,14 @@ extends Resource
 @export_range(0.0, 10.0, 0.01) var situation_weight_bus_stop_zone: float = 0.15
 
 @export_group("Capture")
-@export_range(5.0, 100.0, 1.0) var plate_readable_z: float = 30.0
-@export_range(0.0, 2.0, 0.05) var capture_cooldown_sec: float = 0.35
+@export_range(5.0, 100.0, 1.0) var plate_readable_z: float = 36.0
+@export_range(0.0, 2.0, 0.05) var capture_cooldown_sec: float = 0.15
 ## Share of the plate that must be inside the box (1.0 = fully framed).
 @export_range(0.5, 1.0, 0.05) var capture_overlap_ratio: float = 1.0
 @export var box_size: Vector2 = Vector2(140.0, 90.0)
-@export_range(100.0, 1500.0, 10.0) var box_speed_keyboard: float = 420.0
-@export_range(100.0, 1500.0, 10.0) var box_speed_touch: float = 420.0
-@export_range(100.0, 1500.0, 10.0) var box_speed_gamepad: float = 420.0
+@export_range(100.0, 1500.0, 10.0) var box_speed_keyboard: float = 440.0
+@export_range(100.0, 1500.0, 10.0) var box_speed_touch: float = 440.0
+@export_range(100.0, 1500.0, 10.0) var box_speed_gamepad: float = 440.0
 
 @export_group("Scoring")
 @export_range(0, 1000, 5) var points_correct: int = 100
@@ -81,8 +81,8 @@ extends Resource
 @export_range(-500, 0, 5) var points_missed: int = -10
 
 @export_group("Vehicles")
-@export_range(0.0, 1.0, 0.05) var light_intensity_bright: float = 1.0
-@export_range(0.0, 1.0, 0.05) var light_intensity_dim: float = 0.35
+@export_range(0.0, 2.0, 0.05) var light_intensity_bright: float = 1.25
+@export_range(0.0, 1.0, 0.05) var light_intensity_dim: float = 0.55
 @export_range(0.0, 1.0, 0.05) var light_intensity_off: float = 0.0
 @export var light_glow_color: Color = Color(1.0, 0.15, 0.1)
 
