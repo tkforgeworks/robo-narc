@@ -1,11 +1,10 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://j3q7cq8rgnlm"]
 
-[ext_resource type="Script" path="res://src/screens/title_screen.gd" id="1_title"]
+[ext_resource type="Script" uid="uid://byei33y7bpqwo" path="res://src/screens/title_screen.gd" id="1_title"]
 [ext_resource type="PackedScene" path="res://scenes/game/leaderboard_panel.tscn" id="3_board"]
-[ext_resource type="Script" path="res://src/game/services/leaderboard_client.gd" id="4_client"]
-[ext_resource type="Texture2D" path="res://assets/ui/company-logo/Hayden_Logo_Stacked_RGB_Blue.png" id="9_company"]
+[ext_resource type="Script" uid="uid://bikv1ixqcqq7r" path="res://src/game/services/leaderboard_client.gd" id="4_client"]
 
-[node name="TitleScreen" type="Control"]
+[node name="TitleScreen" type="Control" unique_id=380993518]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_title")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=399122894]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,105 +22,89 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.07, 0.08, 0.16, 1)
 
-[node name="Layout" type="HBoxContainer" parent="."]
+[node name="Layout" type="HBoxContainer" parent="." unique_id=1132355723]
+custom_minimum_size = Vector2(820, 550)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -580.0
-offset_top = -320.0
-offset_right = 580.0
-offset_bottom = 230.0
+offset_left = -343.0
+offset_top = -268.0
+offset_right = 343.0
+offset_bottom = 268.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 theme_override_constants/separation = 60
 
-[node name="Left" type="VBoxContainer" parent="Layout"]
+[node name="Left" type="VBoxContainer" parent="Layout" unique_id=271617308]
 custom_minimum_size = Vector2(460, 0)
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="Title" type="Label" parent="Layout/Left"]
-theme_type_variation = &"TitleLabel"
+[node name="Title" type="Label" parent="Layout/Left" unique_id=847032655]
 layout_mode = 2
+theme_type_variation = &"TitleLabel"
 text = "Traffic Fighter 3
 Next Generation"
 horizontal_alignment = 1
 
-[node name="Subtitle" type="Label" parent="Layout/Left"]
-theme_type_variation = &"Tagline"
+[node name="Subtitle" type="Label" parent="Layout/Left" unique_id=581366939]
 layout_mode = 2
+theme_type_variation = &"Tagline"
 text = "Bus-mounted camera enforcement. Snap the violators, spare the innocent."
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="Spacer" type="Control" parent="Layout/Left"]
+[node name="Spacer" type="Control" parent="Layout/Left" unique_id=1680023366]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="StartButton" type="Button" parent="Layout/Left"]
-theme_type_variation = &"PrimaryButton"
+[node name="StartButton" type="Button" parent="Layout/Left" unique_id=1572005559]
 unique_name_in_owner = true
 layout_mode = 2
+theme_type_variation = &"PrimaryButton"
 text = "START SHIFT"
 
-[node name="AboutButton" type="Button" parent="Layout/Left"]
+[node name="AboutButton" type="Button" parent="Layout/Left" unique_id=998393937]
 unique_name_in_owner = true
 layout_mode = 2
 text = "About the Game"
 
-[node name="CompanyButton" type="Button" parent="Layout/Left"]
+[node name="CompanyButton" type="Button" parent="Layout/Left" unique_id=494091194]
 unique_name_in_owner = true
 layout_mode = 2
 text = "About the Company"
 
-[node name="SettingsButton" type="Button" parent="Layout/Left"]
+[node name="SettingsButton" type="Button" parent="Layout/Left" unique_id=1515413916]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Settings"
 
-[node name="QuitButton" type="Button" parent="Layout/Left"]
+[node name="QuitButton" type="Button" parent="Layout/Left" unique_id=1553738193]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Quit"
 
-[node name="DebugButton" type="Button" parent="Layout/Left"]
+[node name="DebugButton" type="Button" parent="Layout/Left" unique_id=905671960]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "DEBUG / TUNING"
 
-[node name="Right" type="VBoxContainer" parent="Layout"]
+[node name="Right" type="VBoxContainer" parent="Layout" unique_id=1846868808]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 24
 alignment = 1
 
-[node name="Leaderboard" parent="Layout/Right" instance=ExtResource("3_board")]
+[node name="Leaderboard" parent="Layout/Right" unique_id=1217130398 instance=ExtResource("3_board")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="CompanyLogo" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = 3
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -168.0
-offset_top = -123.0
-offset_right = -28.0
-offset_bottom = -28.0
-grow_horizontal = 0
-grow_vertical = 0
-mouse_filter = 2
-texture = ExtResource("9_company")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="LeaderboardClient" type="Node" parent="."]
+[node name="LeaderboardClient" type="Node" parent="." unique_id=1065381413]
 script = ExtResource("4_client")
