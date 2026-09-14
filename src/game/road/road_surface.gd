@@ -54,9 +54,16 @@ func set_camera_x(camera_x: float) -> void:
 	_redraw_all()
 
 
-## Road length one tile repeat covers, in z units.
+## Road px the tile spans horizontally (its width is that times the raster scale).
+func tile_span() -> float:
+	return config.road_edge_right_x - config.road_edge_left_x + 2.0 * TILE_MARGIN
+
+
+## Road length one tile repeat covers, in z units. The raster scale (texels per
+## road px) comes from the texture width, so the builder can pick any resolution.
 func tile_length_z() -> float:
-	return tile.get_height() / config.road_tile_px_per_z
+	var raster_scale := tile.get_width() / tile_span()
+	return tile.get_height() / (config.road_tile_px_per_z * raster_scale)
 
 
 ## Tile texture v at depth z. Rows go up (v decreases) with distance, and the
