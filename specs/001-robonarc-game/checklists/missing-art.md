@@ -17,22 +17,23 @@ Tick an item once the file is in place and the startup log no longer lists it.
   `assets/ui/joystick-thumb.png`. Logged at startup.
 - [ ] **`touch capture button`** — right gutter during gameplay on touch. Drop
   `assets/ui/capture-button.png` (square; 96 to 140 px). Logged at startup.
-- [ ] **`bus cab overlay`** — the strip across the bottom of the playfield during
-  gameplay, `bus_overlay_height_px` tall (tunable) by 1280 wide. Drop
-  `assets/overlays/bus-cab.png`; it is stretched to that size. Logged when the
-  shift starts.
+- [x] **`bus cab overlay`** — the full-frame cab (top bar, transparent windshield,
+  dashboard) stretched over the 1280 × 720 playfield during gameplay. Lives at
+  `assets/ui/bus-overlay.png`; without it an 80 px placeholder strip is tiled along
+  the bottom edge. Logged when the shift starts.
 - [ ] **`license plate`** — the small rectangle on every vehicle's rear, placed and
   sized per body style by the `PlateArea` rectangle in `scenes/game/vehicles/<style>.tscn`. Drop
   `assets/vehicles/plate.png` (landscape plate, no text needed; the capture target
   is the rect, not the pixels). Logged at the first vehicle spawn.
-- [ ] **`bus stop stripe`** — the curb-side marker for a bus stop zone, scrolling
-  with the road. Drop `assets/road/stencil-bus-stop.png` in the same pre-sheared
-  style as the bus-lane and bike-lane stencils. Logged when the shift starts.
-- [ ] **`median`** — the decoration strip left of the road, scrolling with it. Drop
-  `assets/road/median.png` (tileable vertically). Logged when the shift starts.
+- [x] **`bus stop shelter`** — a shelter sprite on the right curb at the far end of
+  every bus stop zone, `bus_stop_height_px` tall at z = 0 and scaled with distance.
+  Lives at `assets/roadside/bus-stop.png`. The zone's curb-lane rectangle is marked by
+  generated yellow hazard stripes (`bus_stop_marking_opacity`); no art slot.
+- [x] **`median`** — no longer a slot. The ground beyond the road tile is a flat colour;
+  widen the margin in `tools/build_road_tile.gd` to paint more of it.
 
-- [ ] **`studio logo`** — the splash card before the title, up to 512 by 512 px
-  centred on a near-black background. Drop `assets/ui/logo.png`. Logged at startup.
+- [x] **`studio logo`** — the splash card before the title, fitted inside 1024 by 512 px
+  centred on a near-black background. Lives at `assets/ui/logo.png`.
 
 ## Not drawn at all yet (no placeholder)
 

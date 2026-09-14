@@ -40,3 +40,25 @@ func test_camera_shift_moves_world_opposite() -> void:
 
 func test_negative_z_is_clamped() -> void:
 	assert_almost_eq(Perspective.factor(-5.0, 15.0), 1.0, 0.001)
+
+
+func test_exact_perspective_shifts_near_more_than_far() -> void:
+	_config.lane_change_pan = 0.0
+	var near := Perspective.project(500.0, 0.0, _config.lane_passing_center(), _config).x \
+			- Perspective.project(500.0, 0.0, _config.lane_bus_center(), _config).x
+	var far := Perspective.project(500.0, 80.0, _config.lane_passing_center(), _config).x \
+			- Perspective.project(500.0, 80.0, _config.lane_bus_center(), _config).x
+	assert_gt(near, far * 2.0, "a lane change barely moves the horizon")
+	assert_eq(Perspective.vanishing_point(_config.lane_passing_center(), _config).x,
+			_config.vanishing_point_x, "the vanishing point stays put")
+
+
+func test_full_pan_shifts_every_depth_equally_and_moves_the_vanishing_point() -> void:
+	_config.lane_change_pan = 1.0
+	var dx := _config.lane_bus_center() - _config.lane_passing_center()
+	for z: float in [0.0, 20.0, 80.0]:
+		var moved := Perspective.project(500.0, z, _config.lane_passing_center(), _config).x \
+				- Perspective.project(500.0, z, _config.lane_bus_center(), _config).x
+		assert_almost_eq(moved, dx, 0.001, "z=%.0f pans by the full lane offset" % z)
+	assert_almost_eq(Perspective.vanishing_point(_config.lane_passing_center(), _config).x,
+			_config.vanishing_point_x + dx, 0.001)

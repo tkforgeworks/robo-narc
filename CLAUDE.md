@@ -37,6 +37,9 @@ authoritative reference for the existing mechanics and tuning values. See
   `godot --headless --path . -s addons/gut/gut_cmdln.gd -gexit`
 - **Web export**: `godot --headless --path . --export-release "Web" build/web/index.html`
   then serve `build/web` over localhost (wasm will not run from `file://`)
+- **Android export**: needs `rendering/textures/vram_compression/import_etc2_astc=true`
+  in `project.godot` or the headless export silently fails. Keep it set; the editor
+  strips comments from that file on save, so the explanation lives in `ci.yml`
 - **Layout**: `src/core/` + `scenes/core/` + `tests/core/` are the game-agnostic
   template layer; `src/game/`, `scenes/game/`, `data/game/` are TF3. Art lives
   under `assets/` per `specs/001-robonarc-game/contracts/asset-conventions.md`;

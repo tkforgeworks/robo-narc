@@ -50,8 +50,9 @@ func begin_running() -> void:
 		_set_phase(Phase.RUNNING)
 
 
-## Focus was lost mid-shift; a resume count-in is owed before continuing.
-func pause_for_focus() -> void:
+## The shift was interrupted (focus lost, pause menu); a resume count-in is
+## owed before continuing.
+func pause() -> void:
 	if phase == Phase.RUNNING:
 		_set_phase(Phase.RESUME_COUNT_IN)
 

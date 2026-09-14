@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://o8vy3tsb4qtv"
-path="res://.godot/imported/road.png-8e84cc1a0465fb369dc488586cd6512c.ctex"
+uid="uid://bs4njr3leoldv"
+path="res://.godot/imported/bus-overlay.svg-357c3826fb970981ccec9e2505e6de27.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/road/road.png"
-dest_files=["res://.godot/imported/road.png-8e84cc1a0465fb369dc488586cd6512c.ctex"]
+source_file="res://assets/ui/bus-overlay.svg"
+dest_files=["res://.godot/imported/bus-overlay.svg-357c3826fb970981ccec9e2505e6de27.ctex"]
 
 [params]
 
@@ -38,3 +38,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

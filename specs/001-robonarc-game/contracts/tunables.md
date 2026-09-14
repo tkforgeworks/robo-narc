@@ -19,7 +19,7 @@ clarified scoring changes.
 | Road | perspective_c | float | 15 | 5..40 / 0.5 | Perspective |
 | Road | z_max | float | 100 | 50..200 / 5 | Perspective, Spawner |
 | Road | pass_z | float | 1 | 0..5 / 0.5 | MissJudge |
-| Road | backdrop_shear_factor | float | 1.0 | 0..1.5 / 0.05 | RoadView (1.0 = exact perspective shear on swerve) |
+| Road | lane_change_pan | float | 0 | 0..1 / 0.05 | Perspective (0 = exact perspective shift, 1 = uniform pan) |
 | Road | road_edge_left_x | float | -538 | -1500..0 / 5 | RoadView, BuildingStrip |
 | Road | lane_road_left | float | -245 | -800..0 / 1 | RoadGeometry |
 | Road | lane_bus_left | float | 148 | 0..600 / 1 | RoadGeometry |
@@ -28,20 +28,22 @@ clarified scoring changes.
 | Road | lane_curb_x | float | 961 | 0..1200 / 1 | RoadGeometry |
 | Road | road_edge_right_x | float | 1576 | 800..3000 / 5 | BuildingStrip |
 | Road | bus_stop_zone_length | float | 20 | 5..60 / 1 | Spawner |
-| Road | stencil_period_z | float | 45 | 10..200 / 1 | RoadStencil |
-| Road | stencil_flatten | float | 0.45 | 0.1..1 / 0.05 | RoadStencil |
+| Road | bus_stop_height_px | float | 240 | 50..800 / 10 | BusStopZones |
+| Road | bus_stop_offset_px | float | 60 | -200..400 / 5 | BusStopZones |
+| Road | bus_stop_lean_deg | float | 0 | -30..30 / 0.5 | BusStopZones |
+| Road | bus_stop_marking_opacity | float | 0.5 | 0..1 / 0.05 | BusStopZones (hazard stripes over the zone) |
+| Road | road_tile_px_per_z | float | 30 | 5..200 / 1 | RoadSurface + tools/build_road_tile.gd |
 | Road | building_height_px | float | 420 | 100..1200 / 10 | BuildingStrip |
-| Road | building_gap_z | float | 14 | 2..60 / 1 | BuildingStrip |
-| Road | building_offset_px | float | 120 | 0..600 / 10 | BuildingStrip |
-| Road | bus_overlay_height_px | float | 180 | 0..400 / 5 | BusOverlay |
-| Bus | cruise_speed_start | float | 14 | 5..60 / 0.5 | DifficultyRamp |
-| Bus | cruise_speed_end | float | 26 | 5..80 / 0.5 | DifficultyRamp |
-| Bus | brake_decel | float | 16 | 1..60 / 1 | BusDriver |
-| Bus | accel | float | 6 | 1..40 / 1 | BusDriver |
-| Bus | lane_change_speed | float | 520 | 100..2000 / 10 | BusDriver |
-| Bus | swerve_trigger_z | float | 38 | 10..90 / 1 | BusDriver |
+| Road | building_gap_z | float | 4 | 2..60 / 1 | BuildingStrip |
+| Road | building_offset_px | float | -60 | -300..600 / 10 | BuildingStrip |
+| Bus | cruise_speed_start | float | 12 | 5..60 / 0.5 | DifficultyRamp |
+| Bus | cruise_speed_end | float | 30 | 5..80 / 0.5 | DifficultyRamp |
+| Bus | brake_decel | float | 8 | 1..60 / 1 | BusDriver |
+| Bus | accel | float | 4 | 1..40 / 1 | BusDriver |
+| Bus | lane_change_speed | float | 400 | 100..2000 / 10 | BusDriver |
+| Bus | swerve_trigger_z | float | 36 | 10..90 / 1 | BusDriver |
 | Bus | follow_trigger_z | float | 32 | 5..80 / 1 | BusDriver |
-| Bus | merge_trigger_z | float | 24 | 2..60 / 1 | BusDriver |
+| Bus | merge_trigger_z | float | 26 | 2..60 / 1 | BusDriver |
 | Traffic | spawn_interval_start | float | 1.5 | 0.3..5 / 0.1 | DifficultyRamp |
 | Traffic | spawn_interval_end | float | 0.9 | 0.2..5 / 0.1 | DifficultyRamp |
 | Traffic | moving_speed_min_ratio | float | 0.45 | 0.1..1 / 0.05 | Spawner |
@@ -53,18 +55,18 @@ clarified scoring changes.
 | Traffic | spawn_column_gap_bus_z | float | 30 | 2..80 / 1 | Spawner |
 | Traffic | honk_probability | float | 0.3 | 0..1 / 0.05 | HonkScheduler |
 | Traffic | situation_weight_* (7) | float | GDD §14 values | 0..10 / 0.01 | SituationTable |
-| Capture | plate_readable_z | float | 30 | 5..100 / 1 | CaptureJudge |
-| Capture | capture_cooldown_sec | float | 0.35 | 0..2 / 0.05 | CaptureBox |
+| Capture | plate_readable_z | float | 36 | 5..100 / 1 | CaptureJudge |
+| Capture | capture_cooldown_sec | float | 0.15 | 0..2 / 0.05 | CaptureBox |
 | Capture | capture_overlap_ratio | float | 1.0 | 0.5..1 / 0.05 | CaptureJudge (share of the plate inside the box) |
 | Capture | box_size | Vector2 | (140, 90) | 40..400 each | CaptureBox |
-| Capture | box_speed_keyboard | float | 420 | 100..1500 / 10 | CaptureBox |
-| Capture | box_speed_touch | float | 420 | 100..1500 / 10 | CaptureBox |
-| Capture | box_speed_gamepad | float | 420 | 100..1500 / 10 | CaptureBox |
+| Capture | box_speed_keyboard | float | 440 | 100..1500 / 10 | CaptureBox |
+| Capture | box_speed_touch | float | 440 | 100..1500 / 10 | CaptureBox |
+| Capture | box_speed_gamepad | float | 440 | 100..1500 / 10 | CaptureBox |
 | Scoring | points_correct | int | 100 | 0..1000 / 5 | ScoreKeeper |
 | Scoring | points_wrong | int | -25 | -500..0 / 5 | ScoreKeeper |
 | Scoring | points_missed | int | -10 | -500..0 / 5 | ScoreKeeper |
-| Vehicles | light_intensity_bright | float | 1.0 | 0..1 / 0.05 | VehicleLights |
-| Vehicles | light_intensity_dim | float | 0.35 | 0..1 / 0.05 | VehicleLights |
+| Vehicles | light_intensity_bright | float | 1.25 | 0..2 / 0.05 | VehicleLights |
+| Vehicles | light_intensity_dim | float | 0.55 | 0..1 / 0.05 | VehicleLights |
 | Vehicles | light_intensity_off | float | 0.0 | 0..1 / 0.05 | VehicleLights |
 | Vehicles | light_glow_color | Color | (1, 0.15, 0.1) | color | VehicleLights |
 | Leaderboard | top_count | int | 20 | 5..100 / 5 | LeaderboardPanel |

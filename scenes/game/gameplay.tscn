@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://src/screens/gameplay_screen.gd" id="1_gameplay"]
 [ext_resource type="PackedScene" path="res://scenes/game/road_view.tscn" id="2_road"]
@@ -19,6 +19,7 @@
 [ext_resource type="Script" path="res://src/game/shift/shift_tuning_hooks.gd" id="16_hooks"]
 [ext_resource type="Script" path="res://src/core/app/playfield_anchor.gd" id="17_anchor"]
 [ext_resource type="Script" path="res://src/game/shift/debug_view.gd" id="18_debug"]
+[ext_resource type="PackedScene" path="res://scenes/game/pause_menu.tscn" id="13_pause"]
 
 [node name="GameplayScreen" type="Node2D"]
 script = ExtResource("1_gameplay")
@@ -60,6 +61,8 @@ mouse_filter = 2
 [node name="CountIn" parent="Overlay/Frame" instance=ExtResource("10_countin")]
 
 [node name="Hud" parent="." instance=ExtResource("11_hud")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("13_pause")]
 
 [node name="AudioCues" type="Node" parent="."]
 script = ExtResource("13_cues")

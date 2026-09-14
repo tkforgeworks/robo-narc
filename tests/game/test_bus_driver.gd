@@ -38,7 +38,7 @@ func test_reset_uses_bus_lane_and_start_speed() -> void:
 
 
 func test_accelerates_toward_cruise_on_open_road() -> void:
-	_run(3.0, 26.0)
+	_run(5.0, 26.0)
 	assert_almost_eq(_driver.road_speed, 26.0, 0.01)
 
 

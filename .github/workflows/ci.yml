@@ -9,6 +9,12 @@
 #                                       sign the APK with a store keystore; without
 #                                       them a throwaway debug keystore is generated
 #                                       (installs fine for playtesting, not for Play)
+#
+# Project prerequisite for the Android export (lives in project.godot, but the
+# editor strips comments there on save, so the reason is recorded here):
+#   rendering/textures/vram_compression/import_etc2_astc=true
+#   Without it the headless Android export silently fails its texture-format
+#   check. Our textures import lossless, so it changes nothing for them.
 name: CI
 
 on:

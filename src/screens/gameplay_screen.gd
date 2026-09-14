@@ -9,6 +9,7 @@ signal navigation_requested(scene: PackedScene, payload: Variant)
 
 const TAG := "Gameplay"
 const RESULTS_SCENE_PATH := "res://scenes/screens/results_screen.tscn"
+const TITLE_SCENE_PATH := "res://scenes/screens/title_screen.tscn"
 
 var config: TuningConfig
 
@@ -29,6 +30,7 @@ var _registry: VehicleRegistry
 @onready var _capture_box: CaptureBox = $Overlay/Frame/CaptureBox
 @onready var _count_in: CountIn = $Overlay/Frame/CountIn
 @onready var _hud: Hud = $Hud
+@onready var _pause_menu: PauseMenu = $PauseMenu
 @onready var _cues: AudioCues = $AudioCues
 @onready var _honks: HonkScheduler = $HonkScheduler
 @onready var _sounds: ShiftSounds = $ShiftSounds
@@ -43,7 +45,7 @@ func _enter_tree() -> void:
 		config = Tuning.config
 	for path: String in ["RoadView", "RoadAreas", "BusStopZones", "VehicleLayer", "VehicleSpawner",
 			"BusDriver", "ShiftClock", "ScoreKeeper", "HonkScheduler", "ShiftTuningHooks", "DebugView",
-			"Overlay/Frame/BusOverlay", "Overlay/Frame/CaptureBox", "Hud/Frame/FeedbackBanner"]:
+			"Overlay/Frame/CaptureBox", "Hud/Frame/FeedbackBanner"]:
 		get_node(path).config = config
 
 
@@ -60,6 +62,13 @@ func _ready() -> void:
 	_sounds.bind(_count_in, _capture_box, _score_keeper, _clock, _cues)
 	_honks.bind(_bus_driver, _vehicle_layer, _cues)
 	_debug_view.bind(_road_view, _vehicle_layer, _zones, _bus_overlay)
+	_pause_menu.can_open = func() -> bool:
+		return _clock.phase != ShiftClock.Phase.IDLE and _clock.phase != ShiftClock.Phase.ENDED
+	_pause_menu.opened.connect(_clock.pause)
+	_pause_menu.resume_requested.connect(_resume_after_pause)
+	_pause_menu.quit_requested.connect(func() -> void:
+		DebugLog.info(TAG, "shift abandoned from the pause menu")
+		navigation_requested.emit(load(TITLE_SCENE_PATH), null))
 
 
 ## Called by ScreenHost after instantiation.
@@ -86,11 +95,20 @@ func bind_input_source(input_source: InputSource) -> void:
 
 
 func on_focus_paused() -> void:
-	_clock.pause_for_focus()
+	_clock.pause()
 
 
 func on_focus_resume_requested(release: Callable) -> void:
 	release.call()
+	if _pause_menu.is_open():
+		# Focus came back while the player had paused: stay paused on the menu.
+		get_tree().paused = true
+		return
+	_resume_after_pause()
+
+
+## Whatever interrupted the shift is over; run the resume count-in if one is owed.
+func _resume_after_pause() -> void:
 	if _clock.phase == ShiftClock.Phase.RESUME_COUNT_IN:
 		_count_in.run(config.resume_count_in_sec)
 
