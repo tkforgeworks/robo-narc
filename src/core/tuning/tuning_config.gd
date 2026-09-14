@@ -34,7 +34,13 @@ extends Resource
 ## Extra lean of the shelter's ground line, on top of the automatic aim at the vanishing point.
 @export_range(-30.0, 30.0, 0.5) var bus_stop_lean_deg: float = 0.0
 @export_range(10.0, 200.0, 1.0) var stencil_period_z: float = 45.0
-@export_range(0.1, 1.0, 0.05) var stencil_flatten: float = 0.45
+## Length of each lane stencil along the road, in z units.
+@export_range(2.0, 60.0, 1.0) var stencil_length_bus_z: float = 14.0
+@export_range(2.0, 60.0, 1.0) var stencil_length_bike_z: float = 8.0
+## Painted lane line width in road px at z = 0, and the dash rhythm in z units.
+@export_range(2.0, 40.0, 1.0) var lane_line_width_px: float = 8.0
+@export_range(1.0, 30.0, 0.5) var lane_dash_length_z: float = 5.0
+@export_range(1.0, 30.0, 0.5) var lane_dash_gap_z: float = 5.0
 @export_range(100.0, 1200.0, 10.0) var building_height_px: float = 420.0
 @export_range(2.0, 60.0, 1.0) var building_gap_z: float = 4.0
 @export_range(-300.0, 600.0, 10.0) var building_offset_px: float = -60.0

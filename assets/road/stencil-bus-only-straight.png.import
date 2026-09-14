@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cxp3ewlpkgwfx"
-path="res://.godot/imported/stencil-bus-lane.png-8c75705f4a498d7f7a48e1a89995d696.ctex"
+uid="uid://d3jaxiqdayg0d"
+path="res://.godot/imported/stencil-bus-only-straight.png-c231f257273cb83f20626b45066d0d8e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/road/stencil-bus-lane.png"
-dest_files=["res://.godot/imported/stencil-bus-lane.png-8c75705f4a498d7f7a48e1a89995d696.ctex"]
+source_file="res://assets/road/stencil-bus-only-straight.png"
+dest_files=["res://.godot/imported/stencil-bus-only-straight.png-c231f257273cb83f20626b45066d0d8e.ctex"]
 
 [params]
 
@@ -23,7 +23,7 @@ compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
-mipmaps/generate=false
+mipmaps/generate=true
 mipmaps/limit=-1
 roughness/mode=0
 roughness/src_normal=""

@@ -31,8 +31,12 @@ clarified scoring changes.
 | Road | bus_stop_height_px | float | 300 | 50..800 / 10 | BusStopZones |
 | Road | bus_stop_offset_px | float | 60 | -200..400 / 5 | BusStopZones |
 | Road | bus_stop_lean_deg | float | 0 | -30..30 / 0.5 | BusStopZones |
-| Road | stencil_period_z | float | 45 | 10..200 / 1 | RoadStencil |
-| Road | stencil_flatten | float | 0.45 | 0.1..1 / 0.05 | RoadStencil |
+| Road | stencil_period_z | float | 45 | 10..200 / 1 | RoadMarkings |
+| Road | stencil_length_bus_z | float | 14 | 2..60 / 1 | RoadMarkings |
+| Road | stencil_length_bike_z | float | 8 | 2..60 / 1 | RoadMarkings |
+| Road | lane_line_width_px | float | 8 | 2..40 / 1 | RoadMarkings |
+| Road | lane_dash_length_z | float | 5 | 1..30 / 0.5 | RoadMarkings |
+| Road | lane_dash_gap_z | float | 5 | 1..30 / 0.5 | RoadMarkings |
 | Road | building_height_px | float | 420 | 100..1200 / 10 | BuildingStrip |
 | Road | building_gap_z | float | 4 | 2..60 / 1 | BuildingStrip |
 | Road | building_offset_px | float | -60 | -300..600 / 10 | BuildingStrip |

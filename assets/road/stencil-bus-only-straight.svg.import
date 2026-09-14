@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1c2xr3mwoltq"
-path="res://.godot/imported/stencil-bus-lane.svg-1043aa1a2627e12292c39a02b649c925.ctex"
+uid="uid://nqk2oqetrt1q"
+path="res://.godot/imported/stencil-bus-only-straight.svg-56dc2283d5fd31656a7a416c09b02e58.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/road/stencil-bus-lane.svg"
-dest_files=["res://.godot/imported/stencil-bus-lane.svg-1043aa1a2627e12292c39a02b649c925.ctex"]
+source_file="res://assets/road/stencil-bus-only-straight.svg"
+dest_files=["res://.godot/imported/stencil-bus-only-straight.svg-56dc2283d5fd31656a7a416c09b02e58.ctex"]
 
 [params]
 

@@ -21,8 +21,8 @@ assets/
 ├── road/
 │   ├── backdrop.png            # sky + road (2732 × 1235), reference only
 │   ├── sky.png                 # static sky layer (used by RoadView)
-│   ├── road.png                # transparent road layer, sheared on swerves (used by RoadView)
-│   ├── stencil-bus-lane.png
+│   ├── road.png                # lane fills + solid edges only; the bus lane's two edge lines are drawn by RoadMarkings
+│   ├── stencil-bus-only-straight.png  # straight art; RoadMarkings projects it onto the lane
 │   ├── stencil-bike-lane.png
 │   ├── bus-stop-stripe.png     # optional zone marker on the road; nothing drawn when absent
 │   └── median.png              # MISSING → placeholder
@@ -50,7 +50,7 @@ Migration from the current `Assets/` tree:
 | `Assets/Background and Road/HAI_26_8_Videogame_Background+Road.png` | `assets/road/backdrop.png` |
 | `Assets/Background and Road/HAI_26_8_Videogame_Background.png` | `assets/road/sky.png` |
 | `Assets/Background and Road/HAI_26_8_Videogame_Road.png` | `assets/road/road.png` |
-| `Assets/Background and Road/bus-lane.png` | `assets/road/stencil-bus-lane.png` |
+| `Assets/Background and Road/bus-lane.png` | superseded by `assets/road/stencil-bus-only-straight.png` |
 | `Assets/Background and Road/bike-lane.png` | `assets/road/stencil-bike-lane.png` |
 
 ## Discovery rules

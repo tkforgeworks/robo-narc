@@ -1,7 +1,7 @@
 class_name RoadView
 extends Node2D
 ## The premade sky-and-road backdrop plus the road-fixed layers that carry the
-## motion cue: lane stencils and building strips. On a swerve the backdrop is
+## motion cue: lane markings (lines and stencils) and building strips. On a swerve the backdrop is
 ## sheared about the horizon (a lateral camera move shifts near rows more than
 ## far ones, leaving the vanishing point put), so painted lanes stay under the
 ## projected vehicles. Mirrored edge padding keeps the image from running out.
@@ -23,7 +23,7 @@ var _pad_image_px: float = 0.0
 
 @onready var _sky: Sprite2D = $Sky
 @onready var _backdrop: Sprite2D = $Road
-@onready var _stencils: Array[RoadStencil] = [$BusStencil, $BikeStencil]
+@onready var _markings: RoadMarkings = $Markings
 @onready var _strips: Array[BuildingStrip] = [$BuildingsLeft, $BuildingsRight]
 
 
@@ -31,7 +31,7 @@ var _pad_image_px: float = 0.0
 func _enter_tree() -> void:
 	if config == null:
 		config = Tuning.config
-	for path: String in ["BusStencil", "BikeStencil", "BuildingsLeft", "BuildingsRight"]:
+	for path: String in ["Markings", "BuildingsLeft", "BuildingsRight"]:
 		get_node(path).config = config
 
 
@@ -43,8 +43,7 @@ func _ready() -> void:
 
 ## Advances every road-fixed layer by the bus's motion.
 func scroll(delta: float, road_speed: float) -> void:
-	for stencil in _stencils:
-		stencil.scroll(delta, road_speed)
+	_markings.scroll(delta, road_speed)
 	for strip in _strips:
 		strip.scroll(delta, road_speed)
 
@@ -52,8 +51,7 @@ func scroll(delta: float, road_speed: float) -> void:
 func set_camera_x(camera_x: float) -> void:
 	_camera_x = camera_x
 	_layout_backdrop()
-	for stencil in _stencils:
-		stencil.set_camera_x(camera_x)
+	_markings.set_camera_x(camera_x)
 	for strip in _strips:
 		strip.set_camera_x(camera_x)
 	queue_redraw()
