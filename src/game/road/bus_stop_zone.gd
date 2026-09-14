@@ -3,7 +3,7 @@ extends Node2D
 ## The active bus stop zones: road-fixed spans that scroll toward the bus.
 ## Each is a ZoneArea child (the rulebook's landmark) marked on the road by a
 ## hazard-stripe patch over its curb-lane rectangle and a shelter sprite on the
-## curb at its near end. Read by the spawner (placement) through `zones`.
+## curb at its far end. Read by the spawner (placement) through `zones`.
 
 const SHELTER_PATH := "res://assets/roadside/bus-stop.png"
 ## Direction of the shelter art's ground line (front pole bases, near to far)
@@ -112,12 +112,12 @@ func _rebuild() -> void:
 
 
 ## The shelter's bottom-right corner (its near pole) stands on the curb at the
-## zone's near end. A vertical shear then swings the art's ground line onto the
-## curb, which in this one-point perspective always aims at the vanishing point,
-## while the poles stay upright. The shear is computed for the bus's home lane
+## zone's far end, so the bus pulls up to it. A vertical shear then swings the
+## art's ground line onto the curb, which in this one-point perspective always
+## aims at the vanishing point, while the poles stay upright. The shear is computed for the bus's home lane
 ## so the shelter keeps one rigid shape while the bus changes lanes.
 func _place_shelter(shelter: Sprite2D, zone: ZoneSpan) -> void:
-	var z := zone.z
+	var z := zone.end_z()
 	var f := Perspective.scale_at(z, config)
 	var road_x := config.lane_curb_x + config.bus_stop_offset_px
 	shelter.position = Perspective.project(road_x, z, _camera_x, config)

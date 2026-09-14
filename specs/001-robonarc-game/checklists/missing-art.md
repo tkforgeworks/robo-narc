@@ -25,7 +25,7 @@ Tick an item once the file is in place and the startup log no longer lists it.
   sized per body style by the `PlateArea` rectangle in `scenes/game/vehicles/<style>.tscn`. Drop
   `assets/vehicles/plate.png` (landscape plate, no text needed; the capture target
   is the rect, not the pixels). Logged at the first vehicle spawn.
-- [x] **`bus stop shelter`** — a shelter sprite on the right curb at the near end of
+- [x] **`bus stop shelter`** — a shelter sprite on the right curb at the far end of
   every bus stop zone, `bus_stop_height_px` tall at z = 0 and scaled with distance.
   Lives at `assets/roadside/bus-stop.png`. The zone's curb-lane rectangle is marked by
   generated yellow hazard stripes (`bus_stop_marking_opacity`); no art slot.
