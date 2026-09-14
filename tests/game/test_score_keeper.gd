@@ -17,18 +17,18 @@ func test_correct_capture_scores_points_correct() -> void:
 	var outcome := CaptureOutcome.new(CaptureOutcome.Kind.CORRECT, null,
 			Verdict.of(Verdict.Kind.BUS_LANE))
 	_keeper.apply_capture(outcome)
-	assert_eq(outcome.points, 100)
-	assert_eq(outcome.feedback, "+100 BUS LANE")
-	assert_eq(_keeper.score, 100)
-	assert_signal_emitted_with_parameters(_keeper, "score_changed", [100, 100, "+100 BUS LANE"])
+	assert_eq(outcome.points, 150)
+	assert_eq(outcome.feedback, "+150 BUS LANE")
+	assert_eq(_keeper.score, 150)
+	assert_signal_emitted_with_parameters(_keeper, "score_changed", [150, 150, "+150 BUS LANE"])
 
 
 func test_wrong_and_missed_use_reduced_penalties() -> void:
 	_keeper.apply_capture(CaptureOutcome.new(CaptureOutcome.Kind.WRONG, null, Verdict.innocent()))
-	assert_eq(_keeper.score, -25)
+	assert_eq(_keeper.score, -50)
 	_keeper.apply_miss(Verdict.of(Verdict.Kind.BUS_STOP))
-	assert_eq(_keeper.score, -35, "score may go negative")
-	assert_signal_emitted_with_parameters(_keeper, "score_changed", [-35, -10, "-10 MISSED BUS STOP"])
+	assert_eq(_keeper.score, -60, "score may go negative")
+	assert_signal_emitted_with_parameters(_keeper, "score_changed", [-60, -10, "-10 MISSED BUS STOP"])
 
 
 func test_empty_and_too_far_do_not_score_but_count() -> void:
@@ -55,7 +55,7 @@ func test_finish_reports_counts_and_duration() -> void:
 	assert_eq(result.correct, 1)
 	assert_eq(result.wrong, 1)
 	assert_eq(result.missed, 1)
-	assert_eq(result.score, 65)
+	assert_eq(result.score, 90)
 	assert_eq(result.duration_sec, 90.0)
 	assert_gt(result.played_at, 0)
 

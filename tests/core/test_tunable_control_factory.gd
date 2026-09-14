@@ -47,10 +47,10 @@ func test_float_spinbox_uses_range_hint_and_commits_float() -> void:
 func test_int_spinbox_commits_int() -> void:
 	var spin: SpinBox = _factory.build(_config, _property("points_correct"))
 	add_child_autofree(spin)
-	spin.value = 150
+	spin.value = 175
 	await get_tree().process_frame
 	assert_eq(typeof(_committed[0][1]), TYPE_INT)
-	assert_eq(_committed[0][1], 150)
+	assert_eq(_committed[0][1], 175)
 
 
 func test_bool_checkbox() -> void:
@@ -71,7 +71,7 @@ func test_vector2_composite_reassembles() -> void:
 	assert_eq(spins.size(), 2)
 	(spins[0] as SpinBox).value = 200.0
 	await get_tree().process_frame
-	assert_eq(_committed[-1][1], Vector2(200.0, 90.0))
+	assert_eq(_committed[-1][1], Vector2(200.0, 110.0))
 
 
 func test_rect2_composite_uses_fine_step_for_normalized_values() -> void:

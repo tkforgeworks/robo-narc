@@ -12,6 +12,8 @@ const RESULTS_SCENE_PATH := "res://scenes/screens/results_screen.tscn"
 const TITLE_SCENE_PATH := "res://scenes/screens/title_screen.tscn"
 
 var config: TuningConfig
+## Injected by Main; null (tests) skips the controls card at shift start.
+var settings: SettingsStore
 
 var _ramp: DifficultyRamp
 var _capture_judge: CaptureJudge
@@ -31,6 +33,7 @@ var _registry: VehicleRegistry
 @onready var _count_in: CountIn = $Overlay/Frame/CountIn
 @onready var _hud: Hud = $Hud
 @onready var _pause_menu: PauseMenu = $PauseMenu
+@onready var _controls: ControlsOverlay = $ControlsOverlay
 @onready var _cues: AudioCues = $AudioCues
 @onready var _honks: HonkScheduler = $HonkScheduler
 @onready var _sounds: ShiftSounds = $ShiftSounds
@@ -66,6 +69,7 @@ func _ready() -> void:
 		return _clock.phase != ShiftClock.Phase.IDLE and _clock.phase != ShiftClock.Phase.ENDED
 	_pause_menu.opened.connect(_clock.pause)
 	_pause_menu.resume_requested.connect(_resume_after_pause)
+	_controls.dismissed.connect(_on_controls_dismissed)
 	_pause_menu.quit_requested.connect(func() -> void:
 		DebugLog.info(TAG, "shift abandoned from the pause menu")
 		navigation_requested.emit(load(TITLE_SCENE_PATH), null))
@@ -78,7 +82,23 @@ func enter(_payload: Variant) -> void:
 	_spawner.configure(_vehicle_layer, _zones, _registry)
 	_score_keeper.begin(config.shift_length_sec)
 	_hud.set_time(config.shift_length_sec)
-	_clock.start()
+	if settings != null and settings.show_controls_on_start:
+		_controls.open(true)
+	else:
+		_clock.start()
+
+
+func bind_settings(store: SettingsStore) -> void:
+	settings = store
+
+
+## The controls card at shift start is gone; honour the opt-out, then count in.
+func _on_controls_dismissed(dont_show_again: bool) -> void:
+	if dont_show_again and settings != null:
+		settings.show_controls_on_start = false
+		settings.save()
+	if _clock.phase == ShiftClock.Phase.IDLE:
+		_clock.start()
 
 
 func bind_tuning(tuning: TuningService) -> void:

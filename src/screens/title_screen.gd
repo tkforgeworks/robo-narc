@@ -1,13 +1,14 @@
 class_name TitleScreen
 extends Control
-## Title screen: branding, cue sheet, the shared top-20 board (local history
-## until it answers), Start / About / Settings / Quit, and a DEBUG button in
-## debug builds.
+## Title screen: branding, the shared top-15 board (local history until it
+## answers), Start / About the Game / About the Company / Settings / Quit, and
+## a DEBUG button in debug builds.
 
 signal navigation_requested(scene: PackedScene, payload: Variant)
 
 const GAMEPLAY_SCENE_PATH := "res://scenes/game/gameplay.tscn"
 const ABOUT_SCENE_PATH := "res://scenes/screens/about_screen.tscn"
+const COMPANY_SCENE_PATH := "res://scenes/screens/company_screen.tscn"
 const SETTINGS_SCENE_PATH := "res://scenes/screens/settings_screen.tscn"
 
 var config: TuningConfig
@@ -20,6 +21,7 @@ var _debug_menu: DebugMenu = null
 
 @onready var _start_button: Button = %StartButton
 @onready var _about_button: Button = %AboutButton
+@onready var _company_button: Button = %CompanyButton
 @onready var _settings_button: Button = %SettingsButton
 @onready var _quit_button: Button = %QuitButton
 @onready var _debug_button: Button = %DebugButton
@@ -41,6 +43,7 @@ func _ready() -> void:
 	_debug_button.visible = false
 	_start_button.pressed.connect(func() -> void: _go(GAMEPLAY_SCENE_PATH))
 	_about_button.pressed.connect(func() -> void: _go(ABOUT_SCENE_PATH))
+	_company_button.pressed.connect(func() -> void: _go(COMPANY_SCENE_PATH))
 	_settings_button.pressed.connect(func() -> void: _go(SETTINGS_SCENE_PATH))
 	_quit_button.pressed.connect(func() -> void: get_tree().quit())
 	_debug_button.pressed.connect(_on_debug_pressed)

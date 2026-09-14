@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://dlpbmbxa0qml8"]
+
+[ext_resource type="Script" uid="uid://df7cfgio0vw72" path="res://src/screens/company_screen.gd" id="1_company"]
+[ext_resource type="Script" uid="uid://bhl54r8wn6a78" path="res://src/core/ui/link_text.gd" id="2_links"]
+[ext_resource type="Texture2D" uid="uid://d68i00a45pvb" path="res://assets/ui/company-logo/Hayden_Logo_Stacked_RGB_Blue.png" id="3_logo"]
+
+[node name="CompanyScreen" type="Control" unique_id=645457314]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_company")
+
+[node name="Background" type="ColorRect" parent="." unique_id=288773977]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.07, 0.08, 0.16, 1)
+
+[node name="Column" type="VBoxContainer" parent="." unique_id=713690617]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -280.0
+offset_right = 400.0
+offset_bottom = 280.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 18
+
+[node name="Heading" type="Label" parent="Column" unique_id=418692327]
+layout_mode = 2
+theme_type_variation = &"ScreenHeading"
+text = "ABOUT THE COMPANY"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Column" unique_id=930892493]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Logo" type="TextureRect" parent="Column" unique_id=1579175180]
+custom_minimum_size = Vector2(0, 180)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_logo")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BlurbText" type="Label" parent="Column" unique_id=2166096]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"BodyText"
+text = "..."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Links" type="RichTextLabel" parent="Column" unique_id=359766602]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+text = "[center][url=https://www.hayden.ai]hayden.ai[/url][/center]"
+fit_content = true
+scroll_active = false
+script = ExtResource("2_links")
+
+[node name="HSeparator2" type="HSeparator" parent="Column" unique_id=1591929105]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="BackButton" type="Button" parent="Column" unique_id=1285006906]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "BACK"

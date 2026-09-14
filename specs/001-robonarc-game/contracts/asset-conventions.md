@@ -29,9 +29,12 @@ assets/
 │   └── plate.png               # MISSING → placeholder
 ├── ui/
 │   ├── placeholder.png
+│   ├── logo.png                # studio splash card (fitted in 512 × 256)
+│   ├── company-logo/           # HaydenAI mark: Blue is primary (company splash card, title corner);
+│   │                           # White/Black only where a light or dark surface needs the contrast
 │   ├── bus-overlay.png         # full-frame cab (top bar + dashboard), stretched to the 1280 × 720 playfield
 │   ├── fonts/                  # MISSING → engine fallback font
-│   ├── theme.tres              # MISSING → default theme
+│   ├── theme.tres              # project theme; all text styling via the type variations below
 │   ├── joystick-base.png, joystick-thumb.png, capture-button.png  # MISSING → placeholder
 │   └── about/                  # MISSING → text only
 └── audio/
@@ -81,3 +84,35 @@ Migration from the current `Assets/` tree:
 PNG: lossless, mipmaps off, filter on, no VRAM compression (`for_desktop=false`,
 `for_mobile=false` in the web preset) so the web bundle size is predictable.
 Buildings and vehicles keep their source resolution; scaling happens in perspective.
+
+## Theme type variations
+
+`assets/ui/theme.tres` is the project theme (`gui/theme/custom`). No scene or script
+sets a font, size, or colour directly; every styled node names one of these
+variations in `theme_type_variation`, so restyling happens in the theme editor only.
+
+| Variation | Base | Used by |
+|-----------|------|---------|
+| `TitleLabel` | Label | Title screen title |
+| `Tagline` | Label | Title screen subtitle |
+| `ScreenHeading` | Label | About / Settings / Results headings, PAUSED |
+| `SectionHeading` | Label | WHO TO SNAP (About the Game), TOP SHIFTS, name prompt, debug menu section headings |
+| `BoardGold` / `BoardSilver` / `BoardBronze` | Label | Leaderboard ranks 1 to 3 (all three columns of the row) |
+| `PanelTitle` | Label | Debug menu title |
+| `BodyText` | Label | About pitch, results rank line |
+| `Caption` | Label | Hints, notes, countdown, light-cue line, fps readout |
+| `WarningText` | Label | Name entry validation message |
+| `HudReadout` | Label | SCORE and TIME |
+| `FeedbackBanner` | Label | Capture / miss banner (colour set per outcome in code) |
+| `CountIn` | Label | 3-2-1 overlay |
+| `BigScore` | Label | Results score |
+| `CapturedMark` | Label | CAPTURED tag on a vehicle |
+| `ControlKey` | Label | Binding column of the controls sheet |
+| `PrimaryButton` | Button | START SHIFT, PLAY AGAIN, Resume, SUBMIT |
+| `NameEdit` | LineEdit | Name entry field |
+| `MenuPanel` | PanelContainer | Pause menu panel |
+| `BoardPanel` | PanelContainer | Leaderboard border and padding |
+| `DebugPanel` | PanelContainer | Debug menu panel |
+
+Fonts go in `assets/ui/fonts/` and are referenced from the theme (default font and
+per-variation `fonts/font`).

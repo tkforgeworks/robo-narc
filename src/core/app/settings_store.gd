@@ -1,7 +1,8 @@
 class_name SettingsStore
 extends RefCounted
 ## Player preferences persisted in user://settings.cfg: audio volumes (linear
-## 0..1) and the last accepted leaderboard name. Defaults come from TuningConfig.
+## 0..1), the last accepted leaderboard name, and whether the controls card
+## opens at shift start. Defaults come from TuningConfig.
 
 const TAG := "Settings"
 const DEFAULT_PATH := "user://settings.cfg"
@@ -20,6 +21,7 @@ var sfx: float:
 	set(value):
 		sfx = clampf(value, 0.0, 1.0)
 var last_name: String = ""
+var show_controls_on_start: bool = true
 
 
 func _init(p_path: String = DEFAULT_PATH, defaults: TuningConfig = null) -> void:
@@ -40,6 +42,7 @@ func read() -> bool:
 	music = file.get_value(SECTION_AUDIO, "music", music)
 	sfx = file.get_value(SECTION_AUDIO, "sfx", sfx)
 	last_name = file.get_value(SECTION_PLAYER, "last_name", last_name)
+	show_controls_on_start = file.get_value(SECTION_PLAYER, "show_controls_on_start", show_controls_on_start)
 	return true
 
 
@@ -49,6 +52,7 @@ func save() -> Error:
 	file.set_value(SECTION_AUDIO, "music", music)
 	file.set_value(SECTION_AUDIO, "sfx", sfx)
 	file.set_value(SECTION_PLAYER, "last_name", last_name)
+	file.set_value(SECTION_PLAYER, "show_controls_on_start", show_controls_on_start)
 	var err := file.save(path)
 	if err != OK:
 		DebugLog.error(TAG, "failed to save %s (error %d)" % [path, err])

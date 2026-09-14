@@ -47,15 +47,15 @@ theme_override_constants/separation = 14
 alignment = 1
 
 [node name="Heading" type="Label" parent="Layout/Column"]
+theme_type_variation = &"ScreenHeading"
 layout_mode = 2
-theme_override_font_sizes/font_size = 36
 text = "SHIFT OVER"
 horizontal_alignment = 1
 
 [node name="ScoreLabel" type="Label" parent="Layout/Column"]
+theme_type_variation = &"BigScore"
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 72
 text = "0"
 horizontal_alignment = 1
 
@@ -80,24 +80,23 @@ theme_override_constants/v_separation = 4
 columns = 2
 
 [node name="RankLabel" type="Label" parent="Layout/Column/Details"]
+theme_type_variation = &"BodyText"
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 20
 text = "Local rank: -"
 horizontal_alignment = 1
 
 [node name="NoteLabel" type="Label" parent="Layout/Column/Details"]
+theme_type_variation = &"Caption"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.8, 0.85, 1)
-theme_override_font_sizes/font_size = 14
 horizontal_alignment = 1
 
 [node name="PlayAgainButton" type="Button" parent="Layout/Column/Details"]
+theme_type_variation = &"PrimaryButton"
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 28
 text = "PLAY AGAIN"
 
 [node name="TitleButton" type="Button" parent="Layout/Column/Details"]
@@ -106,10 +105,10 @@ layout_mode = 2
 text = "Title"
 
 [node name="CountdownLabel" type="Label" parent="Layout/Column/Details"]
+theme_type_variation = &"Caption"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
 text = "Back to title in 10"
 horizontal_alignment = 1
 
@@ -117,6 +116,7 @@ horizontal_alignment = 1
 unique_name_in_owner = true
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+size_flags_vertical = 4
 
 [node name="IdleTimeout" type="Node" parent="."]
 script = ExtResource("2_idle")

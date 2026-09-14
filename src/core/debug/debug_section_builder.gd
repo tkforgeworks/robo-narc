@@ -4,7 +4,6 @@ extends RefCounted
 ## style (through TunableControlFactory) and the live-volume sliders. Owns no
 ## state beyond the container it fills.
 
-const HEADING_FONT_SIZE := 20
 const SLIDER_WIDTH := 200.0
 const TEXT_BOX_HEIGHT := 120.0
 
@@ -20,15 +19,18 @@ func clear() -> void:
 		child.free()
 
 
-## One label + control row per property; `on_commit(name, value)` on change.
-func add_tunables(title: String, object: Object, properties: Array, on_commit: Callable) -> void:
+## One name + control + description row per property; `on_commit(name, value)`
+## on change. `describe(name) -> String` supplies the third column (may be empty).
+func add_tunables(title: String, object: Object, properties: Array, on_commit: Callable,
+		describe: Callable = Callable()) -> void:
 	_add_heading(title)
-	var grid := _new_grid()
+	var grid := _new_grid(3)
 	var factory := TunableControlFactory.new()
 	factory.value_committed.connect(on_commit)
 	for property: Dictionary in properties:
 		grid.add_child(_label(property["name"]))
 		grid.add_child(factory.build(object, property))
+		grid.add_child(_description(describe.call(property["name"]) if describe.is_valid() else ""))
 	grid.set_meta("factory", factory)
 	_container.add_child(grid)
 
@@ -71,14 +73,26 @@ func control_count() -> int:
 	var count := 0
 	for section in _container.get_children():
 		if section is GridContainer:
-			count += section.get_child_count() / 2
+			count += section.get_child_count() / (section as GridContainer).columns
 	return count
 
 
-func _new_grid() -> GridContainer:
+func _new_grid(columns: int = 2) -> GridContainer:
 	var grid := GridContainer.new()
-	grid.columns = 2
+	grid.columns = columns
+	grid.add_theme_constant_override("h_separation", 16)
 	return grid
+
+
+## Muted, wrapping description cell that takes the remaining width.
+func _description(text: String) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.theme_type_variation = &"Caption"
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.custom_minimum_size.x = 320.0
+	return label
 
 
 func _label(text: String) -> Label:
@@ -90,5 +104,5 @@ func _label(text: String) -> Label:
 func _add_heading(text: String) -> void:
 	var heading := Label.new()
 	heading.text = text
-	heading.add_theme_font_size_override("font_size", HEADING_FONT_SIZE)
+	heading.theme_type_variation = &"SectionHeading"
 	_container.add_child(heading)

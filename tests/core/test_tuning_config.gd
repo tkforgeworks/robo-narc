@@ -4,19 +4,19 @@ extends GutTest
 func test_defaults_match_contract_samples() -> void:
 	var config := TuningConfig.new()
 	assert_eq(config.shift_length_sec, 90.0)
-	assert_eq(config.cruise_speed_start, 12.0)
-	assert_eq(config.cruise_speed_end, 30.0)
+	assert_eq(config.cruise_speed_start, 11.0)
+	assert_eq(config.cruise_speed_end, 32.0)
 	assert_eq(config.spawn_interval_start, 1.5)
 	assert_eq(config.spawn_interval_end, 0.9)
-	assert_eq(config.plate_readable_z, 36.0)
+	assert_eq(config.plate_readable_z, 38.0)
 	assert_eq(config.capture_cooldown_sec, 0.15)
-	assert_eq(config.box_size, Vector2(140.0, 90.0))
-	assert_eq(config.points_correct, 100)
-	assert_eq(config.points_wrong, -25)
+	assert_eq(config.box_size, Vector2(150.0, 110.0))
+	assert_eq(config.points_correct, 150)
+	assert_eq(config.points_wrong, -50)
 	assert_eq(config.points_missed, -10)
-	assert_eq(config.top_count, 20)
+	assert_eq(config.top_count, 15)
 	assert_eq(config.results_idle_timeout_sec, 60.0)
-	assert_eq(config.default_player_name, "Rookie")
+	assert_eq(config.default_player_name, "Anon")
 
 
 func test_derived_lane_centres() -> void:
@@ -59,3 +59,12 @@ func test_every_tunable_is_enumerable() -> void:
 
 func test_situation_weights_cover_all_seven_kinds() -> void:
 	assert_eq(TuningConfig.new().situation_weights().size(), 7)
+
+
+func test_every_tunable_has_a_debug_description() -> void:
+	var missing: PackedStringArray = []
+	for name in TunableProperties.names(TuningConfig.new()):
+		if TuningConfig.describe(name).is_empty():
+			missing.append(name)
+	assert_eq(missing, PackedStringArray(), "undescribed tunables")
+	assert_string_contains(TuningConfig.describe("bike_intrusion_ratio"), "bike lane")
