@@ -24,7 +24,7 @@ var _builder: DebugSectionBuilder
 
 @onready var _root: Control = $Root
 @onready var _sections: VBoxContainer = %Sections
-@onready var _actions_box: HBoxContainer = %Actions
+@onready var _actions_box: Container = %Actions
 @onready var _reset_button: Button = %ResetButton
 @onready var _save_button: Button = %SaveButton
 @onready var _close_button: Button = %CloseButton
@@ -75,7 +75,7 @@ func close() -> void:
 	closed.emit()
 
 
-## Adds (or replaces, by label) a button in the header row.
+## Adds (or replaces, by label) a button in the wrapping toolbar row under the header.
 func register_action(label: String, action: Callable) -> void:
 	if _actions.has(label):
 		(_actions[label] as Button).queue_free()
