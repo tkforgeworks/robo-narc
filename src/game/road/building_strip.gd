@@ -6,6 +6,8 @@ extends Node2D
 enum RoadSide { LEFT, RIGHT }
 
 const BUILDINGS_DIR := "res://assets/roadside/buildings"
+## Buildings live from here (behind the bus) to the horizon.
+const DESPAWN_Z := -20.0
 
 @export var side: RoadSide = RoadSide.LEFT
 @export var rng_seed: int = 0
@@ -29,7 +31,9 @@ func _ready() -> void:
 	_textures = SpriteFolderScanner.list_textures(folder)
 	if _textures.is_empty():
 		_textures = [PlaceholderTexture.register_use("buildings %s" % RoadSide.keys()[side].to_lower())]
+	_prefill_road()
 	_fill_to_horizon()
+	_project_all()
 
 
 func building_count() -> int:
@@ -40,7 +44,7 @@ func scroll(delta: float, road_speed: float) -> void:
 	for sprite in _sprites:
 		sprite.set_meta("z", float(sprite.get_meta("z")) - road_speed * delta)
 	for i in range(_sprites.size() - 1, -1, -1):
-		if float(_sprites[i].get_meta("z")) < -20.0:
+		if float(_sprites[i].get_meta("z")) < DESPAWN_Z:
 			_sprites[i].queue_free()
 			_sprites.remove_at(i)
 	_fill_to_horizon()
@@ -50,6 +54,15 @@ func scroll(delta: float, road_speed: float) -> void:
 func set_camera_x(camera_x: float) -> void:
 	_camera_x = camera_x
 	_project_all()
+
+
+## Lines the whole visible road at start so the roadside is never empty while
+## the first buildings scroll in from the horizon.
+func _prefill_road() -> void:
+	var z := DESPAWN_Z + config.building_gap_z
+	while z < config.z_max:
+		_spawn(z)
+		z += config.building_gap_z
 
 
 func _fill_to_horizon() -> void:
@@ -89,4 +102,4 @@ func _project_all() -> void:
 		sprite.position = Perspective.project(road_x, z, _camera_x, config)
 		sprite.scale = Vector2.ONE * (config.building_height_px / sprite.texture.get_size().y) * f
 		sprite.z_index = clampi(int(config.z_max - z), 0, 4000)
-		sprite.visible = z <= config.z_max and z > -20.0
+		sprite.visible = z <= config.z_max and z > DESPAWN_Z
