@@ -83,6 +83,19 @@ max_value = 1.0
 step = 0.01
 value = 1.0
 
+[node name="ShowControlsToggle" type="CheckButton" parent="Column"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+button_pressed = true
+text = "Show controls when a shift starts"
+
+[node name="ControlsButton" type="Button" parent="Column"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Controls"
+
 [node name="Hint" type="Label" parent="Column"]
 theme_type_variation = &"Caption"
 layout_mode = 2

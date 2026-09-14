@@ -31,6 +31,7 @@ func test_round_trip() -> void:
 	store.master = 0.5
 	store.sfx = 0.0
 	store.last_name = "Ava"
+	store.show_controls_on_start = false
 	assert_eq(store.save(), OK)
 
 	var reloaded := SettingsStore.new(TEST_PATH)
@@ -38,6 +39,7 @@ func test_round_trip() -> void:
 	assert_eq(reloaded.sfx, 0.0)
 	assert_eq(reloaded.music, 0.7, "untouched value keeps its default")
 	assert_eq(reloaded.last_name, "Ava")
+	assert_false(reloaded.show_controls_on_start)
 
 
 func test_volumes_are_clamped() -> void:

@@ -157,3 +157,6 @@ TitleLabel/fonts/font = ExtResource("2_bold")
 WarningText/base_type = &"Label"
 WarningText/colors/font_color = Color(1, 0.6, 0.3, 1)
 WarningText/font_sizes/font_size = 16
+ControlKey/base_type = &"Label"
+ControlKey/fonts/font = ExtResource("2_bold")
+ControlKey/font_sizes/font_size = 20

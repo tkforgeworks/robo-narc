@@ -107,6 +107,7 @@ variations in `theme_type_variation`, so restyling happens in the theme editor o
 | `CountIn` | Label | 3-2-1 overlay |
 | `BigScore` | Label | Results score |
 | `CapturedMark` | Label | CAPTURED tag on a vehicle |
+| `ControlKey` | Label | Binding column of the controls sheet |
 | `PrimaryButton` | Button | START SHIFT, PLAY AGAIN, Resume, SUBMIT |
 | `NameEdit` | LineEdit | Name entry field |
 | `MenuPanel` | PanelContainer | Pause menu panel |

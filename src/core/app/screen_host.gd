@@ -30,11 +30,13 @@ func show_screen(scene: PackedScene, payload: Variant = null) -> bool:
 	current = next
 	if next.has_signal("navigation_requested"):
 		next.navigation_requested.connect(_on_navigation_requested.bind(next))
+	# Listeners bind services (settings, mixer, tuning) on screen_changed, so it
+	# fires before enter(): a screen's entry logic can rely on what was bound.
+	DebugLog.info(TAG, "showing %s" % next.name)
+	screen_changed.emit(next)
 	if next.has_method("enter"):
 		next.enter(payload)
 	_transitioning = false
-	DebugLog.info(TAG, "showing %s" % next.name)
-	screen_changed.emit(next)
 	return true
 
 

@@ -68,3 +68,31 @@ func test_focus_loss_owes_resume_count_in_and_releases() -> void:
 	assert_true(count_in.visible)
 	await wait_seconds(_config.resume_count_in_sec + 0.3)
 	assert_eq(clock.phase, ShiftClock.Phase.RUNNING)
+
+
+func test_controls_card_gates_the_start_and_remembers_the_opt_out() -> void:
+	var settings_path := "user://test_gameplay_settings.cfg"
+	if FileAccess.file_exists(settings_path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(settings_path))
+	var settings := SettingsStore.new(settings_path)
+	_screen.bind_settings(settings)
+	_screen.enter(null)
+	var clock: ShiftClock = _screen.get_node("ShiftClock")
+	var card: ControlsOverlay = _screen.get_node("ControlsOverlay")
+	assert_true(card.is_open(), "card shows before the shift")
+	assert_eq(clock.phase, ShiftClock.Phase.IDLE, "count-in waits for the card")
+	(card.get_node("%OptOut") as CheckBox).button_pressed = true
+	card.close()
+	assert_eq(clock.phase, ShiftClock.Phase.COUNT_IN)
+	assert_false(settings.show_controls_on_start)
+	assert_false(SettingsStore.new(settings_path).show_controls_on_start, "opt-out persisted")
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(settings_path))
+
+
+func test_controls_card_is_skipped_when_disabled() -> void:
+	var settings := SettingsStore.new("user://test_gameplay_settings_off.cfg")
+	settings.show_controls_on_start = false
+	_screen.bind_settings(settings)
+	_screen.enter(null)
+	assert_false((_screen.get_node("ControlsOverlay") as ControlsOverlay).is_open())
+	assert_eq((_screen.get_node("ShiftClock") as ShiftClock).phase, ShiftClock.Phase.COUNT_IN)

@@ -15,7 +15,9 @@ const PITCH := """In Traffic Fighter 3 you’re a Hayden AI camera system scanni
 
 @onready var _text: Label = %PitchText
 @onready var _image: TextureRect = %Image
+@onready var _controls_button: Button = %ControlsButton
 @onready var _back_button: Button = %BackButton
+@onready var _controls: ControlsOverlay = $ControlsOverlay
 
 
 func _ready() -> void:
@@ -24,6 +26,8 @@ func _ready() -> void:
 	_image.visible = not textures.is_empty()
 	if not textures.is_empty():
 		_image.texture = textures[0]
+	_controls_button.pressed.connect(func() -> void: _controls.open(false))
+	_controls.dismissed.connect(func(_opt_out: bool) -> void: _back_button.grab_focus())
 	_back_button.pressed.connect(func() -> void:
 		navigation_requested.emit(load(TITLE_SCENE_PATH), null))
 	_back_button.grab_focus()

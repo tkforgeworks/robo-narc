@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/game/ui/controls_sheet.gd" id="1_sheet"]
+
+[node name="ControlsSheet" type="VBoxContainer"]
+script = ExtResource("1_sheet")
