@@ -9,6 +9,10 @@ const SHELTER_PATH := "res://assets/roadside/bus-stop.png"
 ## Optional: when present, drawn over each zone's span on the road.
 const STRIPE_PATH := "res://assets/road/bus-stop-stripe.png"
 ## Stripe edges in road space, offset from the curb line.
+## Direction of the shelter art's ground line (front pole bases, near to far)
+## in unrotated sprite pixels; measured from bus-stop.png.
+const ART_GROUND_DIR := Vector2(705.0 - 965.0, 1153.0 - 1550.0)
+const MAX_SHEAR := 2.0
 const STRIPE_INNER := 2.0
 const STRIPE_OUTER := 32.0
 const DESPAWN_Z := -25.0
@@ -104,16 +108,40 @@ func _rebuild() -> void:
 
 
 ## The shelter's bottom-right corner (its near pole) stands on the curb at the
-## zone's near end; it recedes along the curb like the buildings do.
+## zone's near end. A vertical shear then swings the art's ground line onto the
+## curb, which in this one-point perspective always aims at the vanishing point,
+## while the poles stay upright.
 func _place_shelter(shelter: Sprite2D, zone: ZoneSpan) -> void:
 	var z := zone.z
 	var f := Perspective.scale_at(z, config)
 	shelter.position = Perspective.project(config.lane_curb_x + config.bus_stop_offset_px, z,
 			_camera_x, config)
-	shelter.scale = Vector2.ONE * (config.bus_stop_height_px / shelter.texture.get_size().y) * f
+	var uniform := (config.bus_stop_height_px / shelter.texture.get_size().y) * f
+	var k := ground_shear(shelter.position)
+	# Transform2D(rotation, scale, skew): x basis = scale.x * (cos r, sin r) = (1, k)
+	# and y basis = scale.y * (-sin(r + s), cos(r + s)) = (0, 1) when s = -r.
+	var r := atan(k)
+	shelter.rotation = r
+	shelter.skew = -r
+	shelter.scale = Vector2(uniform * sqrt(1.0 + k * k), uniform)
 	# Behind anything parked inside the zone: order by the zone's far end.
 	shelter.z_index = clampi(int(config.z_max - zone.end_z()), 0, 4000)
 	shelter.visible = art_visible and z >= 0.0 and z <= config.z_max
+
+
+## Vertical shear (dy per dx) that maps the art's ground line onto the curb
+## direction from `anchor` toward the vanishing point, plus the tuned lean.
+func ground_shear(anchor: Vector2) -> float:
+	var vanishing := Vector2(config.vanishing_point_x, config.horizon_y)
+	var target := vanishing - anchor
+	if absf(target.x) < 1.0:
+		return 0.0
+	var wanted := target.angle() + deg_to_rad(config.bus_stop_lean_deg)
+	if absf(cos(wanted)) < 0.01:
+		return 0.0
+	var target_slope := tan(wanted)
+	var art_slope := ART_GROUND_DIR.y / ART_GROUND_DIR.x
+	return clampf(target_slope - art_slope, -MAX_SHEAR, MAX_SHEAR)
 
 
 func _draw() -> void:

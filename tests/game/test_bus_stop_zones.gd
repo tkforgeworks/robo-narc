@@ -23,6 +23,21 @@ func test_each_zone_gets_a_shelter_that_leaves_with_it() -> void:
 	assert_eq(_zones.shelter_count(), 0)
 
 
+func test_shelter_ground_line_aims_at_the_vanishing_point_with_upright_poles() -> void:
+	_zones.spawn_zone(12.0, _config.bus_stop_zone_length)
+	await get_tree().process_frame
+	var shelter: Sprite2D = null
+	for child in _zones.get_children():
+		if child is Sprite2D:
+			shelter = child
+	var ground := shelter.transform.basis_xform(BusStopZones.ART_GROUND_DIR).normalized()
+	var to_vanishing := (Vector2(_config.vanishing_point_x, _config.horizon_y)
+			- shelter.position).normalized()
+	assert_almost_eq(ground.cross(to_vanishing), 0.0, 0.01, "ground line points at the vanishing point")
+	var up := shelter.transform.basis_xform(Vector2.UP).normalized()
+	assert_almost_eq(up.x, 0.0, 0.001, "poles stay vertical")
+
+
 func test_shelter_shrinks_with_distance_and_hides_when_art_is_off() -> void:
 	_zones.spawn_zone(10.0, _config.bus_stop_zone_length)
 	_zones.spawn_zone(80.0, _config.bus_stop_zone_length)

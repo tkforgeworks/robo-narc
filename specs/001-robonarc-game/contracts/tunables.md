@@ -29,7 +29,8 @@ clarified scoring changes.
 | Road | road_edge_right_x | float | 1576 | 800..3000 / 5 | BuildingStrip |
 | Road | bus_stop_zone_length | float | 20 | 5..60 / 1 | Spawner |
 | Road | bus_stop_height_px | float | 300 | 50..800 / 10 | BusStopZones |
-| Road | bus_stop_offset_px | float | 0 | -200..400 / 5 | BusStopZones |
+| Road | bus_stop_offset_px | float | 60 | -200..400 / 5 | BusStopZones |
+| Road | bus_stop_lean_deg | float | 0 | -30..30 / 0.5 | BusStopZones |
 | Road | stencil_period_z | float | 45 | 10..200 / 1 | RoadStencil |
 | Road | stencil_flatten | float | 0.45 | 0.1..1 / 0.05 | RoadStencil |
 | Road | building_height_px | float | 420 | 100..1200 / 10 | BuildingStrip |
