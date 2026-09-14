@@ -1,4 +1,8 @@
-[gd_resource type="Theme" load_steps=5 format=3 uid="uid://cr354asjxjfev"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://cr354asjxjfev"]
+
+[ext_resource type="FontFile" uid="uid://b6se7lbfyyiqb" path="res://assets/ui/fonts/CorsaGrotesk-Normal.otf" id="1_normal"]
+[ext_resource type="FontFile" uid="uid://bmph11cp5thmd" path="res://assets/ui/fonts/CorsaGrotesk-Bold.otf" id="2_bold"]
+[ext_resource type="FontFile" uid="uid://ccvpr6320bqh1" path="res://assets/ui/fonts/CorsaGrotesk-Italic.otf" id="3_italic"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_focus"]
 content_margin_left = 18.0
@@ -61,8 +65,10 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [resource]
+default_font = ExtResource("1_normal")
 default_font_size = 18
 Button/colors/font_color = Color(0.95, 0.95, 0.97, 1)
+Button/fonts/font = ExtResource("2_bold")
 Button/colors/font_focus_color = Color(1, 1, 1, 1)
 Button/colors/font_hover_color = Color(1, 1, 1, 1)
 Button/styles/focus = SubResource("StyleBoxFlat_button_focus")
@@ -73,39 +79,50 @@ Label/colors/font_color = Color(0.93, 0.93, 0.96, 1)
 Label/colors/font_outline_color = Color(0, 0, 0, 0.8)
 Label/constants/outline_size = 3
 BigScore/base_type = &"Label"
+BigScore/fonts/font = ExtResource("2_bold")
 BigScore/font_sizes/font_size = 72
 BodyText/base_type = &"Label"
 BodyText/font_sizes/font_size = 20
 Caption/base_type = &"Label"
 Caption/colors/font_color = Color(0.8, 0.8, 0.85, 1)
+Caption/fonts/font = ExtResource("3_italic")
 Caption/font_sizes/font_size = 15
 CapturedMark/base_type = &"Label"
 CapturedMark/colors/font_color = Color(0.45, 1, 0.55, 1)
 CapturedMark/colors/font_outline_color = Color(0, 0, 0, 1)
+CapturedMark/fonts/font = ExtResource("2_bold")
 CapturedMark/font_sizes/font_size = 11
 CountIn/base_type = &"Label"
+CountIn/fonts/font = ExtResource("2_bold")
 CountIn/font_sizes/font_size = 120
 DebugPanel/base_type = &"PanelContainer"
 DebugPanel/styles/panel = SubResource("StyleBoxFlat_debug_panel")
 FeedbackBanner/base_type = &"Label"
+FeedbackBanner/fonts/font = ExtResource("2_bold")
 FeedbackBanner/font_sizes/font_size = 30
 HudReadout/base_type = &"Label"
+HudReadout/fonts/font = ExtResource("2_bold")
 HudReadout/font_sizes/font_size = 28
 MenuPanel/base_type = &"PanelContainer"
 MenuPanel/styles/panel = SubResource("StyleBoxFlat_menu_panel")
 NameEdit/base_type = &"LineEdit"
 NameEdit/font_sizes/font_size = 30
 PanelTitle/base_type = &"Label"
+PanelTitle/fonts/font = ExtResource("2_bold")
 PanelTitle/font_sizes/font_size = 24
 PrimaryButton/base_type = &"Button"
 PrimaryButton/font_sizes/font_size = 28
 ScreenHeading/base_type = &"Label"
+ScreenHeading/fonts/font = ExtResource("2_bold")
 ScreenHeading/font_sizes/font_size = 40
 SectionHeading/base_type = &"Label"
+SectionHeading/fonts/font = ExtResource("2_bold")
 SectionHeading/font_sizes/font_size = 22
 Tagline/base_type = &"Label"
+Tagline/fonts/font = ExtResource("3_italic")
 Tagline/font_sizes/font_size = 18
 TitleLabel/base_type = &"Label"
+TitleLabel/fonts/font = ExtResource("2_bold")
 TitleLabel/font_sizes/font_size = 54
 WarningText/base_type = &"Label"
 WarningText/colors/font_color = Color(1, 0.6, 0.3, 1)
