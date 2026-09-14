@@ -27,6 +27,10 @@ extends Resource
 @export_range(0.0, 1200.0, 1.0) var lane_curb_x: float = 961.0
 @export_range(800.0, 3000.0, 5.0) var road_edge_right_x: float = 1576.0
 @export_range(5.0, 60.0, 1.0) var bus_stop_zone_length: float = 20.0
+## Shelter sprite height at z = 0 (scaled down with distance like buildings).
+@export_range(50.0, 800.0, 10.0) var bus_stop_height_px: float = 300.0
+## Shelter anchor offset from the curb line in road px (positive = onto the sidewalk).
+@export_range(-200.0, 400.0, 5.0) var bus_stop_offset_px: float = 0.0
 @export_range(10.0, 200.0, 1.0) var stencil_period_z: float = 45.0
 @export_range(0.1, 1.0, 0.05) var stencil_flatten: float = 0.45
 @export_range(100.0, 1200.0, 10.0) var building_height_px: float = 420.0

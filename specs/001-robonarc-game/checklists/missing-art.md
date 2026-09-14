@@ -25,9 +25,10 @@ Tick an item once the file is in place and the startup log no longer lists it.
   sized per body style by the `PlateArea` rectangle in `scenes/game/vehicles/<style>.tscn`. Drop
   `assets/vehicles/plate.png` (landscape plate, no text needed; the capture target
   is the rect, not the pixels). Logged at the first vehicle spawn.
-- [ ] **`bus stop stripe`** — the curb-side marker for a bus stop zone, scrolling
-  with the road. Drop `assets/road/stencil-bus-stop.png` in the same pre-sheared
-  style as the bus-lane and bike-lane stencils. Logged when the shift starts.
+- [x] **`bus stop shelter`** — a shelter sprite on the right curb at the near end of
+  every bus stop zone, `bus_stop_height_px` tall at z = 0 and scaled with distance.
+  Lives at `assets/roadside/bus-stop.png`. An optional `assets/road/bus-stop-stripe.png`
+  is drawn over the zone's road span when present; nothing is drawn without it.
 - [ ] **`median`** — the decoration strip left of the road, scrolling with it. Drop
   `assets/road/median.png` (tileable vertically). Logged when the shift starts.
 

@@ -14,6 +14,7 @@ assets/
 │       ├── <style>-<color>.png # one per color; color = ^[a-z]+$
 │       └── <style>-<color>.svg # optional source, ignored by discovery
 ├── roadside/
+│   ├── bus-stop.png            # shelter, bottom-right corner anchored on the right curb at each zone
 │   └── buildings/
 │       ├── left/building<N>-left.png
 │       └── right/building<N>-right.png
@@ -23,7 +24,7 @@ assets/
 │   ├── road.png                # transparent road layer, sheared on swerves (used by RoadView)
 │   ├── stencil-bus-lane.png
 │   ├── stencil-bike-lane.png
-│   ├── bus-stop-stripe.png     # MISSING → placeholder
+│   ├── bus-stop-stripe.png     # optional zone marker on the road; nothing drawn when absent
 │   └── median.png              # MISSING → placeholder
 ├── overlays/
 │   └── plate.png               # MISSING → placeholder
