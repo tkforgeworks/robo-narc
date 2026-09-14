@@ -1,41 +1,43 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://ipyhlaigunpo"]
 
-[ext_resource type="Script" path="res://src/game/ui/hud.gd" id="1_hud"]
-[ext_resource type="Script" path="res://src/game/ui/feedback_banner.gd" id="2_banner"]
+[ext_resource type="Script" uid="uid://uhfxcl36qcen" path="res://src/game/ui/hud.gd" id="1_hud"]
+[ext_resource type="Script" uid="uid://b5c0a13181fe5" path="res://src/game/ui/feedback_banner.gd" id="2_banner"]
 
-[node name="Hud" type="CanvasLayer"]
+[node name="Hud" type="CanvasLayer" unique_id=1202727242]
 layer = 5
 script = ExtResource("1_hud")
 
-[node name="Frame" type="Control" parent="."]
+[node name="Frame" type="Control" parent="." unique_id=1120327230]
+layout_mode = 3
+anchors_preset = 0
 offset_right = 1280.0
 offset_bottom = 720.0
 mouse_filter = 2
 
-[node name="ScoreLabel" type="Label" parent="Frame"]
-theme_type_variation = &"HudReadout"
+[node name="ScoreLabel" type="Label" parent="Frame" unique_id=1103193277]
+layout_mode = 0
 offset_left = 24.0
-offset_top = 16.0
+offset_top = 2.0
 offset_right = 324.0
-offset_bottom = 52.0
+offset_bottom = 40.0
+theme_type_variation = &"HudReadout"
 text = "SCORE 0"
 
-[node name="TimeLabel" type="Label" parent="Frame"]
-theme_type_variation = &"HudReadout"
-anchors_preset = 1
+[node name="TimeLabel" type="Label" parent="Frame" unique_id=378298245]
+layout_mode = 0
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -324.0
-offset_top = 16.0
+offset_top = 2.0
 offset_right = -24.0
-offset_bottom = 52.0
+offset_bottom = 40.0
 grow_horizontal = 0
+theme_type_variation = &"HudReadout"
 text = "TIME 01:30.0"
 horizontal_alignment = 2
 
-[node name="FeedbackBanner" type="Label" parent="Frame"]
-theme_type_variation = &"FeedbackBanner"
-anchors_preset = 5
+[node name="FeedbackBanner" type="Label" parent="Frame" unique_id=807347198]
+layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -400.0
@@ -43,12 +45,12 @@ offset_top = 70.0
 offset_right = 400.0
 offset_bottom = 110.0
 grow_horizontal = 2
+theme_type_variation = &"FeedbackBanner"
 horizontal_alignment = 1
 script = ExtResource("2_banner")
 
-[node name="FrameLabel" type="Label" parent="Frame"]
-theme_type_variation = &"Caption"
-anchors_preset = 2
+[node name="FrameLabel" type="Label" parent="Frame" unique_id=1130773944]
+layout_mode = 0
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 12.0
@@ -56,4 +58,5 @@ offset_top = -30.0
 offset_right = 312.0
 offset_bottom = -8.0
 grow_vertical = 0
+theme_type_variation = &"Caption"
 text = "-- fps"
