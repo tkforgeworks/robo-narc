@@ -64,6 +64,16 @@ func test_volume_section_edits_settings_and_emits() -> void:
 	assert_signal_emitted_with_parameters(_menu, "volume_changed", ["music", 0.25])
 
 
+func test_rows_carry_the_description_column() -> void:
+	_menu.open()
+	var labels: Array = []
+	_collect(_menu.get_node("%Sections"), Label, labels)
+	var found: Array = labels.filter(func(l: Label) -> bool:
+		return l.text == TuningConfig.describe("bike_intrusion_ratio"))
+	assert_eq(found.size(), 1, "description shown once next to its control")
+	_menu.close()
+
+
 func test_registered_action_button_is_replaced_by_label() -> void:
 	var hits := [0]
 	_menu.register_action("Do thing", func() -> void: hits[0] += 1)

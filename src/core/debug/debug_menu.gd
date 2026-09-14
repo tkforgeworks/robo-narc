@@ -105,7 +105,8 @@ func _build() -> void:
 	_builder.clear()
 	for group in TunableProperties.grouped(tuning.config):
 		_builder.add_tunables(str(group["name"]), tuning.config, group["properties"],
-				func(name: String, value: Variant) -> void: tuning.set_value(name, value))
+				func(name: String, value: Variant) -> void: tuning.set_value(name, value),
+				TuningConfig.describe)
 	for style in tuning.get_styles():
 		var key := str(style.get("key"))
 		var properties: Array[Dictionary] = []

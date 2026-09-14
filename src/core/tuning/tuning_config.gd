@@ -114,6 +114,103 @@ extends Resource
 ## Hide the art so only the areas and HUD remain.
 @export var hide_sprites: bool = false
 
+## One line per tunable for the debug menu. Keep them short; a missing key
+## just shows no description.
+const DESCRIPTIONS: Dictionary = {
+	# Shift
+	"shift_length_sec": "How long one shift lasts.",
+	"count_in_sec": "3-2-1 before the first shift starts.",
+	"resume_count_in_sec": "Count-in after a pause or focus loss (0 = none).",
+	"results_idle_timeout_sec": "Results screen returns to the title after this long untouched.",
+	"feedback_time_sec": "How long a score banner stays up.",
+	# Road
+	"horizon_y": "Screen y of the vanishing point (road converges here).",
+	"bus_screen_y": "Screen y where z = 0 sits; below 720 puts the bus's own row off-screen.",
+	"vanishing_point_x": "Screen x of the vanishing point.",
+	"perspective_c": "Foreshortening strength: scale = C / (z + C). Lower = steeper perspective.",
+	"z_max": "Distance vehicles and buildings spawn at (the far end of play).",
+	"pass_z": "A vehicle is judged missed once it is this far behind the bus line.",
+	"lane_change_pan": "0 = far things barely move on a swerve (true perspective); 1 = the whole view pans.",
+	"road_edge_left_x": "Road x of the left road edge (median side).",
+	"lane_road_left": "Road x of the passing lane's left edge.",
+	"lane_bus_left": "Road x of the bus lane's left edge (the dashed line).",
+	"lane_bus_right": "Road x of the bus lane's right edge = bike lane's left edge.",
+	"lane_bike_right": "Road x of the bike lane's right edge = parking lane's left edge.",
+	"lane_curb_x": "Road x of the curb line (parking lane's right edge).",
+	"road_edge_right_x": "Road x where the sidewalk ends and buildings stand.",
+	"bus_stop_zone_length": "Length of a bus stop zone along the road (z units).",
+	"bus_stop_height_px": "Shelter sprite height at z = 0; scales down with distance.",
+	"bus_stop_offset_px": "Shelter anchor offset from the curb line (positive = onto the sidewalk).",
+	"bus_stop_lean_deg": "Extra lean of the shelter's ground line beyond the automatic aim.",
+	"bus_stop_marking_opacity": "Yellow hazard stripes over the zone (0 hides them).",
+	"road_tile_px_per_z": "Road-tile rows per z unit: stretches dash and stencil spacing together.",
+	"building_height_px": "Building sprite height at z = 0.",
+	"building_gap_z": "Distance between neighbouring buildings (z units).",
+	"building_offset_px": "Buildings' distance beyond the road edge (negative = onto it).",
+	# Bus
+	"cruise_speed_start": "Road speed at the start of the shift (z units per second).",
+	"cruise_speed_end": "Road speed at the end of the shift; ramps between the two.",
+	"brake_decel": "How hard the bus brakes for a blocker (z units per second squared).",
+	"accel": "How fast the bus gets back up to cruise.",
+	"lane_change_speed": "Sideways speed of a swerve (road px per second).",
+	"swerve_trigger_z": "A stopped car in the bus lane closer than this triggers a swerve.",
+	"follow_trigger_z": "A moving car closer than this makes the bus match its speed.",
+	"merge_trigger_z": "With the lane clear beyond this distance the bus merges back.",
+	# Traffic
+	"spawn_interval_start": "Seconds between spawns at the start of the shift.",
+	"spawn_interval_end": "Seconds between spawns at the end of the shift.",
+	"moving_speed_min_ratio": "Slowest moving traffic, as a share of the bus's speed.",
+	"moving_speed_max_ratio": "Fastest moving traffic, as a share of the bus's speed.",
+	"merge_lateral_speed": "Sideways speed of a merging car (road px per second).",
+	"lane_membership_ratio": "Share of a car's width inside a lane to count as IN it. Also decides 'at the curb' (parking lane), which blocks the bike-lane rule.",
+	"bike_intrusion_ratio": "Share of a stopped car's width over the bike lane that makes it a BIKE LANE violator (only if not at the curb).",
+	"spawn_column_gap_curb_z": "Minimum spacing between curb-side spawns (z units).",
+	"spawn_column_gap_bus_z": "Minimum spacing between bus-lane spawns (z units).",
+	"honk_probability": "Chance a blocked situation plays a honk.",
+	"situation_weight_moving_traffic": "Relative odds of spawning plain moving traffic.",
+	"situation_weight_legal_curb": "Relative odds of a legally parked car.",
+	"situation_weight_sloppy_parker": "Relative odds of a car parked partly over the bike lane.",
+	"situation_weight_bike_lane_violator": "Relative odds of a car stopped in the bike lane.",
+	"situation_weight_bus_lane_blocker": "Relative odds of a car stopped in the bus lane.",
+	"situation_weight_double_park_pair": "Relative odds of a double-parked pair.",
+	"situation_weight_bus_stop_zone": "Relative odds of a bus stop zone with a car in it.",
+	# Capture
+	"plate_readable_z": "Plates farther than this are TOO FAR to capture.",
+	"capture_cooldown_sec": "Minimum time between two capture presses.",
+	"capture_overlap_ratio": "Share of the plate that must be inside the box (1 = fully framed).",
+	"box_size": "Capture box size in screen px.",
+	"box_speed_keyboard": "Box speed with keys (px per second).",
+	"box_speed_touch": "Box speed with the touch stick (px per second).",
+	"box_speed_gamepad": "Box speed with a gamepad (px per second).",
+	# Scoring
+	"points_correct": "Points for capturing a violator.",
+	"points_wrong": "Points for capturing an innocent driver.",
+	"points_missed": "Points when a violator passes uncaptured.",
+	# Vehicles
+	"light_intensity_bright": "Brake-light brightness while stopped in the road.",
+	"light_intensity_dim": "Light brightness while moving.",
+	"light_intensity_off": "Light brightness while parked.",
+	"light_glow_color": "Tint of the brake-light glow.",
+	# Leaderboard
+	"top_count": "Rows on the leaderboard (title and results).",
+	"request_timeout_sec": "Give up on the shared board after this long.",
+	"default_player_name": "Name used when a player skips name entry.",
+	# Audio
+	"volume_master_default": "Master volume for a fresh install.",
+	"volume_music_default": "Music volume for a fresh install.",
+	"volume_sfx_default": "SFX volume for a fresh install.",
+	# Debug
+	"touch_gutter_min_px": "Narrowest side gutter that still shows touch controls.",
+	"show_lane_overlay": "Draw the lane edges and horizon over the road.",
+	"show_collision_shapes": "Outline every detection area (lanes, zones, bodies, plates, probes, box).",
+	"hide_sprites": "Hide the art so only the areas and HUD remain.",
+}
+
+
+## Short description for the debug menu, or empty when none is written.
+static func describe(property_name: String) -> String:
+	return str(DESCRIPTIONS.get(property_name, ""))
+
 
 ## Centre of the bus/travel lane in road space.
 func lane_bus_center() -> float:

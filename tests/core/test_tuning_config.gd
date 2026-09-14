@@ -59,3 +59,12 @@ func test_every_tunable_is_enumerable() -> void:
 
 func test_situation_weights_cover_all_seven_kinds() -> void:
 	assert_eq(TuningConfig.new().situation_weights().size(), 7)
+
+
+func test_every_tunable_has_a_debug_description() -> void:
+	var missing: PackedStringArray = []
+	for name in TunableProperties.names(TuningConfig.new()):
+		if TuningConfig.describe(name).is_empty():
+			missing.append(name)
+	assert_eq(missing, PackedStringArray(), "undescribed tunables")
+	assert_string_contains(TuningConfig.describe("bike_intrusion_ratio"), "bike lane")
