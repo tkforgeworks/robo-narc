@@ -19,6 +19,7 @@ clarified scoring changes.
 | Road | perspective_c | float | 15 | 5..40 / 0.5 | Perspective |
 | Road | z_max | float | 100 | 50..200 / 5 | Perspective, Spawner |
 | Road | pass_z | float | 1 | 0..5 / 0.5 | MissJudge |
+| Road | lane_change_pan | float | 0 | 0..1 / 0.05 | Perspective (0 = exact perspective shift, 1 = uniform pan) |
 | Road | road_edge_left_x | float | -538 | -1500..0 / 5 | RoadView, BuildingStrip |
 | Road | lane_road_left | float | -245 | -800..0 / 1 | RoadGeometry |
 | Road | lane_bus_left | float | 148 | 0..600 / 1 | RoadGeometry |

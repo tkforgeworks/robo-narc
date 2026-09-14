@@ -31,7 +31,7 @@ func test_shelter_ground_line_aims_at_the_vanishing_point_with_upright_poles() -
 		if child is Sprite2D:
 			shelter = child
 	var ground := shelter.transform.basis_xform(BusStopZones.ART_GROUND_DIR).normalized()
-	var to_vanishing := (Vector2(_config.vanishing_point_x, _config.horizon_y)
+	var to_vanishing := (Perspective.vanishing_point(_config.lane_bus_center(), _config)
 			- shelter.position).normalized()
 	assert_almost_eq(ground.cross(to_vanishing), 0.0, 0.01, "ground line points at the vanishing point")
 	var up := shelter.transform.basis_xform(Vector2.UP).normalized()

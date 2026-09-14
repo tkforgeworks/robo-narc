@@ -110,14 +110,15 @@ func _rebuild() -> void:
 ## The shelter's bottom-right corner (its near pole) stands on the curb at the
 ## zone's near end. A vertical shear then swings the art's ground line onto the
 ## curb, which in this one-point perspective always aims at the vanishing point,
-## while the poles stay upright.
+## while the poles stay upright. The shear is computed for the bus's home lane
+## so the shelter keeps one rigid shape while the bus changes lanes.
 func _place_shelter(shelter: Sprite2D, zone: ZoneSpan) -> void:
 	var z := zone.z
 	var f := Perspective.scale_at(z, config)
-	shelter.position = Perspective.project(config.lane_curb_x + config.bus_stop_offset_px, z,
-			_camera_x, config)
+	var road_x := config.lane_curb_x + config.bus_stop_offset_px
+	shelter.position = Perspective.project(road_x, z, _camera_x, config)
 	var uniform := (config.bus_stop_height_px / shelter.texture.get_size().y) * f
-	var k := ground_shear(shelter.position)
+	var k := ground_shear(Perspective.project(road_x, z, config.lane_bus_center(), config))
 	# Transform2D(rotation, scale, skew): x basis = scale.x * (cos r, sin r) = (1, k)
 	# and y basis = scale.y * (-sin(r + s), cos(r + s)) = (0, 1) when s = -r.
 	var r := atan(k)
@@ -130,10 +131,10 @@ func _place_shelter(shelter: Sprite2D, zone: ZoneSpan) -> void:
 
 
 ## Vertical shear (dy per dx) that maps the art's ground line onto the curb
-## direction from `anchor` toward the vanishing point, plus the tuned lean.
+## direction from `anchor` (as seen from the home lane) toward the vanishing
+## point, plus the tuned lean.
 func ground_shear(anchor: Vector2) -> float:
-	var vanishing := Vector2(config.vanishing_point_x, config.horizon_y)
-	var target := vanishing - anchor
+	var target := Perspective.vanishing_point(config.lane_bus_center(), config) - anchor
 	if absf(target.x) < 1.0:
 		return 0.0
 	var wanted := target.angle() + deg_to_rad(config.bus_stop_lean_deg)

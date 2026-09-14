@@ -18,6 +18,10 @@ extends Resource
 @export_range(5.0, 40.0, 0.5) var perspective_c: float = 15.0
 @export_range(50.0, 200.0, 5.0) var z_max: float = 100.0
 @export_range(0.0, 5.0, 0.5) var pass_z: float = 1.0
+## Lane changes: 0 shifts near things more than far ones (true perspective, the
+## vanishing point stays put); 1 pans the whole view by the same amount so flat
+## roadside art never distorts against the road.
+@export_range(0.0, 1.0, 0.05) var lane_change_pan: float = 0.0
 @export_range(-1500.0, 0.0, 5.0) var road_edge_left_x: float = -538.0
 @export_range(-800.0, 0.0, 1.0) var lane_road_left: float = -245.0
 @export_range(0.0, 600.0, 1.0) var lane_bus_left: float = 148.0
