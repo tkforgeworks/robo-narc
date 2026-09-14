@@ -39,7 +39,7 @@ func test_focus_pause_owes_a_resume_count_in() -> void:
 	_clock.start()
 	_clock.begin_running()
 	_clock._process(2.0)
-	_clock.pause_for_focus()
+	_clock.pause()
 	assert_eq(_clock.phase, ShiftClock.Phase.RESUME_COUNT_IN)
 	_clock._process(5.0)
 	assert_almost_eq(_clock.time_left, 8.0, 0.001, "no ticking while waiting")
@@ -49,7 +49,7 @@ func test_focus_pause_owes_a_resume_count_in() -> void:
 
 func test_focus_pause_during_count_in_is_ignored() -> void:
 	_clock.start()
-	_clock.pause_for_focus()
+	_clock.pause()
 	assert_eq(_clock.phase, ShiftClock.Phase.COUNT_IN)
 
 
