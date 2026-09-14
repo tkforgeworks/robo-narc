@@ -97,7 +97,7 @@ extends Resource
 @export var light_glow_color: Color = Color(1.0, 0.15, 0.1)
 
 @export_group("Leaderboard")
-@export_range(5, 100, 5) var top_count: int = 20
+@export_range(5, 100, 5) var top_count: int = 15
 @export_range(1.0, 15.0, 0.5) var request_timeout_sec: float = 5.0
 @export var default_player_name: String = "Rookie"
 

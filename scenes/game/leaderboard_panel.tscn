@@ -15,6 +15,7 @@ theme_type_variation = &"SectionHeading"
 unique_name_in_owner = true
 layout_mode = 2
 text = "TOP SHIFTS"
+horizontal_alignment = 1
 
 [node name="Note" type="Label" parent="Column"]
 theme_type_variation = &"Caption"
@@ -22,11 +23,13 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "leaderboard unavailable"
+horizontal_alignment = 1
 
 [node name="Scroll" type="ScrollContainer" parent="Column"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
+vertical_scroll_mode = 0
 
 [node name="Rows" type="VBoxContainer" parent="Column/Scroll"]
 unique_name_in_owner = true

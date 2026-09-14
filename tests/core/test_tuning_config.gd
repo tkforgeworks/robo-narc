@@ -14,7 +14,7 @@ func test_defaults_match_contract_samples() -> void:
 	assert_eq(config.points_correct, 100)
 	assert_eq(config.points_wrong, -25)
 	assert_eq(config.points_missed, -10)
-	assert_eq(config.top_count, 20)
+	assert_eq(config.top_count, 15)
 	assert_eq(config.results_idle_timeout_sec, 60.0)
 	assert_eq(config.default_player_name, "Rookie")
 

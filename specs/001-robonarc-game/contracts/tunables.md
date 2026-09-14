@@ -69,7 +69,7 @@ clarified scoring changes.
 | Vehicles | light_intensity_dim | float | 0.55 | 0..1 / 0.05 | VehicleLights |
 | Vehicles | light_intensity_off | float | 0.0 | 0..1 / 0.05 | VehicleLights |
 | Vehicles | light_glow_color | Color | (1, 0.15, 0.1) | color | VehicleLights |
-| Leaderboard | top_count | int | 20 | 5..100 / 5 | LeaderboardPanel |
+| Leaderboard | top_count | int | 15 | 5..100 / 5 | LeaderboardPanel |
 | Leaderboard | request_timeout_sec | float | 5 | 1..15 / 0.5 | LeaderboardClient |
 | Leaderboard | default_player_name | String | "Rookie" | letters, <= 12 | NameEntry |
 | Audio | volume_master_default | float | 1.0 | 0..1 | AudioMixer |

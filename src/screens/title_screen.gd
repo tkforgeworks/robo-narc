@@ -1,6 +1,6 @@
 class_name TitleScreen
 extends Control
-## Title screen: branding, the shared top-20 board (local history until it
+## Title screen: branding, the shared top-15 board (local history until it
 ## answers), Start / About the Game / About the Company / Settings / Quit, and
 ## a DEBUG button in debug builds.
 

@@ -14,7 +14,8 @@ const PITCH := """Traffic Fighter 3: Next Generation (TF3) is modeled on Automat
 
 Every car parked in a bus lane slows down everyone on the bus behind it. Camera enforcement keeps buses moving, gives riders a reliable trip, and does it without pulling officers off other work. Plates are reviewed by people before any ticket is issued.
 
-In this game you are the camera. Read each car the way a reviewer would: where is it sitting, is it moving, what is next to it? Snap the ones breaking the rules and leave the innocent drivers alone."""
+In this game you are the camera. Read each car the way a reviewer would: where is it sitting, is it moving, what is next to it? Snap the ones breaking the rules and leave the innocent drivers alone.
+Edit: PITCH in src/screens/about_screen.gd; links in the Links node of scenes/screens/about_screen.tscn (same format for the company screen)."""
 
 @onready var _text: Label = %PitchText
 @onready var _image: TextureRect = %Image
