@@ -83,7 +83,7 @@ func test_results_show_before_the_network_answers_then_update() -> void:
 	fetch.respond(200, '[{"rank":1,"name":"Bo","score":9000},{"rank":57,"name":"Ava","score":2450}]')
 	var board: LeaderboardPanel = _results.get_node("%Board")
 	assert_eq(board.row_count(), 2)
-	assert_eq((board.get_node("%Rows").get_child(1) as Label).modulate, LeaderboardPanel.HIGHLIGHT)
+	assert_eq((board.get_node("%Rows").get_child(1) as Control).modulate, LeaderboardPanel.HIGHLIGHT)
 
 
 func test_failed_submit_keeps_local_record_and_says_so() -> void:

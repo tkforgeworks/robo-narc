@@ -46,5 +46,17 @@ func test_highlight_applies_now_and_to_later_rows() -> void:
 	_panel.highlight("Ava", 2450)
 	_panel.show_entries(_entries())
 	var rows: VBoxContainer = _panel.get_node("%Rows")
-	assert_eq((rows.get_child(0) as Label).modulate, LeaderboardPanel.HIGHLIGHT)
-	assert_eq((rows.get_child(1) as Label).modulate, Color.WHITE)
+	assert_eq((rows.get_child(0) as Control).modulate, LeaderboardPanel.HIGHLIGHT)
+	assert_eq((rows.get_child(1) as Control).modulate, Color.WHITE)
+
+
+func test_top_three_wear_medals_and_the_rest_do_not() -> void:
+	var entries: Array[LeaderboardEntry] = []
+	for i in 4:
+		entries.append(LeaderboardEntry.new(i + 1, "P%d" % i, 1000 - i * 10))
+	_panel.show_entries(entries)
+	assert_eq(_panel.row_variation(0), &"BoardGold")
+	assert_eq(_panel.row_variation(1), &"BoardSilver")
+	assert_eq(_panel.row_variation(2), &"BoardBronze")
+	assert_eq(_panel.row_variation(3), &"")
+	assert_string_contains(_panel.row_text(3), "P3")

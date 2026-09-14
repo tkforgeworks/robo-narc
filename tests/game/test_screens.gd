@@ -3,6 +3,7 @@ extends GutTest
 
 const TITLE_SCENE: PackedScene = preload("res://scenes/screens/title_screen.tscn")
 const ABOUT_SCENE: PackedScene = preload("res://scenes/screens/about_screen.tscn")
+const COMPANY_SCENE: PackedScene = preload("res://scenes/screens/company_screen.tscn")
 const SETTINGS_SCENE: PackedScene = preload("res://scenes/screens/settings_screen.tscn")
 const RESULTS_SCENE: PackedScene = preload("res://scenes/screens/results_screen.tscn")
 const TEST_SCORES := "user://test_screens_scores.json"
@@ -42,22 +43,26 @@ func test_title_lists_local_top_scores_and_navigates() -> void:
 	assert_string_contains((params[0] as PackedScene).resource_path, "about_screen")
 
 
-func test_title_shows_empty_state_and_cue_sheet() -> void:
+func test_title_shows_empty_state_and_reaches_the_company_screen() -> void:
 	var title: TitleScreen = TITLE_SCENE.instantiate()
 	title.config = TuningConfig.new()
 	title.score_store = ScoreStore.new(TEST_SCORES)
 	title.leaderboard_config = LeaderboardConfig.new()
 	add_child_autofree(title)
+	watch_signals(title)
 	assert_eq(title.score_row_count(), 1, "one 'no shifts' row")
-	var cue: CueSheet = title.get_node("Layout/Right/CueSheet")
-	assert_eq(cue.get_child_count(), cue.row_count() + 2, "heading, rows, light cue")
+	title.get_node("%CompanyButton").pressed.emit()
+	var params: Array = get_signal_parameters(title, "navigation_requested")
+	assert_string_contains((params[0] as PackedScene).resource_path, "company_screen")
 
 
-func test_about_has_pitch_and_back() -> void:
+func test_about_has_pitch_cue_sheet_and_back() -> void:
 	var about: AboutScreen = ABOUT_SCENE.instantiate()
 	add_child_autofree(about)
 	watch_signals(about)
 	assert_string_contains(about.get_node("%PitchText").text, "bus")
+	var cue: CueSheet = about.get_node("Column/CueSheet")
+	assert_eq(cue.get_child_count(), cue.row_count() + 2, "heading, rows, light cue")
 	about.get_node("%BackButton").pressed.emit()
 	assert_signal_emitted(about, "navigation_requested")
 
@@ -127,3 +132,12 @@ func test_results_auto_returns_to_title() -> void:
 	assert_signal_emitted(results, "navigation_requested")
 	var params: Array = get_signal_parameters(results, "navigation_requested")
 	assert_string_contains((params[0] as PackedScene).resource_path, "title_screen")
+
+
+func test_company_screen_has_blurb_and_back() -> void:
+	var company: CompanyScreen = COMPANY_SCENE.instantiate()
+	add_child_autofree(company)
+	watch_signals(company)
+	assert_false((company.get_node("%BlurbText") as Label).text.is_empty())
+	company.get_node("%BackButton").pressed.emit()
+	assert_signal_emitted(company, "navigation_requested")

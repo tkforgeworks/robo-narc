@@ -1,17 +1,17 @@
 [gd_scene load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://src/screens/about_screen.gd" id="1_about"]
+[ext_resource type="Script" path="res://src/screens/company_screen.gd" id="1_company"]
 [ext_resource type="Script" path="res://src/core/ui/link_text.gd" id="2_links"]
-[ext_resource type="PackedScene" path="res://scenes/game/cue_sheet.tscn" id="3_cue"]
+[ext_resource type="Texture2D" path="res://assets/ui/company-logo/Hayden_Logo_Stacked_RGB_Blue.png" id="3_logo"]
 
-[node name="AboutScreen" type="Control"]
+[node name="CompanyScreen" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_about")
+script = ExtResource("1_company")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -29,10 +29,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -500.0
-offset_top = -340.0
-offset_right = 500.0
-offset_bottom = 340.0
+offset_left = -400.0
+offset_top = -280.0
+offset_right = 400.0
+offset_bottom = 280.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 18
@@ -40,33 +40,31 @@ theme_override_constants/separation = 18
 [node name="Heading" type="Label" parent="Column"]
 theme_type_variation = &"ScreenHeading"
 layout_mode = 2
-text = "ABOUT THE GAME"
+text = "ABOUT THE COMPANY"
 horizontal_alignment = 1
 
-[node name="Image" type="TextureRect" parent="Column"]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(0, 160)
+[node name="Logo" type="TextureRect" parent="Column"]
+custom_minimum_size = Vector2(0, 180)
 layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("3_logo")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="PitchText" type="Label" parent="Column"]
+[node name="BlurbText" type="Label" parent="Column"]
 theme_type_variation = &"BodyText"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 text = "..."
+horizontal_alignment = 1
 autowrap_mode = 3
-
-[node name="CueSheet" parent="Column" instance=ExtResource("3_cue")]
-layout_mode = 2
 
 [node name="Links" type="RichTextLabel" parent="Column"]
 unique_name_in_owner = true
 layout_mode = 2
 bbcode_enabled = true
-text = "[center][url=https://github.com/tkforgeworks/robo-narc/issues/new]Report a bug[/url]   ·   [url=https://github.com/tkforgeworks/robo-narc]Source on GitHub[/url][/center]"
+text = "[center][/center]"
 fit_content = true
 scroll_active = false
 script = ExtResource("2_links")

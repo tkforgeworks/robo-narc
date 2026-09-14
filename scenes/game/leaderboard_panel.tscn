@@ -2,29 +2,33 @@
 
 [ext_resource type="Script" path="res://src/game/ui/leaderboard_panel.gd" id="1_panel"]
 
-[node name="LeaderboardPanel" type="VBoxContainer"]
-theme_override_constants/separation = 8
+[node name="LeaderboardPanel" type="PanelContainer"]
+theme_type_variation = &"BoardPanel"
 script = ExtResource("1_panel")
 
-[node name="Heading" type="Label" parent="."]
+[node name="Column" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Heading" type="Label" parent="Column"]
 theme_type_variation = &"SectionHeading"
 unique_name_in_owner = true
 layout_mode = 2
 text = "TOP SHIFTS"
 
-[node name="Note" type="Label" parent="."]
+[node name="Note" type="Label" parent="Column"]
 theme_type_variation = &"Caption"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 text = "leaderboard unavailable"
 
-[node name="Scroll" type="ScrollContainer" parent="."]
+[node name="Scroll" type="ScrollContainer" parent="Column"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="Rows" type="VBoxContainer" parent="Scroll"]
+[node name="Rows" type="VBoxContainer" parent="Column/Scroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3

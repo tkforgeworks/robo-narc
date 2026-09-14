@@ -96,7 +96,8 @@ variations in `theme_type_variation`, so restyling happens in the theme editor o
 | `TitleLabel` | Label | Title screen title |
 | `Tagline` | Label | Title screen subtitle |
 | `ScreenHeading` | Label | About / Settings / Results headings, PAUSED |
-| `SectionHeading` | Label | WHO TO SNAP, TOP SHIFTS, name prompt, debug menu section headings |
+| `SectionHeading` | Label | WHO TO SNAP (About the Game), TOP SHIFTS, name prompt, debug menu section headings |
+| `BoardGold` / `BoardSilver` / `BoardBronze` | Label | Leaderboard ranks 1 to 3 (all three columns of the row) |
 | `PanelTitle` | Label | Debug menu title |
 | `BodyText` | Label | About pitch, results rank line |
 | `Caption` | Label | Hints, notes, countdown, light-cue line, fps readout |
@@ -109,6 +110,7 @@ variations in `theme_type_variation`, so restyling happens in the theme editor o
 | `PrimaryButton` | Button | START SHIFT, PLAY AGAIN, Resume, SUBMIT |
 | `NameEdit` | LineEdit | Name entry field |
 | `MenuPanel` | PanelContainer | Pause menu panel |
+| `BoardPanel` | PanelContainer | Leaderboard border and padding |
 | `DebugPanel` | PanelContainer | Debug menu panel |
 
 Fonts go in `assets/ui/fonts/` and are referenced from the theme (default font and
