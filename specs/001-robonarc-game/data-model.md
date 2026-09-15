@@ -65,6 +65,7 @@ MOVING_TRAFFIC and logs a warning.
 | wrong | int | >= 0 |
 | missed | int | >= 0 |
 | empty | int | >= 0 |
+| left_in_range | int | violators inside `plate_readable_z` and uncaptured when the clock ran out |
 | duration_sec | float | tuned shift length at start |
 | played_at | int | unix seconds |
 | identity | PlayerIdentity | set by IdentityEntry; anonymous until then |
@@ -79,6 +80,12 @@ MOVING_TRAFFIC and logs a warning.
 | last_initial | String | one upper-case letter; "" for anonymous |
 
 `display_name()` is `"First L."` or "" (the server names anonymous shifts).
+
+### F1Score (`src/game/shift/f1_score.gd`)
+
+Static precision / recall / F1 over the shift's confusion matrix: TP = correct,
+FP = wrong + empty, FN = missed + left_in_range. Undefined ratios are 0.
+`ShiftResult.precision()`, `recall()`, `f1()` delegate to it.
 
 ### PendingStore (`src/game/services/pending_store.gd`)
 
@@ -97,6 +104,7 @@ The last `top_scores` answer (`entries` plus `fetched_at` unix seconds) in
 | rank | int (1-based; ties share the better rank) |
 | name | String (server-built display name; invalid values replaced by placeholder, max 16) |
 | score | int |
+| f1 | float (0..1, or -1 when the board sent none) |
 
 ### SubmitReceipt (`src/game/services/submit_receipt.gd`)
 

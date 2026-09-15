@@ -41,13 +41,14 @@ policies; only the RPCs below (security definer) read or write it.
 | correct / wrong / missed / empty | integer | `>= 0` |
 | duration_sec | integer | `between 10 and 600` |
 | client | text | e.g. `web`, `windows`, `android`, `editor`; default `unknown` |
+| f1 | numeric(4,3), nullable | the shift's F1 score (`F1Score`), 0..1 |
 
 Indexes: `shifts_score_desc_idx (score desc, created_at asc)`, `shifts_email_idx (email)`.
 
 ## Function `public.top_scores(p_limit integer default 20)`
 
 `security definer`, `stable`, granted to `anon`. Returns
-`setof (rank integer, name text, score integer)`: one entry per player (best
+`setof (rank integer, name text, score integer, f1 numeric)`: one entry per player (best
 shift per email, every anonymous shift), ordered by `score desc, created_at asc`,
 limited to `least(p_limit, 100)`. `rank` is `rank()` over score, so ties share the
 better rank. `name` is the server-built display name.
@@ -88,7 +89,9 @@ POST {base_url}/rest/v1/rpc/top_scores
 {"p_limit": 15}
 ```
 
-Response `200`: `[{"rank":1,"name":"Ava K.","score":2450},{"rank":2,"name":"anonymous 07","score":900}, ...]`
+Response `200`: `[{"rank":1,"name":"Ava K.","score":2450,"f1":0.87},{"rank":2,"name":"anonymous 07","score":900,"f1":0.41}, ...]`
+
+`f1` is the best shift's F1 (null on rows written before v2.1; displayed as `-`).
 
 Client emits `top_scores_received(entries: Array[LeaderboardEntry])`. Names that
 are empty or contain anything but letters, digits, spaces, and dots display as
@@ -101,9 +104,9 @@ answer in `user://board_cache.json` and shows it while offline.
 POST {base_url}/rest/v1/rpc/submit_shifts
 {"p_shifts":[
   {"submission_id":"6f1c...","email":"ava@example.com","first_name":"Ava","last_initial":"K",
-   "score":2450,"correct":26,"wrong":2,"missed":3,"empty":5,"duration_sec":90,"client":"web"},
+   "score":2450,"correct":26,"wrong":2,"missed":3,"empty":5,"duration_sec":90,"f1":0.867,"client":"web"},
   {"submission_id":"a9e2...","email":null,"first_name":null,"last_initial":null,
-   "score":-15,"correct":0,"wrong":1,"missed":2,"empty":0,"duration_sec":90,"client":"web"}
+   "score":-15,"correct":0,"wrong":1,"missed":2,"empty":0,"duration_sec":90,"f1":0,"client":"web"}
 ]}
 ```
 

@@ -45,6 +45,11 @@ create table if not exists public.shifts (
   constraint shifts_duration_check check (duration_sec between 10 and 600)
 );
 
+-- v2.1: the shift's F1 score (precision/recall of captures), shown on the board.
+alter table public.shifts add column if not exists f1 numeric(4,3);
+alter table public.shifts drop constraint if exists shifts_f1_check;
+alter table public.shifts add constraint shifts_f1_check check (f1 is null or (f1 >= 0 and f1 <= 1));
+
 create index if not exists shifts_score_desc_idx on public.shifts (score desc, created_at asc);
 create index if not exists shifts_email_idx on public.shifts (email);
 
@@ -76,8 +81,9 @@ revoke all on sequence public.anonymous_seq from anon, authenticated;
 
 -- One entry per player: the best shift of each email, and each anonymous shift.
 -- Internal: not granted to clients.
-create or replace function public.board_entries()
-returns table (entry_key text, display_name text, score integer, created_at timestamptz)
+drop function if exists public.board_entries();
+create function public.board_entries()
+returns table (entry_key text, display_name text, score integer, f1 numeric, created_at timestamptz)
 language sql
 stable
 security definer
@@ -90,6 +96,7 @@ as $$
               else s.first_name || ' ' || s.last_initial || '.'
          end as display_name,
          s.score,
+         s.f1,
          s.created_at
   from public.shifts s
   order by coalesce(s.email, 'anon:' || s.id::text), s.score desc, s.created_at asc;
@@ -97,8 +104,8 @@ $$;
 revoke all on function public.board_entries() from public, anon, authenticated;
 
 -- Ties share the better rank, the same rule submit_shifts uses.
-create or replace function public.top_scores(p_limit integer default 20)
-returns table (rank integer, name text, score integer)
+create function public.top_scores(p_limit integer default 20)
+returns table (rank integer, name text, score integer, f1 numeric)
 language sql
 stable
 security definer
@@ -106,7 +113,8 @@ set search_path = public
 as $$
   select rank() over (order by b.score desc)::integer as rank,
          b.display_name as name,
-         b.score
+         b.score,
+         b.f1
   from public.board_entries() b
   order by b.score desc, b.created_at asc
   limit least(greatest(coalesce(p_limit, 20), 1), 100);
@@ -130,7 +138,7 @@ begin
   end if;
 
   insert into public.shifts (submission_id, email, first_name, last_initial,
-                             score, correct, wrong, missed, empty, duration_sec, client)
+                             score, correct, wrong, missed, empty, duration_sec, client, f1)
   select (s->>'submission_id')::uuid,
          nullif(lower(btrim(s->>'email')), ''),
          nullif(btrim(s->>'first_name'), ''),
@@ -141,7 +149,8 @@ begin
          coalesce((s->>'missed')::integer, 0),
          coalesce((s->>'empty')::integer, 0),
          (s->>'duration_sec')::integer,
-         coalesce(nullif(btrim(s->>'client'), ''), 'unknown')
+         coalesce(nullif(btrim(s->>'client'), ''), 'unknown'),
+         (s->>'f1')::numeric
   from jsonb_array_elements(p_shifts) s
   on conflict (submission_id) do nothing;
 

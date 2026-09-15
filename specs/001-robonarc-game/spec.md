@@ -547,7 +547,11 @@ the game proceeds normally with a local-only note.
 - **FR-040a**: The title and results screens MUST show the top 20 entries (rank, name,
   score). The results screen MUST also show the player's own rank for the shift just
   played, even when that rank is outside the top 20, and MUST highlight the player's
-  entry when it is inside the top 20.
+  entry when it is inside the top 20. The results screen MUST also show the shift's
+  precision, recall, and F1 (correct captures as true positives, wrong and empty
+  captures as false positives, missed violators and violators still inside capture
+  range at the buzzer as false negatives), and the board MUST list each entry's F1
+  beside its points.
 - **FR-041**: The game MUST never block or delay gameplay or screen transitions on
   network activity. A failed fetch MUST fall back to the last synced board (cached on
   disk) with a brief note and no error dialog; a failed submission MUST say the shift
