@@ -137,6 +137,26 @@ at least once; desktop is fine for iteration.
    indicator turns red with "1 waiting to post". Go online and return to the title:
    the shift posts in the background and the indicator turns green.
 
+## Perfect-score simulation
+
+`tools/perfect_shift_sim.gd` plays shifts headless with no input and counts every
+violator the miss judge reports, so the ceiling for the current tuning is that
+count times `points_correct`. It uses the real spawner, column gaps, ramp, and
+rules, at `Engine.time_scale` 20 (about 5 s per shift). Tune in the F1 menu, save,
+then:
+
+```powershell
+godot --headless --path . --script tools/perfect_shift_sim.gd -- --runs=100
+```
+
+Options after the `--`: `--runs=N`, `--time-scale=X`, `--seed=S`, `--defaults`
+(ignore saved overrides), `--set=key=value` (repeatable what-if without touching
+the menu), `--out=path` (write the summary tables to a file). Every report line
+starts with `[sim]`. The tables give min / p10 / median / p90 / max of the perfect
+score, violators per third of the shift (to see where it flattens), and the mix
+by violation. CI runs 20 shifts on the shipped defaults and posts the tables to
+the run's step summary.
+
 ## CI
 
 `.github/workflows/ci.yml` runs the test command above, then five exports in
