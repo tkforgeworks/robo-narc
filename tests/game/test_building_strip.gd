@@ -58,14 +58,27 @@ func test_every_building_shares_one_pixel_scale() -> void:
 	assert_almost_eq(_strip.footprint_z(wide), 400.0 * 0.7 / _config.building_footprint_px_per_z, 0.0001)
 
 
-func test_road_facing_corner_stands_on_the_edge() -> void:
+func test_road_facing_ground_corner_stands_on_the_edge() -> void:
 	for sprite in _sprites():
 		var size := sprite.texture.get_size()
-		assert_eq(sprite.offset, Vector2(-size.x, -size.y), "left side: right edge on the road")
+		var row := BuildingStrip.ground_row(sprite.texture, BuildingStrip.RoadSide.LEFT)
+		assert_between(row, 0, int(size.y) - 1)
+		assert_eq(sprite.offset, Vector2(-size.x, -float(row + 1)), "left side: right edge on the road")
 	_strip = _make_strip(BuildingStrip.RoadSide.RIGHT)
 	for sprite in _sprites():
-		var size := sprite.texture.get_size()
-		assert_eq(sprite.offset, Vector2(0.0, -size.y), "right side: left edge on the road")
+		var row := BuildingStrip.ground_row(sprite.texture, BuildingStrip.RoadSide.RIGHT)
+		assert_eq(sprite.offset, Vector2(0.0, -float(row + 1)), "right side: left edge on the road")
+
+
+func test_ground_row_is_the_lowest_opaque_pixel_at_the_road_facing_edge() -> void:
+	var image := Image.create(20, 30, false, Image.FORMAT_RGBA8)
+	image.fill_rect(Rect2i(0, 0, 20, 20), Color.WHITE)
+	image.set_pixel(19, 27, Color.WHITE)  # a stray low pixel on the right edge only
+	var texture := ImageTexture.create_from_image(image)
+	assert_eq(BuildingStrip.ground_row(texture, BuildingStrip.RoadSide.RIGHT), 19, "left edge ends at row 19")
+	assert_eq(BuildingStrip.ground_row(texture, BuildingStrip.RoadSide.LEFT), 27, "right edge reaches row 27")
+	var blank := ImageTexture.create_from_image(Image.create(4, 4, false, Image.FORMAT_RGBA8))
+	assert_eq(BuildingStrip.ground_row(blank, BuildingStrip.RoadSide.LEFT), 3, "all transparent: last row")
 
 
 func test_scrolling_keeps_the_road_lined() -> void:
