@@ -6,6 +6,7 @@ const ABOUT_SCENE: PackedScene = preload("res://scenes/screens/about_screen.tscn
 const COMPANY_SCENE: PackedScene = preload("res://scenes/screens/company_screen.tscn")
 const SETTINGS_SCENE: PackedScene = preload("res://scenes/screens/settings_screen.tscn")
 const RESULTS_SCENE: PackedScene = preload("res://scenes/screens/results_screen.tscn")
+const DISCLAIMERS_SCENE: PackedScene = preload("res://scenes/screens/disclaimers_screen.tscn")
 const PENDING := "user://test_screens_pending.json"
 const CACHE := "user://test_screens_cache.json"
 const TEST_SETTINGS := "user://test_screens_settings.cfg"
@@ -90,6 +91,10 @@ func test_about_has_pitch_cue_sheet_and_back() -> void:
 	about.get_node("%ControlsButton").pressed.emit()
 	assert_true(overlay.is_open(), "Controls button opens the card")
 	overlay.close()
+	about.get_node("%DisclaimersButton").pressed.emit()
+	var to_disclaimers: Array = get_signal_parameters(about, "navigation_requested")
+	assert_string_contains((to_disclaimers[0] as PackedScene).resource_path, "disclaimers_screen")
+	assert_eq(to_disclaimers[1], AboutScreen.ABOUT_SCENE_PATH, "tells the screen where to come back to")
 	about.get_node("%BackButton").pressed.emit()
 	assert_signal_emitted(about, "navigation_requested")
 
@@ -116,6 +121,10 @@ func test_settings_sliders_persist_and_drive_mixer() -> void:
 	screen.get_node("%ControlsButton").pressed.emit()
 	var params: Array = get_signal_parameters(screen, "navigation_requested")
 	assert_string_contains((params[0] as PackedScene).resource_path, "controls_screen")
+	screen.get_node("%DisclaimersButton").pressed.emit()
+	var to_disclaimers: Array = get_signal_parameters(screen, "navigation_requested")
+	assert_string_contains((to_disclaimers[0] as PackedScene).resource_path, "disclaimers_screen")
+	assert_eq(to_disclaimers[1], SettingsScreen.SETTINGS_SCENE_PATH)
 	assert_almost_eq(SettingsStore.new(TEST_SETTINGS).music, 0.2, 0.001, "saved to disk")
 	assert_almost_eq(mixer.get_volume("Music"), 0.2, 0.01)
 	mixer.set_volume("Music", 1.0)
@@ -170,6 +179,23 @@ func test_results_auto_returns_to_title() -> void:
 	assert_signal_emitted(results, "navigation_requested")
 	var params: Array = get_signal_parameters(results, "navigation_requested")
 	assert_string_contains((params[0] as PackedScene).resource_path, "title_screen")
+
+
+func test_disclaimers_screen_shows_all_three_notices_and_returns_to_its_opener() -> void:
+	var screen: DisclaimersScreen = DISCLAIMERS_SCENE.instantiate()
+	add_child_autofree(screen)
+	watch_signals(screen)
+	assert_string_contains((screen.get_node("%NotADemoText") as Label).text, "not a demonstration")
+	assert_string_contains((screen.get_node("%BuiltWithAiText") as Label).text, "AI tools")
+	assert_string_contains((screen.get_node("%DataPrivacyText") as Label).text, "will not be sold")
+	assert_eq(screen.return_path(), DisclaimersScreen.TITLE_SCENE_PATH, "title when opened without a payload")
+	screen.enter("res://scenes/screens/settings_screen.tscn")
+	assert_eq(screen.return_path(), "res://scenes/screens/settings_screen.tscn")
+	screen.enter("res://nope.tscn")
+	assert_eq(screen.return_path(), "res://scenes/screens/settings_screen.tscn", "unknown paths are ignored")
+	screen.get_node("%BackButton").pressed.emit()
+	var params: Array = get_signal_parameters(screen, "navigation_requested")
+	assert_string_contains((params[0] as PackedScene).resource_path, "settings_screen")
 
 
 func test_company_screen_has_blurb_and_back() -> void:

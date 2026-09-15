@@ -8,6 +8,8 @@ extends Control
 signal navigation_requested(scene: PackedScene, payload: Variant)
 
 const TITLE_SCENE_PATH := "res://scenes/screens/title_screen.tscn"
+const ABOUT_SCENE_PATH := "res://scenes/screens/about_screen.tscn"
+const DISCLAIMERS_SCENE_PATH := "res://scenes/screens/disclaimers_screen.tscn"
 const IMAGE_DIR := "res://assets/ui/about"
 
 const PITCH := """In Traffic Fighter 3 you’re a Hayden AI camera system scanning the road for vehicles illegally parked in bus lanes, bus stops, and bike lanes. Traffic appears at the horizon and will move toward your bus. It’s up to you to determine whether a car gets a ticket.
@@ -16,6 +18,7 @@ const PITCH := """In Traffic Fighter 3 you’re a Hayden AI camera system scanni
 @onready var _text: Label = %PitchText
 @onready var _image: TextureRect = %Image
 @onready var _controls_button: Button = %ControlsButton
+@onready var _disclaimers_button: Button = %DisclaimersButton
 @onready var _back_button: Button = %BackButton
 @onready var _controls: ControlsOverlay = $ControlsOverlay
 
@@ -27,6 +30,8 @@ func _ready() -> void:
 	if not textures.is_empty():
 		_image.texture = textures[0]
 	_controls_button.pressed.connect(func() -> void: _controls.open(false))
+	_disclaimers_button.pressed.connect(func() -> void:
+		navigation_requested.emit(load(DISCLAIMERS_SCENE_PATH), ABOUT_SCENE_PATH))
 	_controls.dismissed.connect(func(_opt_out: bool) -> void: _back_button.grab_focus())
 	_back_button.pressed.connect(func() -> void:
 		navigation_requested.emit(load(TITLE_SCENE_PATH), null))

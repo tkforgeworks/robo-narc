@@ -9,6 +9,8 @@ signal navigation_requested(scene: PackedScene, payload: Variant)
 
 const TITLE_SCENE_PATH := "res://scenes/screens/title_screen.tscn"
 const CONTROLS_SCENE_PATH := "res://scenes/screens/controls_screen.tscn"
+const SETTINGS_SCENE_PATH := "res://scenes/screens/settings_screen.tscn"
+const DISCLAIMERS_SCENE_PATH := "res://scenes/screens/disclaimers_screen.tscn"
 
 var settings: SettingsStore
 var audio_mixer: AudioMixer
@@ -20,6 +22,7 @@ var audio_mixer: AudioMixer
 }
 @onready var _show_controls: CheckButton = %ShowControlsToggle
 @onready var _controls_button: Button = %ControlsButton
+@onready var _disclaimers_button: Button = %DisclaimersButton
 @onready var _back_button: Button = %BackButton
 
 
@@ -30,6 +33,8 @@ func _ready() -> void:
 	_show_controls.toggled.connect(_on_show_controls_toggled)
 	_controls_button.pressed.connect(func() -> void:
 		navigation_requested.emit(load(CONTROLS_SCENE_PATH), null))
+	_disclaimers_button.pressed.connect(func() -> void:
+		navigation_requested.emit(load(DISCLAIMERS_SCENE_PATH), SETTINGS_SCENE_PATH))
 	_back_button.pressed.connect(func() -> void: _go_back())
 	_refresh()
 	(_sliders["master"] as HSlider).grab_focus()

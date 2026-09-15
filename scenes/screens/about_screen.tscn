@@ -94,6 +94,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "CONTROLS"
 
+[node name="DisclaimersButton" type="Button" parent="Column/Buttons"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "DISCLAIMERS"
+
 [node name="BackButton" type="Button" parent="Column/Buttons" unique_id=1995014755]
 unique_name_in_owner = true
 layout_mode = 2
