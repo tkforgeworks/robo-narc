@@ -43,6 +43,22 @@ func test_enter_runs_count_in_then_shift_and_navigates_with_result() -> void:
 	assert_false(box.enabled)
 
 
+func test_violators_inside_capture_range_at_the_buzzer_count_against_recall() -> void:
+	_screen.enter(null)
+	(_screen.get_node("ShiftClock") as ShiftClock).begin_running()
+	var spawner: VehicleSpawner = _screen.get_node("VehicleSpawner")
+	var blocker: Vehicle = spawner.spawn_situation(SituationTable.Kind.BUS_LANE_BLOCKER)[0]
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	assert_eq(_screen._left_in_range(), 0, "still too far to read")
+	blocker.z = _config.plate_readable_z - 5.0
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	assert_eq(_screen._left_in_range(), 1, "readable and uncaptured")
+	blocker.captured = true
+	assert_eq(_screen._left_in_range(), 0)
+
+
 func test_capture_press_during_shift_is_scored_or_empty() -> void:
 	_screen.enter(null)
 	var clock: ShiftClock = _screen.get_node("ShiftClock")

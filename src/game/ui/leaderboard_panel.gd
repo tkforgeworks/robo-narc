@@ -13,12 +13,14 @@ const HIGHLIGHT := Color(1.0, 0.85, 0.3)
 const MEDALS: Array[StringName] = [&"BoardGold", &"BoardSilver", &"BoardBronze"]
 const RANK_WIDTH := 48.0
 const SCORE_WIDTH := 96.0
+const F1_WIDTH := 60.0
 
 var _highlight_name: String = ""
 var _highlight_score: int = 0
 var _has_highlight: bool = false
 
 @onready var _heading: Label = %Heading
+@onready var _header: HBoxContainer = %Header
 @onready var _sync: SyncIndicator = %Sync
 @onready var _note: Label = %Note
 @onready var _rows: VBoxContainer = %Rows
@@ -27,6 +29,7 @@ var _has_highlight: bool = false
 func _ready() -> void:
 	_heading.text = HEADING
 	_note.visible = false
+	_build_header()
 
 
 func show_entries(entries: Array[LeaderboardEntry], note: String = "") -> void:
@@ -88,6 +91,29 @@ func sync_text() -> String:
 	return _sync.status_text()
 
 
+## Column titles above the rows: name, points, F1.
+func _build_header() -> void:
+	var rank := _cell("", &"Caption", HORIZONTAL_ALIGNMENT_RIGHT)
+	rank.custom_minimum_size.x = RANK_WIDTH
+	_header.add_child(rank)
+	var name := _cell("NAME", &"Caption", HORIZONTAL_ALIGNMENT_LEFT)
+	name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_header.add_child(name)
+	var score := _cell("POINTS", &"Caption", HORIZONTAL_ALIGNMENT_RIGHT)
+	score.custom_minimum_size.x = SCORE_WIDTH
+	_header.add_child(score)
+	var f1 := _cell("F1", &"Caption", HORIZONTAL_ALIGNMENT_RIGHT)
+	f1.custom_minimum_size.x = F1_WIDTH
+	_header.add_child(f1)
+
+
+func header_text() -> String:
+	var parts: PackedStringArray = []
+	for child in _header.get_children():
+		parts.append((child as Label).text)
+	return " ".join(parts).strip_edges()
+
+
 func _add_message(text: String) -> Label:
 	var row := Label.new()
 	row.text = text
@@ -107,6 +133,9 @@ func _add_entry(entry: LeaderboardEntry) -> HBoxContainer:
 	var score := _cell(str(entry.score), variation, HORIZONTAL_ALIGNMENT_RIGHT)
 	score.custom_minimum_size.x = SCORE_WIDTH
 	row.add_child(score)
+	var f1 := _cell(F1Score.format(entry.f1), variation, HORIZONTAL_ALIGNMENT_RIGHT)
+	f1.custom_minimum_size.x = F1_WIDTH
+	row.add_child(f1)
 	_rows.add_child(row)
 	return row
 

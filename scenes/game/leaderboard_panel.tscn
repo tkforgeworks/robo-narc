@@ -30,6 +30,10 @@ layout_mode = 2
 text = "leaderboard unavailable"
 horizontal_alignment = 1
 
+[node name="Header" type="HBoxContainer" parent="Column"]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="Scroll" type="ScrollContainer" parent="Column"]
 layout_mode = 2
 size_flags_vertical = 3

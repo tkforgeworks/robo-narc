@@ -27,6 +27,7 @@ var _submitted: bool = false
 @onready var _entry: IdentityEntry = %IdentityEntry
 @onready var _details: VBoxContainer = %Details
 @onready var _breakdown: ScoreBreakdown = %Breakdown
+@onready var _metrics: MetricsBreakdown = %Metrics
 @onready var _rank_label: Label = %RankLabel
 @onready var _note_label: Label = %NoteLabel
 @onready var _countdown_label: Label = %CountdownLabel
@@ -69,6 +70,7 @@ func enter(payload: Variant) -> void:
 func _on_identity_chosen(identity: PlayerIdentity) -> void:
 	_result.identity = identity
 	_breakdown.show_result(_result)
+	_metrics.show_result(_result)
 	_entry.visible = false
 	_details.visible = true
 	_play_again_button.grab_focus()

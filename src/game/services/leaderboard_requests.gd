@@ -54,6 +54,7 @@ static func payload_for(results: Array[ShiftResult], tag: String) -> Dictionary:
 			"missed": result.missed,
 			"empty": result.empty,
 			"duration_sec": roundi(result.duration_sec),
+			"f1": snappedf(result.f1(), 0.001),
 			"client": tag,
 		})
 	return {"p_shifts": shifts}

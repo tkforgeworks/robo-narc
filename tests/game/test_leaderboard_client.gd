@@ -59,13 +59,15 @@ func test_fetch_sends_contract_request_and_parses_entries() -> void:
 	assert_eq(call["body"], '{"p_limit":20}')
 	assert_eq(call["timeout"], _client.timeout_sec)
 	_fetch_stub().respond(200,
-			'[{"rank":1,"name":"Ava K.","score":2450},{"rank":2,"name":"anonymous 07","score":10},'
+			'[{"rank":1,"name":"Ava K.","score":2450,"f1":0.87},{"rank":2,"name":"anonymous 07","score":10,"f1":null},'
 			+ '{"rank":3,"name":"x_y!","score":5},{"rank":4,"name":"Abcdefghijklmnopqrs T.","score":1}]')
 	assert_signal_emitted(_client, "top_scores_received")
 	var entries: Array = get_signal_parameters(_client, "top_scores_received")[0]
 	assert_eq(entries.size(), 4)
 	assert_eq(entries[0].name, "Ava K.")
 	assert_eq(entries[0].score, 2450)
+	assert_almost_eq(entries[0].f1, 0.87, 0.0001)
+	assert_eq(entries[1].f1, LeaderboardEntry.NO_F1, "null f1 shows as unknown")
 	assert_eq(entries[1].name, "anonymous 07")
 	assert_eq(entries[2].name, "???", "invalid name shown as placeholder")
 	assert_eq(entries[3].name, "Abcdefghijklmnop", "long name truncated")
@@ -136,6 +138,7 @@ func test_submit_batch_sends_one_rpc_and_parses_receipts() -> void:
 	assert_eq(int(shifts[0]["correct"]), 3)
 	assert_eq(int(shifts[0]["duration_sec"]), 90)
 	assert_eq(shifts[0]["client"], "test")
+	assert_almost_eq(float(shifts[0]["f1"]), 1.0, 0.0001, "3 correct, nothing else: perfect F1")
 	assert_null(shifts[1]["email"], "anonymous shifts send null identity")
 	assert_null(shifts[1]["first_name"])
 	assert_null(shifts[1]["last_initial"])

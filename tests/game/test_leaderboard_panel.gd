@@ -11,7 +11,7 @@ func before_each() -> void:
 
 
 func _entries() -> Array[LeaderboardEntry]:
-	return [LeaderboardEntry.new(1, "Ava", 2450), LeaderboardEntry.new(2, "???", 10)]
+	return [LeaderboardEntry.new(1, "Ava", 2450, 0.87), LeaderboardEntry.new(2, "???", 10)]
 
 
 func test_shows_remote_entries_with_heading_and_no_note() -> void:
@@ -19,7 +19,10 @@ func test_shows_remote_entries_with_heading_and_no_note() -> void:
 	assert_eq(_panel.row_count(), 2)
 	assert_string_contains(_panel.row_text(0), "Ava")
 	assert_string_contains(_panel.row_text(0), "2450")
+	assert_string_contains(_panel.row_text(0), "0.87", "F1 column")
 	assert_string_contains(_panel.row_text(1), "???")
+	assert_true(_panel.row_text(1).ends_with("-"), "unknown F1 shows a dash")
+	assert_eq(_panel.header_text(), "NAME POINTS F1")
 	assert_eq(_panel.note_text(), "")
 	assert_eq((_panel.get_node("%Heading") as Label).text, LeaderboardPanel.HEADING)
 
