@@ -1,12 +1,13 @@
 class_name LeaderboardEntry
 extends RefCounted
-## One row of the shared board as displayed. Names that fail the name rules
-## show as a placeholder and long ones are truncated (contracts/leaderboard-api.md).
+## One row of the shared board as displayed. The server builds names ("Ava K."
+## or "anonymous 07"); anything else shows as a placeholder and long ones are
+## truncated (contracts/leaderboard-api.md).
 
 const PLACEHOLDER_NAME := "???"
-const MAX_NAME := 12
+const MAX_NAME := 16
 
-static var _letters := RegEx.create_from_string("^[A-Za-z]+$")
+static var _shape := RegEx.create_from_string("^[A-Za-z0-9 .]+$")
 
 var rank: int = 0
 var name: String = PLACEHOLDER_NAME
@@ -24,8 +25,12 @@ static func from_dict(data: Dictionary) -> LeaderboardEntry:
 			display_name(str(data.get("name", ""))), int(data.get("score", 0)))
 
 
+func to_dict() -> Dictionary:
+	return {"rank": rank, "name": name, "score": score}
+
+
 static func display_name(raw: String) -> String:
 	var text := raw.strip_edges()
-	if text.is_empty() or _letters.search(text) == null:
+	if text.is_empty() or _shape.search(text) == null:
 		return PLACEHOLDER_NAME
 	return text.left(MAX_NAME)

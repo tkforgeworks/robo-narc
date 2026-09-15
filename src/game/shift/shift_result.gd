@@ -1,7 +1,8 @@
 class_name ShiftResult
 extends RefCounted
 ## The outcome of one shift. Built up by ScoreKeeper, then passed as a plain
-## value from the gameplay screen to the results screen.
+## value from the gameplay screen to the results screen, which adds who played
+## and a submission id before handing it to the leaderboard.
 
 var score: int = 0
 var correct: int = 0
@@ -10,11 +11,13 @@ var missed: int = 0
 var empty: int = 0
 var duration_sec: float = 0.0
 var played_at: int = 0
-var player_name: String = ""
+var identity: PlayerIdentity = PlayerIdentity.anonymous()
+## Client-side UUID so a resend after a lost answer never duplicates the row.
+var submission_id: String = ""
 
 
 func to_dict() -> Dictionary:
-	return {
+	var data := {
 		"score": score,
 		"correct": correct,
 		"wrong": wrong,
@@ -22,8 +25,10 @@ func to_dict() -> Dictionary:
 		"empty": empty,
 		"duration_sec": duration_sec,
 		"played_at": played_at,
-		"player_name": player_name,
+		"submission_id": submission_id,
 	}
+	data.merge(identity.to_dict())
+	return data
 
 
 static func from_dict(data: Dictionary) -> ShiftResult:
@@ -35,7 +40,8 @@ static func from_dict(data: Dictionary) -> ShiftResult:
 	result.empty = int(data.get("empty", 0))
 	result.duration_sec = float(data.get("duration_sec", 0.0))
 	result.played_at = int(data.get("played_at", 0))
-	result.player_name = str(data.get("player_name", ""))
+	result.submission_id = str(data.get("submission_id", ""))
+	result.identity = PlayerIdentity.from_dict(data)
 	return result
 
 

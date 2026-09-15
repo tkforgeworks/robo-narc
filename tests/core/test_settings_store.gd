@@ -23,14 +23,12 @@ func test_defaults_come_from_tuning_config() -> void:
 	assert_eq(store.master, 1.0)
 	assert_eq(store.music, 0.25)
 	assert_eq(store.sfx, 1.0)
-	assert_eq(store.last_name, "")
 
 
 func test_round_trip() -> void:
 	var store := SettingsStore.new(TEST_PATH)
 	store.master = 0.5
 	store.sfx = 0.0
-	store.last_name = "Ava"
 	store.show_controls_on_start = false
 	assert_eq(store.save(), OK)
 
@@ -38,7 +36,6 @@ func test_round_trip() -> void:
 	assert_eq(reloaded.master, 0.5)
 	assert_eq(reloaded.sfx, 0.0)
 	assert_eq(reloaded.music, 0.7, "untouched value keeps its default")
-	assert_eq(reloaded.last_name, "Ava")
 	assert_false(reloaded.show_controls_on_start)
 
 

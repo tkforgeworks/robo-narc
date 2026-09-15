@@ -21,19 +21,26 @@ func test_shows_remote_entries_with_heading_and_no_note() -> void:
 	assert_string_contains(_panel.row_text(0), "2450")
 	assert_string_contains(_panel.row_text(1), "???")
 	assert_eq(_panel.note_text(), "")
-	assert_eq((_panel.get_node("%Heading") as Label).text, LeaderboardPanel.HEADING_REMOTE)
+	assert_eq((_panel.get_node("%Heading") as Label).text, LeaderboardPanel.HEADING)
 
 
-func test_local_fallback_uses_dashes_and_note() -> void:
-	var records: Array[ScoreRecord] = []
-	var r := ShiftResult.new()
-	r.score = 99
-	records.append(ScoreRecord.new(r))
-	_panel.show_local(records, LeaderboardPanel.UNAVAILABLE_NOTE)
-	assert_eq(_panel.row_count(), 1)
-	assert_string_contains(_panel.row_text(0), "---")
-	assert_eq(_panel.note_text(), LeaderboardPanel.UNAVAILABLE_NOTE)
-	assert_eq((_panel.get_node("%Heading") as Label).text, LeaderboardPanel.HEADING_LOCAL)
+func test_note_and_sync_indicator() -> void:
+	_panel.show_entries(_entries(), LeaderboardPanel.CACHED_NOTE)
+	assert_eq(_panel.note_text(), LeaderboardPanel.CACHED_NOTE)
+	_panel.show_sync(LeaderboardService.Status.OFFLINE, 2)
+	assert_eq(_panel.sync_text(), "offline, 2 waiting to post")
+	var sync: SyncIndicator = _panel.get_node("%Sync")
+	assert_eq(sync.dot_color(), SyncIndicator.RED)
+	_panel.show_sync(LeaderboardService.Status.SYNCING)
+	assert_eq(sync.dot_color(), SyncIndicator.YELLOW)
+	_panel.show_sync(LeaderboardService.Status.SYNCED)
+	assert_eq(sync.dot_color(), SyncIndicator.GREEN)
+	assert_eq(_panel.sync_text(), "board in sync")
+	_panel.show_sync(LeaderboardService.Status.DISABLED)
+	assert_eq(sync.dot_color(), SyncIndicator.GREY)
+	_panel.show_entries(_entries())
+	assert_eq(_panel.note_text(), "", "note cleared with the next fill")
+	await get_tree().process_frame  # let the replaced rows free
 
 
 func test_empty_state() -> void:

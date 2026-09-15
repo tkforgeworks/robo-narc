@@ -99,7 +99,7 @@ extends Resource
 @export_group("Leaderboard")
 @export_range(5, 100, 5) var top_count: int = 15
 @export_range(1.0, 15.0, 0.5) var request_timeout_sec: float = 5.0
-@export var default_player_name: String = "Anon"
+@export_range(5.0, 300.0, 5.0) var sync_retry_sec: float = 30.0
 
 @export_group("Audio")
 @export_range(0.0, 1.0, 0.05) var volume_master_default: float = 1.0
@@ -194,7 +194,7 @@ const DESCRIPTIONS: Dictionary = {
 	# Leaderboard
 	"top_count": "Rows on the leaderboard (title and results).",
 	"request_timeout_sec": "Give up on the shared board after this long.",
-	"default_player_name": "Name used when a player skips name entry.",
+	"sync_retry_sec": "Wait this long before resending shifts the board did not take.",
 	# Audio
 	"volume_master_default": "Master volume for a fresh install.",
 	"volume_music_default": "Music volume for a fresh install.",
@@ -262,7 +262,4 @@ func validate() -> PackedStringArray:
 		total += weight
 	if total <= 0.0:
 		problems.append("situation weights must sum to more than zero")
-	var name_pattern := RegEx.create_from_string("^[A-Za-z]{1,12}$")
-	if name_pattern.search(default_player_name) == null:
-		problems.append("default_player_name must be 1-12 letters")
 	return problems

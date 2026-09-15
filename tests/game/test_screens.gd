@@ -6,37 +6,60 @@ const ABOUT_SCENE: PackedScene = preload("res://scenes/screens/about_screen.tscn
 const COMPANY_SCENE: PackedScene = preload("res://scenes/screens/company_screen.tscn")
 const SETTINGS_SCENE: PackedScene = preload("res://scenes/screens/settings_screen.tscn")
 const RESULTS_SCENE: PackedScene = preload("res://scenes/screens/results_screen.tscn")
-const TEST_SCORES := "user://test_screens_scores.json"
+const PENDING := "user://test_screens_pending.json"
+const CACHE := "user://test_screens_cache.json"
 const TEST_SETTINGS := "user://test_screens_settings.cfg"
 
 
+func before_each() -> void:
+	_clear_files()
+
+
 func after_each() -> void:
-	ScoreStore.new(TEST_SCORES).clear()
+	_clear_files()
 	if FileAccess.file_exists(TEST_SETTINGS):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(TEST_SETTINGS))
 
 
-func _result(score: int, name: String = "Ava") -> ShiftResult:
+func _clear_files() -> void:
+	PendingStore.new(PENDING).clear()
+	BoardCache.new(CACHE).clear()
+
+
+## A service with no board configured, reading the test cache and queue.
+func _offline_service() -> LeaderboardService:
+	var client := LeaderboardClient.new()
+	client.config = LeaderboardConfig.new()
+	var service := LeaderboardService.new()
+	service.client = client
+	service.pending_path = PENDING
+	service.cache_path = CACHE
+	service.config = TuningConfig.new()
+	add_child_autofree(service)
+	return service
+
+
+func _result(score: int) -> ShiftResult:
 	var r := ShiftResult.new()
 	r.score = score
-	r.player_name = name
 	r.correct = 3
 	r.missed = 1
 	return r
 
 
-func test_title_lists_local_top_scores_and_navigates() -> void:
-	var store := ScoreStore.new(TEST_SCORES)
-	store.append(_result(100, "Ava"))
-	store.append(_result(300, "Bo"))
+func test_title_lists_the_cached_board_and_navigates() -> void:
+	var entries: Array[LeaderboardEntry] = [
+		LeaderboardEntry.new(1, "Bo M.", 300), LeaderboardEntry.new(2, "Ava K.", 100)]
+	BoardCache.new(CACHE).store(entries)
 	var title: TitleScreen = TITLE_SCENE.instantiate()
 	title.config = TuningConfig.new()
-	title.score_store = store
-	title.leaderboard_config = LeaderboardConfig.new()
+	title.leaderboard = _offline_service()
 	add_child_autofree(title)
 	watch_signals(title)
 	assert_eq(title.score_row_count(), 2)
-	assert_string_contains((title.get_node("%Leaderboard") as LeaderboardPanel).row_text(0), "Bo")
+	var board: LeaderboardPanel = title.get_node("%Leaderboard")
+	assert_string_contains(board.row_text(0), "Bo M.")
+	assert_string_contains(board.sync_text(), "no board")
 	title.get_node("%AboutButton").pressed.emit()
 	assert_signal_emitted(title, "navigation_requested")
 	var params: Array = get_signal_parameters(title, "navigation_requested")
@@ -46,8 +69,7 @@ func test_title_lists_local_top_scores_and_navigates() -> void:
 func test_title_shows_empty_state_and_reaches_the_company_screen() -> void:
 	var title: TitleScreen = TITLE_SCENE.instantiate()
 	title.config = TuningConfig.new()
-	title.score_store = ScoreStore.new(TEST_SCORES)
-	title.leaderboard_config = LeaderboardConfig.new()
+	title.leaderboard = _offline_service()
 	add_child_autofree(title)
 	watch_signals(title)
 	assert_eq(title.score_row_count(), 1, "one 'no shifts' row")
@@ -99,26 +121,25 @@ func test_settings_sliders_persist_and_drive_mixer() -> void:
 	mixer.set_volume("Music", 1.0)
 
 
-func test_results_shows_breakdown_rank_and_countdown() -> void:
+func test_results_shows_breakdown_and_countdown_without_a_board() -> void:
 	var config := TuningConfig.new()
 	config.results_idle_timeout_sec = 12.0
 	var results: ResultsScreen = RESULTS_SCENE.instantiate()
 	results.config = config
-	results.score_store = ScoreStore.new(TEST_SCORES)
-	results.leaderboard_config = LeaderboardConfig.new()
+	results.leaderboard = _offline_service()
 	add_child_autofree(results)
 	watch_signals(results)
 	results.enter(_result(-15))
 	assert_eq(results.get_node("%ScoreLabel").text, "-15")
-	var entry: NameEntry = results.get_node("%NameEntry")
-	assert_true(entry.visible, "name entry comes first")
+	var entry: IdentityEntry = results.get_node("%IdentityEntry")
+	assert_true(entry.visible, "identity entry comes first")
 	assert_false(results.get_node("%Details").visible)
-	entry.prefill("Ava")
+	entry.set_fields("ava@example.com", "Ava", "K")
 	entry.submit()
 	assert_false(entry.visible)
-	assert_eq(results.score_store.records[0].result.player_name, "Ava")
 	assert_eq(results.get_node("%Breakdown").get_child_count(), 8)
-	assert_string_contains(results.get_node("%RankLabel").text, "Local rank: 1 of 1")
+	assert_eq(results.get_node("%RankLabel").text, ResultsScreen.NOT_POSTED_TEXT)
+	assert_eq(PendingStore.new(PENDING).size(), 0, "nothing queued without a board")
 	var idle: IdleTimeout = results.get_node("IdleTimeout")
 	assert_true(idle.running)
 	var countdown: Label = results.get_node("%CountdownLabel")
@@ -137,8 +158,7 @@ func test_results_auto_returns_to_title() -> void:
 	config.results_idle_timeout_sec = 0.05
 	var results: ResultsScreen = RESULTS_SCENE.instantiate()
 	results.config = config
-	results.score_store = ScoreStore.new(TEST_SCORES)
-	results.leaderboard_config = LeaderboardConfig.new()
+	results.leaderboard = _offline_service()
 	add_child_autofree(results)
 	watch_signals(results)
 	results.enter(_result(10))

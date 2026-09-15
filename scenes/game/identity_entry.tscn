@@ -1,0 +1,102 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/game/ui/identity_entry.gd" id="1_entry"]
+
+[node name="IdentityEntry" type="VBoxContainer"]
+theme_override_constants/separation = 10
+script = ExtResource("1_entry")
+
+[node name="Prompt" type="Label" parent="."]
+theme_type_variation = &"SectionHeading"
+layout_mode = 2
+text = "YOUR NAME FOR THE BOARD"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="."]
+theme_type_variation = &"Caption"
+layout_mode = 2
+text = "Leave it all blank to play as anonymous"
+horizontal_alignment = 1
+
+[node name="Fields" type="GridContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="EmailLabel" type="Label" parent="Fields"]
+theme_type_variation = &"BodyText"
+layout_mode = 2
+text = "Email"
+horizontal_alignment = 2
+
+[node name="EmailEdit" type="LineEdit" parent="Fields"]
+theme_type_variation = &"NameEdit"
+unique_name_in_owner = true
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+placeholder_text = "you@example.com"
+max_length = 254
+
+[node name="FirstNameLabel" type="Label" parent="Fields"]
+theme_type_variation = &"BodyText"
+layout_mode = 2
+text = "First name"
+horizontal_alignment = 2
+
+[node name="FirstNameEdit" type="LineEdit" parent="Fields"]
+theme_type_variation = &"NameEdit"
+unique_name_in_owner = true
+custom_minimum_size = Vector2(420, 0)
+layout_mode = 2
+placeholder_text = "letters only"
+max_length = 12
+
+[node name="InitialLabel" type="Label" parent="Fields"]
+theme_type_variation = &"BodyText"
+layout_mode = 2
+text = "Last initial"
+horizontal_alignment = 2
+
+[node name="InitialEdit" type="LineEdit" parent="Fields"]
+theme_type_variation = &"NameEdit"
+unique_name_in_owner = true
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+placeholder_text = "K"
+alignment = 1
+max_length = 1
+
+[node name="Message" type="Label" parent="."]
+theme_type_variation = &"WarningText"
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 16
+
+[node name="SubmitButton" type="Button" parent="Buttons"]
+theme_type_variation = &"PrimaryButton"
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+text = "SUBMIT"
+
+[node name="SkipButton" type="Button" parent="Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+text = "Play anonymously"
+
+[node name="Privacy" type="Label" parent="."]
+theme_type_variation = &"Caption"
+layout_mode = 2
+text = "Your email only keeps one entry per player on the board. It is never shown."
+horizontal_alignment = 1
+autowrap_mode = 3

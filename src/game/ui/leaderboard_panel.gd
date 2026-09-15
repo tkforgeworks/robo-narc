@@ -1,15 +1,14 @@
 class_name LeaderboardPanel
 extends Control
-## Top-N list for the title and results screens. Shows remote entries when the
-## shared board answers, the local history otherwise, and never blocks: callers
-## show local rows first and swap in remote rows when they arrive (spec FR-040a,
-## FR-041). Each row is rank / name / score in three columns; the top three
-## wear the medal variations from the theme.
+## Top-N list for the title and results screens with the sync indicator under
+## its heading. Callers show the cached board first and swap in fresh rows when
+## they arrive, so nothing waits on the network (spec FR-040a, FR-041). Each
+## row is rank / name / score in three columns; the top three wear the medal
+## variations from the theme.
 
 const UNAVAILABLE_NOTE := "leaderboard unavailable"
-const LOCAL_NAME := "---"
-const HEADING_REMOTE := "TOP SHIFTS"
-const HEADING_LOCAL := "TOP SHIFTS (this machine)"
+const CACHED_NOTE := "showing the last synced board"
+const HEADING := "TOP SHIFTS"
 const HIGHLIGHT := Color(1.0, 0.85, 0.3)
 const MEDALS: Array[StringName] = [&"BoardGold", &"BoardSilver", &"BoardBronze"]
 const RANK_WIDTH := 48.0
@@ -20,28 +19,34 @@ var _highlight_score: int = 0
 var _has_highlight: bool = false
 
 @onready var _heading: Label = %Heading
+@onready var _sync: SyncIndicator = %Sync
 @onready var _note: Label = %Note
 @onready var _rows: VBoxContainer = %Rows
 
 
 func _ready() -> void:
+	_heading.text = HEADING
 	_note.visible = false
 
 
 func show_entries(entries: Array[LeaderboardEntry], note: String = "") -> void:
-	_heading.text = HEADING_REMOTE
-	_fill(entries, note)
+	for child in _rows.get_children():
+		_rows.remove_child(child)
+		child.queue_free()
+	_note.text = note
+	_note.visible = not note.is_empty()
+	if entries.is_empty():
+		_add_message("No shifts played yet")
+		return
+	for entry in entries:
+		var row := _add_entry(entry)
+		row.set_meta("entry_name", entry.name)
+		row.set_meta("entry_score", entry.score)
+	_apply_highlight()
 
 
-## Local history as rows; records without a name show as `---`.
-func show_local(records: Array[ScoreRecord], note: String = "") -> void:
-	_heading.text = HEADING_LOCAL
-	var entries: Array[LeaderboardEntry] = []
-	for i in records.size():
-		var result := records[i].result
-		var name := result.player_name if not result.player_name.is_empty() else LOCAL_NAME
-		entries.append(LeaderboardEntry.new(i + 1, name, result.score))
-	_fill(entries, note)
+func show_sync(status: int, pending: int = 0) -> void:
+	_sync.show_status(status, pending)
 
 
 ## Marks the first row matching `name` and `score`, now or when rows arrive.
@@ -79,20 +84,8 @@ func note_text() -> String:
 	return _note.text if _note.visible else ""
 
 
-func _fill(entries: Array[LeaderboardEntry], note: String) -> void:
-	for child in _rows.get_children():
-		_rows.remove_child(child)
-		child.queue_free()
-	_note.text = note
-	_note.visible = not note.is_empty()
-	if entries.is_empty():
-		_add_message("No shifts played yet")
-		return
-	for entry in entries:
-		var row := _add_entry(entry)
-		row.set_meta("entry_name", entry.name)
-		row.set_meta("entry_score", entry.score)
-	_apply_highlight()
+func sync_text() -> String:
+	return _sync.status_text()
 
 
 func _add_message(text: String) -> Label:

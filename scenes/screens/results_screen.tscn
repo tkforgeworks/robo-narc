@@ -1,10 +1,9 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/screens/results_screen.gd" id="1_results"]
 [ext_resource type="Script" path="res://src/core/app/idle_timeout.gd" id="2_idle"]
-[ext_resource type="PackedScene" path="res://scenes/game/name_entry.tscn" id="3_name"]
+[ext_resource type="PackedScene" path="res://scenes/game/identity_entry.tscn" id="3_name"]
 [ext_resource type="PackedScene" path="res://scenes/game/leaderboard_panel.tscn" id="4_board"]
-[ext_resource type="Script" path="res://src/game/services/leaderboard_client.gd" id="5_client"]
 [ext_resource type="Script" path="res://src/game/ui/score_breakdown.gd" id="6_breakdown"]
 
 [node name="ResultsScreen" type="Control"]
@@ -59,7 +58,7 @@ layout_mode = 2
 text = "0"
 horizontal_alignment = 1
 
-[node name="NameEntry" parent="Layout/Column" instance=ExtResource("3_name")]
+[node name="IdentityEntry" parent="Layout/Column" instance=ExtResource("3_name")]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -83,7 +82,7 @@ columns = 2
 theme_type_variation = &"BodyText"
 unique_name_in_owner = true
 layout_mode = 2
-text = "Local rank: -"
+text = ""
 horizontal_alignment = 1
 
 [node name="NoteLabel" type="Label" parent="Layout/Column/Details"]
@@ -122,5 +121,3 @@ size_flags_vertical = 4
 script = ExtResource("2_idle")
 autostart = false
 
-[node name="LeaderboardClient" type="Node" parent="."]
-script = ExtResource("5_client")

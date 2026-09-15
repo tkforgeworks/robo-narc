@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/game/ui/sync_indicator.gd" id="1_sync"]
+
+[node name="SyncIndicator" type="HBoxContainer"]
+size_flags_horizontal = 4
+theme_override_constants/separation = 8
+alignment = 1
+script = ExtResource("1_sync")
+
+[node name="Dot" type="ColorRect" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(0.5, 0.5, 0.55, 1)
+
+[node name="StatusLabel" type="Label" parent="."]
+theme_type_variation = &"Caption"
+unique_name_in_owner = true
+layout_mode = 2
+text = "no board configured"

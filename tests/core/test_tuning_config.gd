@@ -16,7 +16,7 @@ func test_defaults_match_contract_samples() -> void:
 	assert_eq(config.points_missed, -10)
 	assert_eq(config.top_count, 15)
 	assert_eq(config.results_idle_timeout_sec, 60.0)
-	assert_eq(config.default_player_name, "Anon")
+	assert_eq(config.sync_retry_sec, 30.0)
 
 
 func test_derived_lane_centres() -> void:
@@ -43,9 +43,8 @@ func test_invariants_are_flagged() -> void:
 	config.cruise_speed_end = 20.0
 	config.spawn_interval_end = 3.0
 	config.merge_trigger_z = 50.0
-	config.default_player_name = "Bad Name 1"
 	var problems := config.validate()
-	assert_eq(problems.size(), 4, str(problems))
+	assert_eq(problems.size(), 3, str(problems))
 
 
 func test_every_tunable_is_enumerable() -> void:
