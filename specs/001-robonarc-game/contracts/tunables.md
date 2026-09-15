@@ -71,7 +71,7 @@ clarified scoring changes.
 | Vehicles | light_glow_color | Color | (1, 0.15, 0.1) | color | VehicleLights |
 | Leaderboard | top_count | int | 15 | 5..100 / 5 | LeaderboardPanel |
 | Leaderboard | request_timeout_sec | float | 5 | 1..15 / 0.5 | LeaderboardClient |
-| Leaderboard | default_player_name | String | "Anon" | letters, <= 12 | NameEntry |
+| Leaderboard | sync_retry_sec | float | 30 | 5..300 / 5 | LeaderboardService |
 | Audio | volume_master_default | float | 1.0 | 0..1 | AudioMixer |
 | Audio | volume_music_default | float | 0.7 | 0..1 | AudioMixer |
 | Audio | volume_sfx_default | float | 1.0 | 0..1 | AudioMixer |

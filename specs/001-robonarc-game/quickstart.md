@@ -12,7 +12,8 @@ Validation guide for the feature. Implementation details are in
 - Python 3 (only for the local static server).
 - Optional: a Supabase project for the shared leaderboard:
   1. Run [contracts/supabase.sql](contracts/supabase.sql) in the project's SQL editor
-     (idempotent; creates `scores`, the RLS policies, and the two RPCs).
+     (idempotent; creates the private `shifts` table, the anonymous-number trigger,
+     and the two RPCs `top_scores` and `submit_shifts`; retires the v1 `scores` table).
   2. Copy `data/game/leaderboard_config.tres` to
      `data/game/leaderboard_config.local.tres` (gitignored), fill in `base_url`
      (Project URL) and `anon_key` (the **publishable** key, `sb_publishable_...`;
@@ -123,12 +124,18 @@ at least once; desktop is fine for iteration.
 
 ### US7 Leaderboard
 
-1. With a configured Supabase project: finish a shift, enter `Ava`, expect rank shown
-   and the name on the title top 20 after return.
-2. Enter `Ava1`, `A very long name here`, and a blocklisted word: each refused inline.
-3. Skip: submitted as `Rookie`.
-4. Disable network (DevTools offline): results appear instantly with
-   "leaderboard unavailable"; local score kept.
+1. With a configured Supabase project: finish a shift, enter `ava@example.com`,
+   `Ava`, `K`; expect "Global rank: #N", `Ava K.` highlighted on the board, and the
+   indicator green. Play again with the same email and a lower score: expect
+   "(your best: N)" and still one `Ava K.` row.
+2. Enter `ava` (bad email), `Ava1`, `A very long name here`, a blocklisted word, a
+   two-letter initial, and a name with no email: each refused inline.
+3. Play anonymously: the board shows `anonymous NN`; a second anonymous shift gets
+   the next number.
+4. Disable network (DevTools offline): results appear instantly with "Saved. It will
+   post when the board is back online.", the last synced board stays up, and the
+   indicator turns red with "1 waiting to post". Go online and return to the title:
+   the shift posts in the background and the indicator turns green.
 
 ## CI
 

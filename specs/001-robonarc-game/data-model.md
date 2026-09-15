@@ -67,25 +67,52 @@ MOVING_TRAFFIC and logs a warning.
 | empty | int | >= 0 |
 | duration_sec | float | tuned shift length at start |
 | played_at | int | unix seconds |
-| player_name | String | set by NameEntry, "" until then |
+| identity | PlayerIdentity | set by IdentityEntry; anonymous until then |
+| submission_id | String | UUID v4, assigned by LeaderboardService.submit |
 
-### ScoreRecord (`src/game/services/score_store.gd`)
+### PlayerIdentity (`src/game/services/player_identity.gd`)
 
-`ShiftResult` plus `submitted: bool` and `remote_rank: int` (-1 unknown). Stored as
-JSON lines in `user://scores.json`; newest first; capped at 200 records.
+| Field | Type | Rule |
+|-------|------|------|
+| email | String | "" for anonymous; lower-cased, trimmed, basic shape check |
+| first_name | String | 1 to 12 letters; "" for anonymous |
+| last_initial | String | one upper-case letter; "" for anonymous |
 
-### LeaderboardEntry (`src/game/services/leaderboard_client.gd`)
+`display_name()` is `"First L."` or "" (the server names anonymous shifts).
+
+### PendingStore (`src/game/services/pending_store.gd`)
+
+`ShiftResult`s not yet acknowledged by the board, in `user://pending_shifts.json`,
+oldest first, capped at 500. Rows leave only when a `SubmitReceipt` names them.
+
+### BoardCache (`src/game/services/board_cache.gd`)
+
+The last `top_scores` answer (`entries` plus `fetched_at` unix seconds) in
+`user://board_cache.json`, shown while offline.
+
+### LeaderboardEntry (`src/game/services/leaderboard_entry.gd`)
 
 | Field | Type |
 |-------|------|
-| rank | int (1-based) |
-| name | String (display; empty or overlong values replaced by placeholder) |
+| rank | int (1-based; ties share the better rank) |
+| name | String (server-built display name; invalid values replaced by placeholder, max 16) |
 | score | int |
 
-### NameValidator.Result
+### SubmitReceipt (`src/game/services/submit_receipt.gd`)
 
-`ok: bool`, `reason: enum { OK, EMPTY, TOO_LONG, INVALID_CHARS, PROFANE }`,
-`message: String`.
+`submission_id`, `rank`, `name` (display name the board chose), `best_score` (the
+score the rank is for: a returning player's best).
+
+### LeaderboardService.Status
+
+`enum { DISABLED, SYNCED, SYNCING, OFFLINE }`, shown by `SyncIndicator`.
+
+### NameValidator.Result / EmailValidator.Result / IdentityValidator.Result
+
+`NameValidator`: `ok`, `reason: enum { OK, EMPTY, TOO_LONG, INVALID_CHARS, PROFANE,
+INITIAL_EMPTY, INITIAL_INVALID }`, `message`. `EmailValidator`: `reason: enum { OK,
+EMPTY, TOO_LONG, INVALID }`. `IdentityValidator` combines them for the whole form:
+`ok`, `message`, and the accepted `identity` (null when refused).
 
 ## Runtime node state (selected)
 
@@ -167,9 +194,10 @@ value)` which writes to the matching `VehicleStyle` and emits `style_changed`.
 |------|--------|----------|
 | `user://settings.cfg` | ConfigFile | `[audio] master, music, sfx` (0..1 linear); `[player] last_name` |
 | `user://tuning_overrides.cfg` | ConfigFile | `[tuning] <property>=<value>`, `[style.<key>] plate_rect, left_light_rect, right_light_rect`; debug builds only |
-| `user://scores.json` | JSON array | ScoreRecord objects, newest first, max 200 |
+| `user://pending_shifts.json` | JSON array | ShiftResult objects waiting for the board, oldest first, max 500 |
+| `user://board_cache.json` | JSON object | `fetched_at` and the last top-N entries |
 
 ## Remote schema
 
-See [contracts/leaderboard-api.md](contracts/leaderboard-api.md) for the `scores`
+See [contracts/leaderboard-api.md](contracts/leaderboard-api.md) for the `shifts`
 table and RPC definitions.

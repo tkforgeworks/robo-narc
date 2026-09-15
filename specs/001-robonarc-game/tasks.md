@@ -314,3 +314,17 @@ run the headless tests, then the sequential tasks. Export web at every checkpoin
 - Screens never look up `Main` or `ScreenHost`; they emit `navigation_requested` and expose `on_focus_*` methods for `Main` to connect (constitution I)
 - Any element without an asset uses `PlaceholderTexture.register_use(name)` so it appears in the startup log and in spec.md (FR-030b); placeholders are allowed in release builds
 - Commit `.specify/` and `specs/` doc changes with brief `docs:` messages; game code commits only at working checkpoints
+
+---
+
+## Amendment: leaderboard identity and offline queue (2026-09-14)
+
+Replaces the name-only entry and the local score history; see the rewritten
+`contracts/leaderboard-api.md` and `contracts/supabase.sql` (v2, private `shifts`
+table, `submit_shifts` batch RPC).
+
+- [X] T090 [US7] `PlayerIdentity`, `EmailValidator`, `IdentityValidator`, last-initial rule on `NameValidator`; `ShiftResult` carries `identity` and `submission_id`; `Uuid` in core
+- [X] T091 [US7] `IdentityEntry` (email / first name / last initial, Play anonymously, no prefill, keyboard only) replaces `NameEntry`
+- [X] T092 [US7] `LeaderboardClient.submit_batch` + `SubmitReceipt`; `PendingStore`, `BoardCache`, and the `Leaderboard` autoload (`LeaderboardService`: queue, flush, retry, status); `ScoreStore`, `ScoreRecord`, `RankCalculator`, `SettingsStore.last_name`, `default_player_name` removed; `sync_retry_sec` added
+- [X] T093 [US7] `SyncIndicator` in `LeaderboardPanel`; title and results screens driven by the service (cached board while offline, receipts, "your best")
+- [X] T094 [US7] Tests for every new class; spec, data model, tunables, quickstart, and template docs amended
