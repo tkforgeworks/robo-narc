@@ -13,11 +13,11 @@ clarified scoring changes.
 | Shift | resume_count_in_sec | float | 3 | 0..5 / 1 | CountIn |
 | Shift | results_idle_timeout_sec | float | 60 | 5..600 / 5 | IdleTimeout |
 | Shift | feedback_time_sec | float | 1.4 | 0.3..4 / 0.1 | FeedbackBanner |
-| Road | horizon_y | float | 0 | -300..300 / 1 | Perspective (calibrated to backdrop) |
-| Road | bus_screen_y | float | 760 | 600..900 / 1 | Perspective |
+| Road | horizon_y | float | 100 | -300..300 / 1 | Perspective (calibrated to backdrop) |
+| Road | bus_screen_y | float | 720 | 600..900 / 1 | Perspective |
 | Road | vanishing_point_x | float | 553 | 300..900 / 1 | Perspective (calibrated) |
-| Road | perspective_c | float | 15 | 5..40 / 0.5 | Perspective |
-| Road | z_max | float | 100 | 50..200 / 5 | Perspective, Spawner |
+| Road | perspective_c | float | 9 | 5..40 / 0.5 | Perspective |
+| Road | z_max | float | 180 | 50..200 / 5 | Perspective, Spawner |
 | Road | pass_z | float | 1 | 0..5 / 0.5 | MissJudge |
 | Road | lane_change_pan | float | 0 | 0..1 / 0.05 | Perspective (0 = exact perspective shift, 1 = uniform pan) |
 | Road | road_edge_left_x | float | -538 | -1500..0 / 5 | RoadView, BuildingStrip |
@@ -27,42 +27,42 @@ clarified scoring changes.
 | Road | lane_bike_right | float | 700 | 0..900 / 1 | RoadGeometry |
 | Road | lane_curb_x | float | 961 | 0..1200 / 1 | RoadGeometry |
 | Road | road_edge_right_x | float | 1576 | 800..3000 / 5 | BuildingStrip |
-| Road | bus_stop_zone_length | float | 20 | 5..60 / 1 | Spawner |
-| Road | bus_stop_height_px | float | 240 | 50..800 / 10 | BusStopZones |
+| Road | bus_stop_zone_length | float | 24 | 5..60 / 1 | Spawner |
+| Road | bus_stop_height_px | float | 280 | 50..800 / 10 | BusStopZones |
 | Road | bus_stop_offset_px | float | 70 | -200..400 / 5 | BusStopZones |
-| Road | bus_stop_lean_deg | float | 0 | -30..30 / 0.5 | BusStopZones |
+| Road | bus_stop_lean_deg | float | 5 | -30..30 / 0.5 | BusStopZones |
 | Road | bus_stop_marking_opacity | float | 0.75 | 0..1 / 0.05 | BusStopZones (hazard stripes over the zone) |
 | Road | road_tile_px_per_z | float | 35 | 5..200 / 1 | RoadSurface + tools/build_road_tile.gd |
-| Road | building_height_px | float | 700 | 100..1200 / 10 | BuildingStrip (height at z 0 of 1000 px art; one scale for all) |
+| Road | building_height_px | float | 1200 | 100..1200 / 10 | BuildingStrip (height at z 0 of 1000 px art; one scale for all) |
 | Road | building_gap_z | float | 2 | 0..60 / 1 | BuildingStrip (road between footprints) |
 | Road | building_footprint_px_per_z | float | 100 | 20..600 / 10 | BuildingStrip (density: width px per z unit) |
 | Road | building_reveal_z | float | 15 | 0..60 / 1 | BuildingStrip (grows out of the horizon over this distance) |
-| Road | building_offset_px | float | 0 | -300..600 / 10 | BuildingStrip (road-facing corner past the edge) |
+| Road | building_offset_px | float | -180 | -300..600 / 10 | BuildingStrip (road-facing corner past the edge) |
 | Bus | cruise_speed_start | float | 11 | 5..60 / 0.5 | DifficultyRamp |
-| Bus | cruise_speed_end | float | 32 | 5..80 / 0.5 | DifficultyRamp |
-| Bus | brake_decel | float | 6 | 1..60 / 1 | BusDriver |
-| Bus | accel | float | 4 | 1..40 / 1 | BusDriver |
-| Bus | lane_change_speed | float | 320 | 100..2000 / 10 | BusDriver |
+| Bus | cruise_speed_end | float | 35 | 5..80 / 0.5 | DifficultyRamp |
+| Bus | brake_decel | float | 10 | 1..60 / 1 | BusDriver |
+| Bus | accel | float | 6 | 1..40 / 1 | BusDriver |
+| Bus | lane_change_speed | float | 380 | 100..2000 / 10 | BusDriver |
 | Bus | swerve_trigger_z | float | 36 | 10..90 / 1 | BusDriver |
 | Bus | follow_trigger_z | float | 28 | 5..80 / 1 | BusDriver |
 | Bus | merge_trigger_z | float | 26 | 2..60 / 1 | BusDriver |
-| Traffic | spawn_interval_start | float | 1.5 | 0.3..5 / 0.1 | DifficultyRamp |
-| Traffic | spawn_interval_end | float | 0.9 | 0.2..5 / 0.1 | DifficultyRamp |
-| Traffic | moving_speed_min_ratio | float | 0.3 | 0.1..1 / 0.05 | Spawner |
-| Traffic | moving_speed_max_ratio | float | 0.7 | 0.1..1 / 0.05 | Spawner |
-| Traffic | merge_lateral_speed | float | 120 | 20..600 / 10 | Vehicle |
-| Traffic | lane_membership_ratio | float | 0.85 | 0.1..1 / 0.05 | ViolationRules (share of body width in a lane to count as in it) |
-| Traffic | bike_intrusion_ratio | float | 0.2 | 0.05..1 / 0.05 | ViolationRules (share of body width over the bike lane) |
-| Traffic | spawn_column_gap_curb_z | float | 16 | 2..60 / 1 | Spawner |
-| Traffic | spawn_column_gap_bus_z | float | 32 | 2..80 / 1 | Spawner |
-| Traffic | honk_probability | float | 0.4 | 0..1 / 0.05 | HonkScheduler |
+| Traffic | spawn_interval_start | float | 1.4 | 0.3..5 / 0.1 | DifficultyRamp |
+| Traffic | spawn_interval_end | float | 0.6 | 0.2..5 / 0.1 | DifficultyRamp |
+| Traffic | moving_speed_min_ratio | float | 0.4 | 0.1..1 / 0.05 | Spawner |
+| Traffic | moving_speed_max_ratio | float | 0.6 | 0.1..1 / 0.05 | Spawner |
+| Traffic | merge_lateral_speed | float | 100 | 20..600 / 10 | Vehicle |
+| Traffic | lane_membership_ratio | float | 0.7 | 0.1..1 / 0.05 | ViolationRules (share of body width in a lane to count as in it) |
+| Traffic | bike_intrusion_ratio | float | 0.3 | 0.05..1 / 0.05 | ViolationRules (share of body width over the bike lane) |
+| Traffic | spawn_column_gap_curb_z | float | 18 | 2..60 / 1 | Spawner |
+| Traffic | spawn_column_gap_bus_z | float | 22 | 2..80 / 1 | Spawner |
+| Traffic | honk_probability | float | 0.45 | 0..1 / 0.05 | HonkScheduler |
 | Traffic | situation_weight_* (7) | float | GDD §14 values | 0..10 / 0.01 | SituationTable |
-| Traffic | situation_bag_size | int | 20 | 0..60 / 1 | SituationTable (shuffled bag; 0 = independent rolls) |
+| Traffic | situation_bag_size | int | 22 | 0..60 / 1 | SituationTable (shuffled bag; 0 = independent rolls) |
 | Capture | plate_readable_z | float | 38 | 5..100 / 1 | CaptureJudge |
-| Capture | capture_cooldown_sec | float | 0.15 | 0..2 / 0.05 | CaptureBox |
+| Capture | capture_cooldown_sec | float | 0.1 | 0..2 / 0.05 | CaptureBox |
 | Capture | capture_overlap_ratio | float | 1.0 | 0.5..1 / 0.05 | CaptureJudge (share of the plate inside the box) |
-| Capture | box_size | Vector2 | (150, 110) | 40..400 each | CaptureBox |
-| Capture | box_speed_keyboard | float | 520 | 100..1500 / 10 | CaptureBox |
+| Capture | box_size | Vector2 | Vector2(120, 80) | 40..400 each | CaptureBox |
+| Capture | box_speed_keyboard | float | 580 | 100..1500 / 10 | CaptureBox |
 | Capture | box_speed_touch | float | 440 | 100..1500 / 10 | CaptureBox |
 | Capture | box_speed_gamepad | float | 440 | 100..1500 / 10 | CaptureBox |
 | Scoring | points_correct | int | 150 | 0..1000 / 5 | ScoreKeeper |
