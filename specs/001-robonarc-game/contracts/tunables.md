@@ -36,6 +36,7 @@ clarified scoring changes.
 | Road | building_height_px | float | 700 | 100..1200 / 10 | BuildingStrip (height at z 0 of 1000 px art; one scale for all) |
 | Road | building_gap_z | float | 2 | 0..60 / 1 | BuildingStrip (road between footprints) |
 | Road | building_footprint_px_per_z | float | 100 | 20..600 / 10 | BuildingStrip (density: width px per z unit) |
+| Road | building_reveal_z | float | 15 | 0..60 / 1 | BuildingStrip (grows out of the horizon over this distance) |
 | Road | building_offset_px | float | 0 | -300..600 / 10 | BuildingStrip (road-facing corner past the edge) |
 | Bus | cruise_speed_start | float | 11 | 5..60 / 0.5 | DifficultyRamp |
 | Bus | cruise_speed_end | float | 32 | 5..80 / 0.5 | DifficultyRamp |
