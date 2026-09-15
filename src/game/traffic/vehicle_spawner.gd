@@ -63,7 +63,13 @@ func _on_timeout() -> void:
 	if _layer == null:
 		DebugLog.error(TAG, "spawn tick before configure()")
 		return
-	spawn_situation(_table.pick(rng))
+	var kind := _table.pick(rng)
+	if spawn_situation(kind).is_empty():
+		_table.put_back(kind, rng)
+
+
+func table() -> SituationTable:
+	return _table
 
 
 ## Public so tests and the debug menu can force a situation. Stops at the first

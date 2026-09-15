@@ -76,6 +76,7 @@ extends Resource
 @export_range(0.0, 10.0, 0.01) var situation_weight_bus_lane_blocker: float = 0.11
 @export_range(0.0, 10.0, 0.01) var situation_weight_double_park_pair: float = 0.17
 @export_range(0.0, 10.0, 0.01) var situation_weight_bus_stop_zone: float = 0.16
+@export_range(0, 60, 1) var situation_bag_size: int = 20
 
 @export_group("Capture")
 @export_range(5.0, 100.0, 1.0) var plate_readable_z: float = 38.0
@@ -178,6 +179,7 @@ const DESCRIPTIONS: Dictionary = {
 	"situation_weight_bus_lane_blocker": "Relative odds of a car stopped in the bus lane.",
 	"situation_weight_double_park_pair": "Relative odds of a double-parked pair.",
 	"situation_weight_bus_stop_zone": "Relative odds of a bus stop zone with a car in it.",
+	"situation_bag_size": "Spawns per shuffled bag: each situation appears in proportion to its weight within every bag, so the violator count barely varies run to run (0 = roll every tick).",
 	# Capture
 	"plate_readable_z": "Plates farther than this are TOO FAR to capture.",
 	"capture_cooldown_sec": "Minimum time between two capture presses.",
