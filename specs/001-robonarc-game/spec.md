@@ -576,6 +576,11 @@ the game proceeds normally with a local-only note.
 
 **Convention operation**
 
+- **FR-044a**: A "Disclaimers and Data Privacy" screen MUST be reachable from About
+  the Game and from Settings, stating in plain language that the game is not a
+  demonstration of the real product, that AI assistance was used to build it, and
+  that a leaderboard email is used only by Hayden AI and is never sold or
+  distributed.
 - **FR-045**: A visitor MUST be able to start a shift from the title screen with a
   single action and no prior setup.
 - **FR-046**: The results screen MUST automatically return to the title screen after a
