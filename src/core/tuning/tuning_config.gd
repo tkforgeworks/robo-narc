@@ -43,6 +43,7 @@ extends Resource
 @export_range(100.0, 1200.0, 10.0) var building_height_px: float = 700.0
 @export_range(0.0, 60.0, 1.0) var building_gap_z: float = 2.0
 @export_range(20.0, 600.0, 10.0) var building_footprint_px_per_z: float = 100.0
+@export_range(0.0, 60.0, 1.0) var building_reveal_z: float = 15.0
 @export_range(-300.0, 600.0, 10.0) var building_offset_px: float = 0.0
 
 @export_group("Bus")
@@ -148,6 +149,7 @@ const DESCRIPTIONS: Dictionary = {
 	"building_height_px": "Height at z = 0 of the tallest (1000 px) building art; every building shares the scale.",
 	"building_gap_z": "Empty road between one building's footprint and the next (z units).",
 	"building_footprint_px_per_z": "Building width (px at z = 0) per z unit of road it takes up; higher packs the skyline tighter.",
+	"building_reveal_z": "Distance over which a new building grows out of the horizon to full size (0 = pop in).",
 	"building_offset_px": "Distance of the road-facing corner beyond the road edge (negative = onto it).",
 	# Bus
 	"cruise_speed_start": "Road speed at the start of the shift (z units per second).",

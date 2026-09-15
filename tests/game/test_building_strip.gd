@@ -51,9 +51,22 @@ func test_every_building_shares_one_pixel_scale() -> void:
 	assert_almost_eq(_strip.pixel_scale(), 0.7, 0.0001, "700 px for 1000 px art")
 	for sprite in _sprites():
 		var z := float(sprite.get_meta("z"))
-		var expected := _strip.pixel_scale() * Perspective.scale_at(z, _config)
+		var expected := _strip.pixel_scale() * Perspective.scale_at(z, _config) * maxf(_strip.reveal(z), 0.001)
 		assert_almost_eq(sprite.scale.x, expected, 0.0001)
 		assert_almost_eq(sprite.scale.y, expected, 0.0001)
+
+
+func test_new_buildings_grow_out_of_the_horizon() -> void:
+	assert_almost_eq(_strip.reveal(_config.z_max), 0.0, 0.0001, "nothing at the horizon")
+	assert_almost_eq(_strip.reveal(_config.z_max + 5.0), 0.0, 0.0001)
+	var half := _strip.reveal(_config.z_max - _config.building_reveal_z * 0.5)
+	assert_between(half, 0.4, 0.6, "eased midpoint")
+	assert_almost_eq(_strip.reveal(_config.z_max - _config.building_reveal_z), 1.0, 0.0001, "full size inside the band")
+	assert_almost_eq(_strip.reveal(10.0), 1.0, 0.0001)
+	var far: Sprite2D = _sprites()[-1]
+	assert_almost_eq(far.modulate.a, _strip.reveal(float(far.get_meta("z"))), 0.0001, "alpha follows the growth")
+	_config.building_reveal_z = 0.0
+	assert_almost_eq(_strip.reveal(_config.z_max), 1.0, 0.0001, "0 disables the reveal")
 	var wide := ImageTexture.create_from_image(Image.create(400, 200, false, Image.FORMAT_RGBA8))
 	assert_almost_eq(_strip.footprint_z(wide), 400.0 * 0.7 / _config.building_footprint_px_per_z, 0.0001)
 

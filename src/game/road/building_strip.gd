@@ -5,7 +5,9 @@ extends Node2D
 ## Every sprite shares one pixel scale (so short art stays short), stands on
 ## the road edge by the bottom corner of its road-facing side (found in the
 ## art, since the oblique drawings end at different rows), and takes up as
-## much road as it is wide, so neighbours butt up instead of overlapping.
+## much road as it is wide, so neighbours butt up instead of overlapping. A
+## new building grows out of the horizon over `building_reveal_z` instead of
+## popping in at full size.
 
 enum RoadSide { LEFT, RIGHT }
 
@@ -150,13 +152,23 @@ func _road_x() -> float:
 	return config.road_edge_right_x + config.building_offset_px
 
 
+## 0 at the horizon rising to 1 once the building is `building_reveal_z`
+## inside it, eased so the growth starts and ends gently.
+func reveal(z: float) -> float:
+	if config.building_reveal_z <= 0.0:
+		return 1.0
+	return smoothstep(0.0, 1.0, clampf((config.z_max - z) / config.building_reveal_z, 0.0, 1.0))
+
+
 func _project_all() -> void:
 	var road_x := _road_x()
 	var px_scale := pixel_scale()
 	for sprite in _sprites:
 		var z := float(sprite.get_meta("z"))
 		var f := Perspective.scale_at(z, config)
+		var grow := reveal(z)
 		sprite.position = Perspective.project(road_x, z, _camera_x, config)
-		sprite.scale = Vector2.ONE * px_scale * f
+		sprite.scale = Vector2.ONE * px_scale * f * maxf(grow, 0.001)
+		sprite.modulate.a = grow
 		sprite.z_index = clampi(int(config.z_max - z), 0, 4000)
 		sprite.visible = z <= config.z_max and z > DESPAWN_Z
