@@ -57,6 +57,7 @@ clarified scoring changes.
 | Traffic | spawn_column_gap_bus_z | float | 32 | 2..80 / 1 | Spawner |
 | Traffic | honk_probability | float | 0.4 | 0..1 / 0.05 | HonkScheduler |
 | Traffic | situation_weight_* (7) | float | GDD §14 values | 0..10 / 0.01 | SituationTable |
+| Traffic | situation_bag_size | int | 20 | 0..60 / 1 | SituationTable (shuffled bag; 0 = independent rolls) |
 | Capture | plate_readable_z | float | 38 | 5..100 / 1 | CaptureJudge |
 | Capture | capture_cooldown_sec | float | 0.15 | 0..2 / 0.05 | CaptureBox |
 | Capture | capture_overlap_ratio | float | 1.0 | 0.5..1 / 0.05 | CaptureJudge (share of the plate inside the box) |
