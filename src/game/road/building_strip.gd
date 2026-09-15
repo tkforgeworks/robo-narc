@@ -2,12 +2,17 @@ class_name BuildingStrip
 extends Node2D
 ## One side's row of buildings, discovered from assets/roadside/buildings/<side>/
 ## and cycled in a shuffled order. Road-fixed, so they sweep past at road speed.
+## Every sprite shares one pixel scale (so short art stays short), stands on
+## the road edge by the bottom corner of its road-facing side, and takes up
+## as much road as it is wide, so neighbours butt up instead of overlapping.
 
 enum RoadSide { LEFT, RIGHT }
 
 const BUILDINGS_DIR := "res://assets/roadside/buildings"
 ## Buildings live from here (behind the bus) to the horizon.
 const DESPAWN_Z := -20.0
+## Art height that `building_height_px` refers to: the tallest buildings.
+const REFERENCE_HEIGHT_PX := 1000.0
 
 @export var side: RoadSide = RoadSide.LEFT
 @export var rng_seed: int = 0
@@ -56,25 +61,42 @@ func set_camera_x(camera_x: float) -> void:
 	_project_all()
 
 
+## Road px per art px at z = 0, the same for every building.
+func pixel_scale() -> float:
+	return config.building_height_px / REFERENCE_HEIGHT_PX
+
+
+## How much road (z units) a texture occupies: its full-scale width at the
+## tunable px-per-z. The art's side faces are not true depth, so this is a
+## density knob rather than geometry.
+func footprint_z(texture: Texture2D) -> float:
+	return texture.get_size().x * pixel_scale() / config.building_footprint_px_per_z
+
+
 ## Lines the whole visible road at start so the roadside is never empty while
 ## the first buildings scroll in from the horizon.
 func _prefill_road() -> void:
-	var z := DESPAWN_Z + config.building_gap_z
+	var z := DESPAWN_Z
 	while z < config.z_max:
-		_spawn(z)
-		z += config.building_gap_z
+		z = _next_z(_spawn(z))
 
 
+## The next building appears the moment its start scrolls inside the horizon,
+## so the row always covers the road up to z_max.
 func _fill_to_horizon() -> void:
 	var next_z := config.z_max
 	if not _sprites.is_empty():
-		next_z = float(_sprites.back().get_meta("z")) + config.building_gap_z
-	while next_z <= config.z_max + config.building_gap_z:
-		_spawn(maxf(next_z, config.z_max))
-		next_z += config.building_gap_z
+		next_z = _next_z(_sprites.back())
+	while next_z <= config.z_max:
+		next_z = _next_z(_spawn(next_z))
 
 
-func _spawn(z: float) -> void:
+## Where the building after `sprite` starts: past its footprint plus the gap.
+func _next_z(sprite: Sprite2D) -> float:
+	return float(sprite.get_meta("z")) + footprint_z(sprite.texture) + config.building_gap_z
+
+
+func _spawn(z: float) -> Sprite2D:
 	if _queue.is_empty():
 		_queue = _textures.duplicate()
 		_queue.shuffle()
@@ -82,10 +104,13 @@ func _spawn(z: float) -> void:
 	sprite.texture = _queue.pop_back()
 	sprite.centered = false
 	var size := Vector2(sprite.texture.get_size())
-	sprite.offset = Vector2(-size.x * 0.5, -size.y)
+	# The road-facing side is the right edge of left-side art and the left
+	# edge of right-side art; its bottom corner stands on the road edge.
+	sprite.offset = Vector2(-size.x if side == RoadSide.LEFT else 0.0, -size.y)
 	sprite.set_meta("z", z)
 	add_child(sprite)
 	_sprites.append(sprite)
+	return sprite
 
 
 func _road_x() -> float:
@@ -96,10 +121,11 @@ func _road_x() -> float:
 
 func _project_all() -> void:
 	var road_x := _road_x()
+	var px_scale := pixel_scale()
 	for sprite in _sprites:
 		var z := float(sprite.get_meta("z"))
 		var f := Perspective.scale_at(z, config)
 		sprite.position = Perspective.project(road_x, z, _camera_x, config)
-		sprite.scale = Vector2.ONE * (config.building_height_px / sprite.texture.get_size().y) * f
+		sprite.scale = Vector2.ONE * px_scale * f
 		sprite.z_index = clampi(int(config.z_max - z), 0, 4000)
 		sprite.visible = z <= config.z_max and z > DESPAWN_Z

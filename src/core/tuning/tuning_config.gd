@@ -40,9 +40,10 @@ extends Resource
 @export_range(0.0, 1.0, 0.05) var bus_stop_marking_opacity: float = 0.75
 ## Road-tile rows per z unit: how long one repeat of road-tile.png is on the road.
 @export_range(5.0, 200.0, 1.0) var road_tile_px_per_z: float = 35.0
-@export_range(100.0, 1200.0, 10.0) var building_height_px: float = 420.0
-@export_range(2.0, 60.0, 1.0) var building_gap_z: float = 10.0
-@export_range(-300.0, 600.0, 10.0) var building_offset_px: float = -70.0
+@export_range(100.0, 1200.0, 10.0) var building_height_px: float = 700.0
+@export_range(0.0, 60.0, 1.0) var building_gap_z: float = 2.0
+@export_range(20.0, 600.0, 10.0) var building_footprint_px_per_z: float = 100.0
+@export_range(-300.0, 600.0, 10.0) var building_offset_px: float = 0.0
 
 @export_group("Bus")
 @export_range(5.0, 60.0, 0.5) var cruise_speed_start: float = 11.0
@@ -144,9 +145,10 @@ const DESCRIPTIONS: Dictionary = {
 	"bus_stop_lean_deg": "Extra lean of the shelter's ground line beyond the automatic aim.",
 	"bus_stop_marking_opacity": "Yellow hazard stripes over the zone (0 hides them).",
 	"road_tile_px_per_z": "Road-tile rows per z unit: stretches dash and stencil spacing together.",
-	"building_height_px": "Building sprite height at z = 0.",
-	"building_gap_z": "Distance between neighbouring buildings (z units).",
-	"building_offset_px": "Buildings' distance beyond the road edge (negative = onto it).",
+	"building_height_px": "Height at z = 0 of the tallest (1000 px) building art; every building shares the scale.",
+	"building_gap_z": "Empty road between one building's footprint and the next (z units).",
+	"building_footprint_px_per_z": "Building width (px at z = 0) per z unit of road it takes up; higher packs the skyline tighter.",
+	"building_offset_px": "Distance of the road-facing corner beyond the road edge (negative = onto it).",
 	# Bus
 	"cruise_speed_start": "Road speed at the start of the shift (z units per second).",
 	"cruise_speed_end": "Road speed at the end of the shift; ramps between the two.",
