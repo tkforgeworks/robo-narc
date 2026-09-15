@@ -31,12 +31,13 @@ func test_distribution_matches_weights() -> void:
 
 func test_bag_pins_the_mix_within_each_bag() -> void:
 	var table := _table(20)
+	table.config.situation_weight_moving_traffic = 0.01
 	var composition := table.bag_composition()
 	var bag_total := 0
 	for kind: SituationTable.Kind in composition:
 		bag_total += composition[kind]
 	assert_between(bag_total, 18, 23, "rounding keeps the bag near its size")
-	assert_eq(composition[SituationTable.Kind.MOVING_TRAFFIC], 1, "0.06 of 0.9 rounds to one, never zero")
+	assert_eq(composition[SituationTable.Kind.MOVING_TRAFFIC], 1, "a tiny weight still gets one slot, never zero")
 	var rng := _rng(3)
 	var counts := {}
 	for i in bag_total:

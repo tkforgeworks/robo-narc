@@ -48,7 +48,7 @@ func test_neighbours_butt_up_footprint_plus_gap_apart() -> void:
 
 
 func test_every_building_shares_one_pixel_scale() -> void:
-	assert_almost_eq(_strip.pixel_scale(), 0.7, 0.0001, "700 px for 1000 px art")
+	assert_almost_eq(_strip.pixel_scale(), _config.building_height_px / 1000.0, 0.0001, "height for 1000 px art")
 	for sprite in _sprites():
 		var z := float(sprite.get_meta("z"))
 		var expected := _strip.pixel_scale() * Perspective.scale_at(z, _config) * maxf(_strip.reveal(z), 0.001)
@@ -68,7 +68,7 @@ func test_new_buildings_grow_out_of_the_horizon() -> void:
 	_config.building_reveal_z = 0.0
 	assert_almost_eq(_strip.reveal(_config.z_max), 1.0, 0.0001, "0 disables the reveal")
 	var wide := ImageTexture.create_from_image(Image.create(400, 200, false, Image.FORMAT_RGBA8))
-	assert_almost_eq(_strip.footprint_z(wide), 400.0 * 0.7 / _config.building_footprint_px_per_z, 0.0001)
+	assert_almost_eq(_strip.footprint_z(wide), 400.0 * _strip.pixel_scale() / _config.building_footprint_px_per_z, 0.0001)
 
 
 func test_road_facing_ground_corner_stands_on_the_edge() -> void:

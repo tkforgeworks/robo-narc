@@ -71,7 +71,7 @@ func test_vector2_composite_reassembles() -> void:
 	assert_eq(spins.size(), 2)
 	(spins[0] as SpinBox).value = 200.0
 	await get_tree().process_frame
-	assert_eq(_committed[-1][1], Vector2(200.0, 110.0))
+	assert_eq(_committed[-1][1], Vector2(200.0, _config.box_size.y))
 
 
 func test_rect2_composite_uses_fine_step_for_normalized_values() -> void:
