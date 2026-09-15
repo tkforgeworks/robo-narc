@@ -10,6 +10,7 @@ const GAMEPLAY_SCENE_PATH := "res://scenes/game/gameplay.tscn"
 const ABOUT_SCENE_PATH := "res://scenes/screens/about_screen.tscn"
 const COMPANY_SCENE_PATH := "res://scenes/screens/company_screen.tscn"
 const SETTINGS_SCENE_PATH := "res://scenes/screens/settings_screen.tscn"
+const SIM_SCENE_PATH := "res://scenes/screens/sim_screen.tscn"
 
 var config: TuningConfig
 ## Injectable for tests; null uses the `Leaderboard` autoload.
@@ -58,6 +59,9 @@ func bind_debug_menu(menu: DebugMenu) -> void:
 	menu.register_action("Clear board cache and unsent shifts", func() -> void:
 		leaderboard.clear_local()
 		DebugLog.info("Title", "board cache and pending shifts cleared"))
+	menu.register_action("Perfect-score simulation", func() -> void:
+		menu.close()
+		_go(SIM_SCENE_PATH))
 
 
 func score_row_count() -> int:
