@@ -33,9 +33,10 @@ clarified scoring changes.
 | Road | bus_stop_lean_deg | float | 0 | -30..30 / 0.5 | BusStopZones |
 | Road | bus_stop_marking_opacity | float | 0.75 | 0..1 / 0.05 | BusStopZones (hazard stripes over the zone) |
 | Road | road_tile_px_per_z | float | 35 | 5..200 / 1 | RoadSurface + tools/build_road_tile.gd |
-| Road | building_height_px | float | 420 | 100..1200 / 10 | BuildingStrip |
-| Road | building_gap_z | float | 10 | 2..60 / 1 | BuildingStrip |
-| Road | building_offset_px | float | -70 | -300..600 / 10 | BuildingStrip |
+| Road | building_height_px | float | 700 | 100..1200 / 10 | BuildingStrip (height at z 0 of 1000 px art; one scale for all) |
+| Road | building_gap_z | float | 2 | 0..60 / 1 | BuildingStrip (road between footprints) |
+| Road | building_footprint_px_per_z | float | 100 | 20..600 / 10 | BuildingStrip (density: width px per z unit) |
+| Road | building_offset_px | float | 0 | -300..600 / 10 | BuildingStrip (road-facing corner past the edge) |
 | Bus | cruise_speed_start | float | 11 | 5..60 / 0.5 | DifficultyRamp |
 | Bus | cruise_speed_end | float | 32 | 5..80 / 0.5 | DifficultyRamp |
 | Bus | brake_decel | float | 6 | 1..60 / 1 | BusDriver |
