@@ -139,11 +139,16 @@ at least once; desktop is fine for iteration.
 
 ## Perfect-score simulation
 
-`tools/perfect_shift_sim.gd` plays shifts headless with no input and counts every
-violator the miss judge reports, so the ceiling for the current tuning is that
-count times `points_correct`. It uses the real spawner, column gaps, ramp, and
-rules, at `Engine.time_scale` 20 (about 5 s per shift). Tune in the F1 menu, save,
-then:
+`PerfectShiftSimulator` plays shifts with no input and counts every violator the
+miss judge reports, so the ceiling for the current tuning is that count times
+`points_correct`. It uses the real spawner, column gaps, ramp, and rules, at
+`Engine.time_scale` 20 (about 5 s per shift).
+
+In the editor (F5) or a tuning build: F1 -> "Perfect-score simulation" opens a
+debug screen with runs and time-scale spinners. It reads the live tuning, so the
+loop is F1 to tweak, Run, read the median, F1 again; save from F1 once happy.
+
+From the command line (`tools/perfect_shift_sim.gd`), after saving in the F1 menu:
 
 ```powershell
 godot --headless --path . --script tools/perfect_shift_sim.gd -- --runs=100
