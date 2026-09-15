@@ -12,11 +12,11 @@ extends Resource
 @export_range(0.3, 4.0, 0.1) var feedback_time_sec: float = 1.4
 
 @export_group("Road")
-@export_range(-300.0, 300.0, 1.0) var horizon_y: float = 0.0
-@export_range(600.0, 900.0, 1.0) var bus_screen_y: float = 760.0
+@export_range(-300.0, 300.0, 1.0) var horizon_y: float = 100.0
+@export_range(600.0, 900.0, 1.0) var bus_screen_y: float = 720.0
 @export_range(300.0, 900.0, 1.0) var vanishing_point_x: float = 553.0
-@export_range(5.0, 40.0, 0.5) var perspective_c: float = 15.0
-@export_range(50.0, 200.0, 5.0) var z_max: float = 100.0
+@export_range(5.0, 40.0, 0.5) var perspective_c: float = 9.0
+@export_range(50.0, 200.0, 5.0) var z_max: float = 180.0
 @export_range(0.0, 5.0, 0.5) var pass_z: float = 1.0
 ## Lane changes: 0 shifts near things more than far ones (true perspective, the
 ## vanishing point stays put); 1 pans the whole view by the same amount so flat
@@ -29,59 +29,62 @@ extends Resource
 @export_range(0.0, 900.0, 1.0) var lane_bike_right: float = 700.0
 @export_range(0.0, 1200.0, 1.0) var lane_curb_x: float = 961.0
 @export_range(800.0, 3000.0, 5.0) var road_edge_right_x: float = 1576.0
-@export_range(5.0, 60.0, 1.0) var bus_stop_zone_length: float = 20.0
+@export_range(5.0, 60.0, 1.0) var bus_stop_zone_length: float = 24.0
 ## Shelter sprite height at z = 0 (scaled down with distance like buildings).
-@export_range(50.0, 800.0, 10.0) var bus_stop_height_px: float = 240.0
+@export_range(50.0, 800.0, 10.0) var bus_stop_height_px: float = 280.0
 ## Shelter anchor offset from the curb line in road px (positive = onto the sidewalk).
 @export_range(-200.0, 400.0, 5.0) var bus_stop_offset_px: float = 70.0
 ## Extra lean of the shelter's ground line, on top of the automatic aim at the vanishing point.
-@export_range(-30.0, 30.0, 0.5) var bus_stop_lean_deg: float = 0.0
+@export_range(-30.0, 30.0, 0.5) var bus_stop_lean_deg: float = 5.0
 ## Yellow hazard stripes over the zone's curb-lane rectangle (0 hides them).
 @export_range(0.0, 1.0, 0.05) var bus_stop_marking_opacity: float = 0.75
 ## Road-tile rows per z unit: how long one repeat of road-tile.png is on the road.
 @export_range(5.0, 200.0, 1.0) var road_tile_px_per_z: float = 35.0
-@export_range(100.0, 1200.0, 10.0) var building_height_px: float = 420.0
-@export_range(2.0, 60.0, 1.0) var building_gap_z: float = 10.0
-@export_range(-300.0, 600.0, 10.0) var building_offset_px: float = -70.0
+@export_range(100.0, 1200.0, 10.0) var building_height_px: float = 1200.0
+@export_range(0.0, 60.0, 1.0) var building_gap_z: float = 2.0
+@export_range(20.0, 600.0, 10.0) var building_footprint_px_per_z: float = 100.0
+@export_range(0.0, 60.0, 1.0) var building_reveal_z: float = 15.0
+@export_range(-300.0, 600.0, 10.0) var building_offset_px: float = -180.0
 
 @export_group("Bus")
 @export_range(5.0, 60.0, 0.5) var cruise_speed_start: float = 11.0
-@export_range(5.0, 80.0, 0.5) var cruise_speed_end: float = 32.0
-@export_range(1.0, 60.0, 1.0) var brake_decel: float = 6.0
-@export_range(1.0, 40.0, 1.0) var accel: float = 4.0
-@export_range(100.0, 2000.0, 10.0) var lane_change_speed: float = 320.0
+@export_range(5.0, 80.0, 0.5) var cruise_speed_end: float = 35.0
+@export_range(1.0, 60.0, 1.0) var brake_decel: float = 10.0
+@export_range(1.0, 40.0, 1.0) var accel: float = 6.0
+@export_range(100.0, 2000.0, 10.0) var lane_change_speed: float = 380.0
 @export_range(10.0, 90.0, 1.0) var swerve_trigger_z: float = 36.0
 @export_range(5.0, 80.0, 1.0) var follow_trigger_z: float = 28.0
 @export_range(2.0, 60.0, 1.0) var merge_trigger_z: float = 26.0
 
 @export_group("Traffic")
-@export_range(0.3, 5.0, 0.1) var spawn_interval_start: float = 1.5
-@export_range(0.2, 5.0, 0.1) var spawn_interval_end: float = 0.9
-@export_range(0.1, 1.0, 0.05) var moving_speed_min_ratio: float = 0.3
-@export_range(0.1, 1.0, 0.05) var moving_speed_max_ratio: float = 0.7
-@export_range(20.0, 600.0, 10.0) var merge_lateral_speed: float = 120.0
+@export_range(0.3, 5.0, 0.1) var spawn_interval_start: float = 1.4
+@export_range(0.2, 5.0, 0.1) var spawn_interval_end: float = 0.6
+@export_range(0.1, 1.0, 0.05) var moving_speed_min_ratio: float = 0.4
+@export_range(0.1, 1.0, 0.05) var moving_speed_max_ratio: float = 0.6
+@export_range(20.0, 600.0, 10.0) var merge_lateral_speed: float = 100.0
 ## Share of a body's width inside a lane for it to count as "in" that lane.
-@export_range(0.1, 1.0, 0.05) var lane_membership_ratio: float = 0.85
+@export_range(0.1, 1.0, 0.05) var lane_membership_ratio: float = 0.7
 ## Share of a body's width over the bike lane that makes a parker a violator.
-@export_range(0.05, 1.0, 0.05) var bike_intrusion_ratio: float = 0.2
-@export_range(2.0, 60.0, 1.0) var spawn_column_gap_curb_z: float = 16.0
-@export_range(2.0, 80.0, 1.0) var spawn_column_gap_bus_z: float = 32.0
-@export_range(0.0, 1.0, 0.05) var honk_probability: float = 0.4
-@export_range(0.0, 10.0, 0.01) var situation_weight_moving_traffic: float = 0.06
-@export_range(0.0, 10.0, 0.01) var situation_weight_legal_curb: float = 0.14
+@export_range(0.05, 1.0, 0.05) var bike_intrusion_ratio: float = 0.3
+@export_range(2.0, 60.0, 1.0) var spawn_column_gap_curb_z: float = 18.0
+@export_range(2.0, 80.0, 1.0) var spawn_column_gap_bus_z: float = 22.0
+@export_range(0.0, 1.0, 0.05) var honk_probability: float = 0.45
+@export_range(0.0, 10.0, 0.01) var situation_weight_moving_traffic: float = 0.09
+@export_range(0.0, 10.0, 0.01) var situation_weight_legal_curb: float = 0.09
 @export_range(0.0, 10.0, 0.01) var situation_weight_sloppy_parker: float = 0.07
-@export_range(0.0, 10.0, 0.01) var situation_weight_bike_lane_violator: float = 0.19
-@export_range(0.0, 10.0, 0.01) var situation_weight_bus_lane_blocker: float = 0.11
-@export_range(0.0, 10.0, 0.01) var situation_weight_double_park_pair: float = 0.17
-@export_range(0.0, 10.0, 0.01) var situation_weight_bus_stop_zone: float = 0.16
+@export_range(0.0, 10.0, 0.01) var situation_weight_bike_lane_violator: float = 0.09
+@export_range(0.0, 10.0, 0.01) var situation_weight_bus_lane_blocker: float = 0.14
+@export_range(0.0, 10.0, 0.01) var situation_weight_double_park_pair: float = 0.18
+@export_range(0.0, 10.0, 0.01) var situation_weight_bus_stop_zone: float = 0.14
+@export_range(0, 60, 1) var situation_bag_size: int = 22
 
 @export_group("Capture")
 @export_range(5.0, 100.0, 1.0) var plate_readable_z: float = 38.0
-@export_range(0.0, 2.0, 0.05) var capture_cooldown_sec: float = 0.15
+@export_range(0.0, 2.0, 0.05) var capture_cooldown_sec: float = 0.1
 ## Share of the plate that must be inside the box (1.0 = fully framed).
 @export_range(0.5, 1.0, 0.05) var capture_overlap_ratio: float = 1.0
-@export var box_size: Vector2 = Vector2(150.0, 110.0)
-@export_range(100.0, 1500.0, 10.0) var box_speed_keyboard: float = 520.0
+@export var box_size: Vector2 = Vector2(120.0, 80.0)
+@export_range(100.0, 1500.0, 10.0) var box_speed_keyboard: float = 580.0
 @export_range(100.0, 1500.0, 10.0) var box_speed_touch: float = 440.0
 @export_range(100.0, 1500.0, 10.0) var box_speed_gamepad: float = 440.0
 
@@ -99,7 +102,7 @@ extends Resource
 @export_group("Leaderboard")
 @export_range(5, 100, 5) var top_count: int = 15
 @export_range(1.0, 15.0, 0.5) var request_timeout_sec: float = 5.0
-@export var default_player_name: String = "Anon"
+@export_range(5.0, 300.0, 5.0) var sync_retry_sec: float = 30.0
 
 @export_group("Audio")
 @export_range(0.0, 1.0, 0.05) var volume_master_default: float = 1.0
@@ -144,9 +147,11 @@ const DESCRIPTIONS: Dictionary = {
 	"bus_stop_lean_deg": "Extra lean of the shelter's ground line beyond the automatic aim.",
 	"bus_stop_marking_opacity": "Yellow hazard stripes over the zone (0 hides them).",
 	"road_tile_px_per_z": "Road-tile rows per z unit: stretches dash and stencil spacing together.",
-	"building_height_px": "Building sprite height at z = 0.",
-	"building_gap_z": "Distance between neighbouring buildings (z units).",
-	"building_offset_px": "Buildings' distance beyond the road edge (negative = onto it).",
+	"building_height_px": "Height at z = 0 of the tallest (1000 px) building art; every building shares the scale.",
+	"building_gap_z": "Empty road between one building's footprint and the next (z units).",
+	"building_footprint_px_per_z": "Building width (px at z = 0) per z unit of road it takes up; higher packs the skyline tighter.",
+	"building_reveal_z": "Distance over which a new building grows out of the horizon to full size (0 = pop in).",
+	"building_offset_px": "Distance of the road-facing corner beyond the road edge (negative = onto it).",
 	# Bus
 	"cruise_speed_start": "Road speed at the start of the shift (z units per second).",
 	"cruise_speed_end": "Road speed at the end of the shift; ramps between the two.",
@@ -174,6 +179,7 @@ const DESCRIPTIONS: Dictionary = {
 	"situation_weight_bus_lane_blocker": "Relative odds of a car stopped in the bus lane.",
 	"situation_weight_double_park_pair": "Relative odds of a double-parked pair.",
 	"situation_weight_bus_stop_zone": "Relative odds of a bus stop zone with a car in it.",
+	"situation_bag_size": "Spawns per shuffled bag: each situation appears in proportion to its weight within every bag, so the violator count barely varies run to run (0 = roll every tick).",
 	# Capture
 	"plate_readable_z": "Plates farther than this are TOO FAR to capture.",
 	"capture_cooldown_sec": "Minimum time between two capture presses.",
@@ -194,7 +200,7 @@ const DESCRIPTIONS: Dictionary = {
 	# Leaderboard
 	"top_count": "Rows on the leaderboard (title and results).",
 	"request_timeout_sec": "Give up on the shared board after this long.",
-	"default_player_name": "Name used when a player skips name entry.",
+	"sync_retry_sec": "Wait this long before resending shifts the board did not take.",
 	# Audio
 	"volume_master_default": "Master volume for a fresh install.",
 	"volume_music_default": "Music volume for a fresh install.",
@@ -262,7 +268,4 @@ func validate() -> PackedStringArray:
 		total += weight
 	if total <= 0.0:
 		problems.append("situation weights must sum to more than zero")
-	var name_pattern := RegEx.create_from_string("^[A-Za-z]{1,12}$")
-	if name_pattern.search(default_player_name) == null:
-		problems.append("default_player_name must be 1-12 letters")
 	return problems

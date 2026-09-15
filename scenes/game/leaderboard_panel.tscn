@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://src/game/ui/leaderboard_panel.gd" id="1_panel"]
+[ext_resource type="PackedScene" path="res://scenes/game/sync_indicator.tscn" id="2_sync"]
 
 [node name="LeaderboardPanel" type="PanelContainer"]
 theme_type_variation = &"BoardPanel"
@@ -17,6 +18,10 @@ layout_mode = 2
 text = "TOP SHIFTS"
 horizontal_alignment = 1
 
+[node name="Sync" parent="Column" instance=ExtResource("2_sync")]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="Note" type="Label" parent="Column"]
 theme_type_variation = &"Caption"
 unique_name_in_owner = true
@@ -24,6 +29,10 @@ visible = false
 layout_mode = 2
 text = "leaderboard unavailable"
 horizontal_alignment = 1
+
+[node name="Header" type="HBoxContainer" parent="Column"]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="Scroll" type="ScrollContainer" parent="Column"]
 layout_mode = 2

@@ -17,7 +17,7 @@ func test_accepts_letters_up_to_twelve() -> void:
 func test_rejects_with_reason_and_message() -> void:
 	var empty := _validator.validate("   ")
 	assert_eq(empty.reason, NameValidator.Reason.EMPTY)
-	assert_eq(empty.message, "Enter a name")
+	assert_eq(empty.message, "Enter your first name")
 	var long := _validator.validate("abcdefghijklm")
 	assert_eq(long.reason, NameValidator.Reason.TOO_LONG)
 	assert_false(long.ok)
@@ -31,3 +31,12 @@ func test_rejects_with_reason_and_message() -> void:
 func test_length_is_checked_before_characters_and_profanity() -> void:
 	assert_eq(_validator.validate("badword badword").reason, NameValidator.Reason.TOO_LONG)
 	assert_eq(_validator.validate("badword1").reason, NameValidator.Reason.INVALID_CHARS)
+
+
+func test_last_initial_is_one_letter_upper_cased() -> void:
+	assert_true(NameValidator.validate_initial(" k ").ok)
+	assert_eq(NameValidator.clean_initial(" k "), "K")
+	assert_eq(NameValidator.validate_initial("").reason, NameValidator.Reason.INITIAL_EMPTY)
+	assert_eq(NameValidator.validate_initial("").message, "Enter your last initial")
+	for bad: String in ["kl", "1", "-"]:
+		assert_eq(NameValidator.validate_initial(bad).reason, NameValidator.Reason.INITIAL_INVALID, bad)

@@ -24,6 +24,7 @@ func test_each_zone_gets_a_shelter_that_leaves_with_it() -> void:
 
 
 func test_shelter_ground_line_aims_at_the_vanishing_point_with_upright_poles() -> void:
+	_config.bus_stop_lean_deg = 0.0  # the lean is an extra tilt on top of the perspective shear
 	_zones.spawn_zone(12.0, _config.bus_stop_zone_length)
 	await get_tree().process_frame
 	var shelter: Sprite2D = null

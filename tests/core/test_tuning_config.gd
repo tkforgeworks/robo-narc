@@ -5,18 +5,18 @@ func test_defaults_match_contract_samples() -> void:
 	var config := TuningConfig.new()
 	assert_eq(config.shift_length_sec, 90.0)
 	assert_eq(config.cruise_speed_start, 11.0)
-	assert_eq(config.cruise_speed_end, 32.0)
-	assert_eq(config.spawn_interval_start, 1.5)
-	assert_eq(config.spawn_interval_end, 0.9)
+	assert_eq(config.cruise_speed_end, 35.0)
+	assert_eq(config.spawn_interval_start, 1.4)
+	assert_eq(config.spawn_interval_end, 0.6)
 	assert_eq(config.plate_readable_z, 38.0)
-	assert_eq(config.capture_cooldown_sec, 0.15)
-	assert_eq(config.box_size, Vector2(150.0, 110.0))
+	assert_eq(config.capture_cooldown_sec, 0.1)
+	assert_eq(config.box_size, Vector2(120.0, 80.0))
 	assert_eq(config.points_correct, 150)
 	assert_eq(config.points_wrong, -50)
 	assert_eq(config.points_missed, -10)
 	assert_eq(config.top_count, 15)
 	assert_eq(config.results_idle_timeout_sec, 60.0)
-	assert_eq(config.default_player_name, "Anon")
+	assert_eq(config.sync_retry_sec, 30.0)
 
 
 func test_derived_lane_centres() -> void:
@@ -43,9 +43,8 @@ func test_invariants_are_flagged() -> void:
 	config.cruise_speed_end = 20.0
 	config.spawn_interval_end = 3.0
 	config.merge_trigger_z = 50.0
-	config.default_player_name = "Bad Name 1"
 	var problems := config.validate()
-	assert_eq(problems.size(), 4, str(problems))
+	assert_eq(problems.size(), 3, str(problems))
 
 
 func test_every_tunable_is_enumerable() -> void:

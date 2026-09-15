@@ -56,6 +56,12 @@ func apply_capture(outcome: CaptureOutcome) -> void:
 	capture_applied.emit(outcome)
 
 
+## Violators inside capture range when the shift ends: catchable, uncaught.
+## Not scored; counted against recall.
+func note_left_in_range(count: int) -> void:
+	_result.left_in_range = count
+
+
 func apply_miss(verdict: Verdict) -> void:
 	_result.missed += 1
 	var points := config.points_missed

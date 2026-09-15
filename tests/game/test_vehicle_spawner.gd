@@ -73,6 +73,20 @@ func test_column_gap_blocks_back_to_back_spawns() -> void:
 	assert_eq(_spawner.spawn_situation(SituationTable.Kind.BUS_LANE_BLOCKER).size(), 1)
 
 
+func test_rejected_spawn_goes_back_into_the_bag() -> void:
+	for key in TunableProperties.names(_config):
+		if key.begins_with("situation_weight_"):
+			_config.set(key, 0.0)
+	_config.situation_weight_bus_lane_blocker = 1.0
+	_config.situation_bag_size = 7
+	_spawner._on_timeout()
+	assert_eq(_spawner.spawn_count, 1)
+	var after_first := _spawner.table().bag_count()
+	_spawner._on_timeout()
+	assert_eq(_spawner.spawn_count, 1, "second blocker rejected by the bus-column gap")
+	assert_eq(_spawner.table().bag_count(), after_first, "the rejected pick went back in")
+
+
 func test_curb_spawn_skipped_near_a_zone() -> void:
 	_spawner.spawn_situation(SituationTable.Kind.BUS_STOP_ZONE)
 	assert_eq(_spawner.spawn_situation(SituationTable.Kind.LEGAL_CURB).size(), 0)

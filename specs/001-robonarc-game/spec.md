@@ -304,12 +304,16 @@ confirm the game plays with no errors.
 
 ### User Story 7 - Compete on a Shared Leaderboard (Priority: P4)
 
-At the end of a shift the visitor types a short name (up to 12 letters, checked
-against a profanity filter, with a skip option) and their score is submitted to a
-shared online leaderboard along with their stat breakdown. The title and results
-screens show the current top scores. If the booth has no connectivity or the submission fails,
-the game continues without delay, keeps the score locally, and shows a brief
-"leaderboard unavailable" note.
+At the end of a shift the visitor enters an email, a first name (up to 12
+letters, checked against a profanity filter), and a last initial, or leaves the
+form blank to play as "anonymous NN", and their score is submitted to a shared
+online leaderboard along with their stat breakdown. The email is the board's
+unique key: it is never shown, and a returning player's shifts collapse into one
+entry holding their best score, so nobody can hog the top spots. The title and
+results screens show the current top scores with a sync indicator. If the booth
+has no connectivity or the submission fails, the game continues without delay,
+keeps the shift on disk, shows the last synced board, and posts the waiting shifts
+in the background once the board is reachable.
 
 **Why this priority**: A shared board adds bragging rights across booths and days, but
 convention play works without it, and it is the only feature with an external
@@ -322,23 +326,31 @@ the game proceeds normally with a local-only note.
 **Acceptance Scenarios**:
 
 1. **Given** the shift ends and the network is available, **When** the player enters
-   an accepted name (or skips), **Then** the score, breakdown, and name are submitted
-   and the player's rank is shown alongside the top 20, highlighted if inside it.
+   an accepted email, first name, and last initial (or plays anonymously), **Then**
+   the score, breakdown, and identity are submitted and the player's rank is shown
+   alongside the top 20, highlighted if inside it.
 1c. **Given** the player's score ranks 57th, **When** the results screen shows,
     **Then** the top 20 is listed and "Your rank: 57" (or equivalent) is shown below.
-1a. **Given** the name entry, **When** the player types a name longer than 12
-    characters, containing anything other than letters, or matching the profanity
-    filter, **Then** it is refused with a short message and they can try again or skip.
-1b. **Given** a name was accepted on this machine previously, **When** the next shift
-    ends, **Then** that name is pre-filled and can be accepted with a single action.
+1a. **Given** the entry form, **When** the player types a malformed email, a first
+    name longer than 12 characters, containing anything other than letters, or
+    matching the profanity filter, a last initial that is not one letter, or a name
+    without an email, **Then** it is refused with a short message and they can try
+    again or play anonymously.
+1b. **Given** the same email was used before, **When** the shift is submitted,
+    **Then** the board keeps one entry for that player at their best score and the
+    results screen says so ("your best: N") when this shift did not beat it.
+1d. **Given** the booth is shared, **When** the next shift ends, **Then** the entry
+    form is empty: nothing from the previous player is pre-filled.
 2. **Given** the network is unavailable, **When** the shift ends, **Then** the results
-   screen appears without waiting on the network, the score is kept locally, and a
-   "leaderboard unavailable" note is shown.
+   screen appears without waiting on the network, the shift is kept on disk, the
+   last synced board is shown, and the indicator is red with the number of shifts
+   waiting.
 3. **Given** the title screen, **When** the leaderboard fetch succeeds, **Then** the
-   top scores are displayed; **When** it fails, **Then** locally kept scores are shown
-   instead.
+   top scores are displayed and the indicator is green; **When** it fails, **Then**
+   the last synced board is shown with a note and the indicator is red.
 4. **Given** a submission fails, **When** the player continues, **Then** no error
-   dialog blocks them and no retry is required from them.
+   dialog blocks them and no retry is required from them: the shift is posted in the
+   background (as part of a batch) once the board answers again.
 
 ---
 
@@ -530,28 +542,45 @@ the game proceeds normally with a local-only note.
 
 - **FR-040**: On shift end the game MUST submit score, stat breakdown, and player
   identity to a single shared global leaderboard and MUST fetch the current top scores
-  for the title and results screens.
+  for the title and results screens. Both screens MUST show a sync indicator: green
+  when in sync, yellow while a request is out, red while offline.
 - **FR-040a**: The title and results screens MUST show the top 20 entries (rank, name,
   score). The results screen MUST also show the player's own rank for the shift just
   played, even when that rank is outside the top 20, and MUST highlight the player's
-  entry when it is inside the top 20.
+  entry when it is inside the top 20. The results screen MUST also show the shift's
+  precision, recall, and F1 (correct captures as true positives, wrong and empty
+  captures as false positives, missed violators and violators still inside capture
+  range at the buzzer as false negatives), and the board MUST list each entry's F1
+  beside its points.
 - **FR-041**: The game MUST never block or delay gameplay or screen transitions on
-  network activity. Failed fetches or submissions MUST degrade to local-only display
-  with a brief "leaderboard unavailable" note and no error dialog.
-- **FR-042**: Scores MUST always be kept locally regardless of network outcome.
-- **FR-043**: Player identity for the leaderboard MUST be a free-text name entered at
-  shift end, limited to 1 to 12 characters, letters only (upper and lower case, no
-  digits, spaces, or symbols). Names MUST be checked against a profanity filter
-  covering common English profanity; a rejected name MUST be refused with a short
-  message and the player asked to enter another. The most recently accepted name MUST
-  be offered as the default on the next shift on the same machine.
-- **FR-043a**: Name entry MUST be completable with keyboard, touch (on-screen
-  keyboard), and gamepad, and MUST offer a skip that submits the score under a
-  neutral default name so a visitor is never blocked from finishing.
+  network activity. A failed fetch MUST fall back to the last synced board (cached on
+  disk) with a brief note and no error dialog; a failed submission MUST say the shift
+  will post later.
+- **FR-042**: A shift that cannot reach the board MUST be kept on disk and posted in
+  the background, batched with any others, once the board is reachable again; a
+  resend MUST never create a duplicate entry. There is no local-only leaderboard.
+- **FR-043**: Player identity for the leaderboard MUST be entered at shift end as an
+  email plus a first name (1 to 12 letters, upper or lower case, no digits, spaces,
+  or symbols, checked against a profanity filter covering common English profanity)
+  and a last initial (one letter). The email MUST pass a basic shape check (one `@`,
+  a dot in the domain, no spaces) and is the player's unique key on the board: it is
+  never displayed, and repeated submissions with the same email keep one entry at
+  that player's best score. A name without an email MUST be refused. Rejected input
+  MUST be refused with a short message and the player asked to try again. Nothing
+  MUST be pre-filled from a previous player.
+- **FR-043a**: The form MUST offer "play anonymously": leaving every field blank
+  submits the score under a server-assigned `anonymous NN` name (numbered in
+  arrival order) so a visitor is never blocked from finishing. Entry is keyboard
+  first; touch uses the OS keyboard; gamepad entry is out of scope for now.
 - **FR-044**: No anti-cheat is required; forgeable scores are an accepted trade-off.
 
 **Convention operation**
 
+- **FR-044a**: A "Disclaimers and Data Privacy" screen MUST be reachable from About
+  the Game and from Settings, stating in plain language that the game is not a
+  demonstration of the real product, that AI assistance was used to build it, and
+  that a leaderboard email is used only by Hayden AI and is never sold or
+  distributed.
 - **FR-045**: A visitor MUST be able to start a shift from the title screen with a
   single action and no prior setup.
 - **FR-046**: The results screen MUST automatically return to the title screen after a
@@ -600,11 +629,12 @@ the game proceeds normally with a local-only note.
   time: one of BUS LANE, DOUBLE PARKING, BIKE LANE, BUS STOP, or INNOCENT.
 - **Capture Attempt**: A single capture press. Records whether a plate qualified, which
   vehicle was judged, the verdict, and the resulting score change and feedback text.
-- **Score Record**: The outcome of a completed shift: final score, category counts,
-  timestamp, and player name (1 to 12 letters, or the neutral default when skipped). Kept locally and, when possible, submitted to the
-  shared leaderboard.
-- **Leaderboard Entry**: A score record as seen on the single global board, with its
-  rank. The board is displayed as its top 20 plus the current player's own rank.
+- **Shift Result**: The outcome of a completed shift: final score, category counts,
+  timestamp, the player's identity (email, first name, last initial, or anonymous),
+  and a submission id. Queued on disk until the shared leaderboard acknowledges it.
+- **Leaderboard Entry**: One player's row on the single global board (their best
+  shift, or one anonymous shift), with its rank and server-built display name. The
+  board is displayed as its top entries plus the current player's own rank.
 - **Settings**: Persisted player preferences: Master, Music, and SFX volume.
 - **Tunable**: A named, typed behavior value with a documented default, current value,
   and allowed range, exposed in the debug menu.

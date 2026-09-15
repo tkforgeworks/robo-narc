@@ -181,5 +181,17 @@ func _on_score_changed(score: int, delta: int, feedback: String) -> void:
 
 
 func _on_shift_ended() -> void:
+	_score_keeper.note_left_in_range(_left_in_range())
 	var result := _score_keeper.finish()
 	navigation_requested.emit(load(RESULTS_SCENE_PATH), result)
+
+
+## Uncaptured violators whose plate was already readable when the clock ran out.
+func _left_in_range() -> int:
+	var count := 0
+	for vehicle in _vehicle_layer.vehicles:
+		if vehicle.captured or vehicle.z > config.plate_readable_z:
+			continue
+		if ViolationRules.evaluate(vehicle.report(), config).is_violation:
+			count += 1
+	return count

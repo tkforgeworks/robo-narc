@@ -12,7 +12,7 @@ gameplay code. Everything else is TF3.
 | `[core]` template | `src/core/`, `scenes/core/`, `tests/core/`, `data/core/`, `addons/gut/`, `.github/workflows/ci.yml`, `.gutconfig.json`, `.gitattributes`, `.specify/`, `.claude/` | Never references `src/game/` or `scenes/game/`. Depends only on Godot, GUT, and the one autoload |
 | Game | `src/game/`, `scenes/game/`, `scenes/screens/`, `data/game/`, `assets/`, `specs/` | May depend on core freely |
 
-The only autoload is `Tuning` (`src/core/tuning/tuning.gd`). Core nodes that need
+The only core autoload is `Tuning` (`src/core/tuning/tuning.gd`); the game layer adds its own (`Leaderboard`). Core nodes that need
 tunables read `Tuning.config`; screens and game nodes receive a `TuningConfig`
 by injection first and fall back to the autoload.
 
@@ -26,7 +26,8 @@ by injection first and fall back to the autoload.
 | `screen_host.gd` | Owns the one active screen; screens navigate by emitting `navigation_requested(scene, payload)` | DebugLog |
 | `focus_pauser.gd` | Pauses on window/tab focus loss; JavaScriptBridge hooks on web; optional resume count-in hold | DebugLog |
 | `idle_timeout.gd` | Auto-return timer that keeps running while paused; restart-or-cancel on input | none |
-| `settings_store.gd` | `user://settings.cfg`: volumes and last player name | TuningConfig defaults |
+| `settings_store.gd` | `user://settings.cfg`: volumes and the show-controls flag | TuningConfig defaults |
+| `uuid.gd` | Random v4 UUIDs for records that may be sent more than once | none |
 | `audio_mixer.gd` + `default_bus_layout.tres` | Master / Music / SFX buses, linear-to-dB with a hard mute | SettingsStore |
 | `music_player.gd` | Loops `assets/audio/music/background.{ogg,wav}` if present | DebugLog |
 | `placeholder_texture.gd` + `assets/ui/placeholder.png` | Shared checkerboard for missing art; logs the missing set at startup | DebugLog |

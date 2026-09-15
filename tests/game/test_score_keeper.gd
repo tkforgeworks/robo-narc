@@ -70,7 +70,11 @@ func test_points_follow_live_config() -> void:
 func test_shift_result_round_trips_through_dict() -> void:
 	var result := ShiftResult.new()
 	result.score = -5
-	result.player_name = "Ava"
+	result.identity = PlayerIdentity.named("ava@example.com", "Ava", "K")
+	result.submission_id = "abc"
 	var copy := ShiftResult.from_dict(result.to_dict())
 	assert_eq(copy.score, -5)
-	assert_eq(copy.player_name, "Ava")
+	assert_eq(copy.identity.email, "ava@example.com")
+	assert_eq(copy.identity.display_name(), "Ava K.")
+	assert_eq(copy.submission_id, "abc")
+	assert_true(ShiftResult.from_dict({}).identity.is_anonymous())

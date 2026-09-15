@@ -48,6 +48,14 @@ jobs:
       - name: Run GUT tests
         run: godot --headless --path . -s addons/gut/gut_cmdln.gd -gexit
 
+      # What a flawless player could score with the shipped tuning: 20 headless
+      # shifts with no captures, every missed violator counted (see
+      # tools/perfect_shift_sim.gd). Lands in the run's step summary.
+      - name: Estimate the perfect score
+        run: |
+          godot --headless --path . --script tools/perfect_shift_sim.gd -- --runs=20 --defaults --out=perfect-score.md | grep '^\[sim\]'
+          { echo "## Perfect score (shipped tuning, 20 simulated shifts)"; echo; cat perfect-score.md; } >> "$GITHUB_STEP_SUMMARY"
+
   export:
     name: Export ${{ matrix.name }}
     needs: test

@@ -31,7 +31,17 @@ const CURB_LINE_PX := 28
 const BUS_STENCIL_FILL := 0.6
 const BIKE_STENCIL_FILL := 0.7
 
+## Ground beyond the buildings.
 const SIDEWALK := Color("#0e1626")
+## Paved sidewalk between the road edge and the building line: grey slabs
+## with joints and a few hairline cracks.
+const PAVEMENT := Color("#3d4351")
+const PAVEMENT_JOINT := Color("#2f3441")
+const PAVEMENT_CRACK := Color("#262b36")
+## Transverse slab joints this far apart along the road (z units).
+const SLAB_LENGTH_Z := 4.5
+const JOINT_PX := 6
+const CRACKS_PER_SIDE := 14
 const EDGE_LINE := Color("#090f19")
 const PLAIN_LANE := Color("#121d31")
 const BUS_LANE := Color("#561224")
@@ -58,8 +68,10 @@ func _initialize() -> void:
 	var bike_right := int(config.lane_bike_right)
 	var curb := int(config.lane_curb_x)
 
-	# Fills, left to right. The median strip left of the edge line and the
-	# sidewalk right of the curb keep the base colour.
+	# Fills, left to right. Pavement runs from each road edge out to where the
+	# buildings stand; beyond that the base colour is the ground behind them.
+	_pavement(int(config.road_edge_left_x), road_left - EDGE_LINE_PX / 2, 1)
+	_pavement(curb + CURB_LINE_PX / 2, int(config.road_edge_right_x), 2)
 	_fill(road_left - EDGE_LINE_PX / 2, road_left + EDGE_LINE_PX / 2, EDGE_LINE)
 	_fill(road_left + EDGE_LINE_PX / 2, bus_left, PLAIN_LANE)
 	_fill(bus_left, bus_right, BUS_LANE)
@@ -94,6 +106,49 @@ func _px(road_px: float) -> int:
 ## Fills road x range [x0, x1) down the whole tile.
 func _fill(x0: int, x1: int, color: Color) -> void:
 	_image.fill_rect(Rect2i(_px(x0 - _left), 0, _px(x1) - _px(x0), _height), color)
+
+
+## Grey slabs over road x range [x0, x1): a lengthwise joint down the middle,
+## transverse joints every SLAB_LENGTH_Z, and seeded hairline cracks.
+func _pavement(x0: int, x1: int, seed_value: int) -> void:
+	_fill(x0, x1, PAVEMENT)
+	var mid := (x0 + x1) / 2
+	_fill(mid - JOINT_PX / 2, mid + JOINT_PX / 2, PAVEMENT_JOINT)
+	var slabs := int(round(TILE_LENGTH_Z / SLAB_LENGTH_Z))
+	var joint_rows := maxi(_px(JOINT_PX), 1)
+	for i in slabs:
+		_image.fill_rect(Rect2i(_px(x0 - _left), i * _height / slabs, _px(x1) - _px(x0), joint_rows),
+				PAVEMENT_JOINT)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = seed_value
+	for i in CRACKS_PER_SIDE:
+		var point := Vector2i(rng.randi_range(_px(x0 - _left) + 4, _px(x1 - _left) - 4),
+				rng.randi_range(0, _height - 80))
+		for segment in rng.randi_range(3, 6):
+			var next := point + Vector2i(rng.randi_range(-14, 14), rng.randi_range(6, 22))
+			next.x = clampi(next.x, _px(x0 - _left) + 1, _px(x1 - _left) - 2)
+			_line(point, next, PAVEMENT_CRACK)
+			point = next
+
+
+## One-pixel Bresenham line.
+func _line(a: Vector2i, b: Vector2i, color: Color) -> void:
+	var d := (b - a).abs()
+	var step := Vector2i(1 if b.x > a.x else -1, 1 if b.y > a.y else -1)
+	var err := d.x - d.y
+	var p := a
+	while true:
+		if p.y >= 0 and p.y < _height:
+			_image.set_pixelv(p, color)
+		if p == b:
+			break
+		var e2 := err * 2
+		if e2 > -d.y:
+			err -= d.y
+			p.x += step.x
+		if e2 < d.x:
+			err += d.x
+			p.y += step.y
 
 
 ## Blends a stencil PNG, scaled to `width_px` wide, centred at road x / tile row.
