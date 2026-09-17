@@ -12,7 +12,7 @@ const ABOUT_SCENE_PATH := "res://scenes/screens/about_screen.tscn"
 const DISCLAIMERS_SCENE_PATH := "res://scenes/screens/disclaimers_screen.tscn"
 const IMAGE_DIR := "res://assets/ui/about"
 
-const PITCH := """In Traffic Fighter 3 you’re a Hayden AI camera system scanning the road for vehicles illegally parked in bus lanes, bus stops, and bike lanes. Traffic appears at the horizon and will move toward your bus. It’s up to you to determine whether a car gets a ticket.
+const PITCH := """In Traffic Fighter III you’re a Hayden AI camera system scanning the road for vehicles illegally parked in bus lanes, bus stops, and bike lanes. Traffic appears at the horizon and will move toward your bus. It’s up to you to determine whether a car gets a ticket.
 """
 
 @onready var _text: Label = %PitchText
