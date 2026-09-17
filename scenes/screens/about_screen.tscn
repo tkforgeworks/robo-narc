@@ -84,17 +84,17 @@ script = ExtResource("2_links")
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="Buttons" type="HBoxContainer" parent="Column"]
+[node name="Buttons" type="HBoxContainer" parent="Column" unique_id=539484052]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 16
 
-[node name="ControlsButton" type="Button" parent="Column/Buttons"]
+[node name="ControlsButton" type="Button" parent="Column/Buttons" unique_id=708430423]
 unique_name_in_owner = true
 layout_mode = 2
 text = "CONTROLS"
 
-[node name="DisclaimersButton" type="Button" parent="Column/Buttons"]
+[node name="DisclaimersButton" type="Button" parent="Column/Buttons" unique_id=1669619936]
 unique_name_in_owner = true
 layout_mode = 2
 text = "DISCLAIMERS"
@@ -104,4 +104,4 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "BACK"
 
-[node name="ControlsOverlay" parent="." instance=ExtResource("4_overlay")]
+[node name="ControlsOverlay" parent="." unique_id=151175448 instance=ExtResource("4_overlay")]

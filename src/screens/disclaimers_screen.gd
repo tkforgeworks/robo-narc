@@ -10,7 +10,7 @@ signal navigation_requested(scene: PackedScene, payload: Variant)
 
 const TITLE_SCENE_PATH := "res://scenes/screens/title_screen.tscn"
 
-const NOT_A_DEMO := """Traffic Fighter 3 is a game, not a demonstration of Hayden AI's products. Real Hayden AI systems detect and review violations automatically; here a person aims the camera and makes every call, and the traffic, rules, and scoring are simplified for play. Nothing in the game reflects how a deployed system performs."""
+const NOT_A_DEMO := """Traffic Fighter III is a game, not a demonstration of Hayden AI's products. Real Hayden AI systems detect and review violations automatically; here a person aims the camera and makes every call, and the traffic, rules, and scoring are simplified for play. Nothing in the game reflects how a deployed system performs."""
 
 const BUILT_WITH_AI := """AI tools helped build this game. Parts of the code, tooling, artwork pipeline, and supporting text were drafted with AI assistance, then reviewed, directed, and tested by the developer. Any mistakes are the developer's."""
 
